@@ -122,9 +122,14 @@
       .btn.green{background:linear-gradient(135deg,#22c3d6,#1290d8);color:#fff;box-shadow:inset 0 -3px 0 rgba(8,70,120,.30)}
       .btn.small{padding:7px 14px;min-height:2.4rem;font-size:13px}
       /* ボード */
-      .day{background:var(--surface);border:1.5px solid var(--line-soft);border-radius:10px;box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
-      .dayhead{display:flex;align-items:center;gap:8px;padding:9px 14px 7px;
-        background:linear-gradient(100deg, var(--green-soft) 0%, var(--green-soft) 52%, transparent 82%);border-bottom:1px solid var(--line-soft)}
+      .day{background:var(--surface);border:1.5px solid var(--line-soft);border-radius:10px;box-shadow:var(--shadow);margin-bottom:8px;overflow:visible;scroll-margin-top:calc(var(--dht,54px) + 46px)}
+      .day.is-today{outline:2px solid var(--green);outline-offset:1px}
+      .dayhead{display:flex;align-items:center;gap:8px;padding:6px 12px 5px;position:sticky;top:var(--dht,54px);z-index:6;
+        background-color:var(--surface);
+        background-image:linear-gradient(100deg, var(--green-soft) 0%, var(--green-soft) 52%, transparent 82%);border-bottom:1px solid var(--line-soft);
+        border-radius:inherit;border-bottom-left-radius:0;border-bottom-right-radius:0}
+      .todaybar{display:flex;justify-content:flex-end;margin:0 0 8px}
+      .todaybar .btn{min-height:44px}
       .dayhead .dow{font-family:"M PLUS Rounded 1c",sans-serif;font-weight:800;font-size:17px;color:var(--ink)}
       .dayhead .dow::before{content:"";display:inline-block;width:8px;height:15px;margin-right:8px;vertical-align:-2px;background:var(--green);transform:skewX(-18deg)}
       .dayhead .today{font-size:11px;font-weight:800;color:#22385a;background:var(--halo);padding:2px 10px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
@@ -168,25 +173,41 @@
       .pricesummary .total{font-size:16px;font-weight:800;color:var(--ink)}
       .pricesummary .total b{color:var(--tomato);font-size:19px}
       .pricesummary .note{font-size:11.5px;color:var(--ink2);margin-top:4px;line-height:1.5}
-      /* 定食の組み立て（主食セレクタ＋主菜・副菜・汁物／完結） */
-      .ms-body{flex:1;min-width:0;border-top:1px solid var(--line-soft);padding:8px 8px 10px 10px}
+      /* 定食の組み立て（主食は表示と変更を分離／主菜を主役に階層化） */
+      .ms-body{flex:1;min-width:0;border-top:1px solid var(--line-soft);padding:6px}
       .dayhead + .slot .ms-body{border-top:0}
-      .ms-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+      .ms-edit{margin:0}
+      .ms-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;min-height:44px;cursor:pointer;list-style:none;padding:2px 2px}
+      .ms-head::-webkit-details-marker{display:none}
+      .ms-head::marker{content:""}
+      .ms-staple-label{font-size:12px;font-weight:700;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .ms-staple-label b{font-size:12px;font-weight:800;color:var(--ink)}
+      .ms-head-right{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+      .ms-edit-caret{font-size:11px;font-weight:800;color:var(--green-deep)}
+      .ms-edit-body{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:2px 2px 8px}
       .ms-staple{display:inline-flex;gap:4px;flex-wrap:wrap}
-      .ms-staple button{border:1.5px solid var(--line);background:var(--surface2);color:var(--ink2);border-radius:999px;padding:2px 11px;font-size:12px;font-weight:800;min-height:2rem}
+      .ms-staple button{border:1.5px solid var(--line);background:var(--surface2);color:var(--ink2);border-radius:999px;padding:2px 11px;font-size:12px;font-weight:800;min-height:44px}
       .ms-staple button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
-      .ms-kcal{font-size:12px;font-weight:800;color:var(--tomato)}
-      .ms-mini{margin-left:auto;border:0;background:none;color:var(--green-deep);font-size:12px;font-weight:800;text-decoration:underline;min-height:2rem;padding:2px 4px}
-      .ms-mode{font-size:11px;font-weight:800;background:var(--tomato);color:#fff;border-radius:999px;padding:2px 10px}
-      .ms-row{display:flex;align-items:flex-start;gap:8px;padding:3px 0}
-      .ms-pos{flex:none;width:38px;text-align:center;font-size:11.5px;font-weight:800;color:var(--green-deep);background:var(--green-soft);border-radius:6px;padding:3px 0;margin-top:3px}
-      .ms-row .ms-main{flex:1;min-width:0;text-align:left;background:none;border:0;padding:2px 0;color:var(--ink);min-height:2.25rem}
-      .ms-row .ms-main .name{font-weight:700;font-size:14.5px}
-      .ms-row .ms-main .meta{font-size:12px;color:var(--ink2)}
-      .ms-row .ms-main .empty{color:var(--green-deep);font-size:13.5px;font-weight:800}
-      .ms-row .ms-main .recipe-hint{display:inline-block;margin-top:4px;font-size:11.5px;font-weight:800;color:#fff;background:linear-gradient(135deg,#3fbcf7,#118bd2);padding:2px 9px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+      .ms-kcal{font-size:11px;font-weight:800;color:var(--tomato);white-space:nowrap}
+      .ms-mini{border:0;background:none;color:var(--green-deep);font-size:12px;font-weight:800;text-decoration:underline;min-height:44px;padding:2px 4px}
+      .ms-mode{font-size:11px;font-weight:800;background:var(--tomato);color:#fff;border-radius:999px;padding:2px 10px;justify-self:start}
+      .ms-row{display:flex;align-items:flex-start;gap:4px;padding:1px 0}
+      .ms-pos{flex:none;width:26px;text-align:center;font-size:11px;font-weight:800;color:var(--green-deep);background:var(--green-soft);border-radius:6px;padding:3px 0;margin-top:3px}
+      .ms-row .ms-main{flex:1;min-width:0;text-align:left;background:none;border:0;padding:2px 16px 2px 0;color:var(--ink);min-height:44px;position:relative}
+      .ms-row .ms-main .name{display:block;font-weight:800;font-size:15px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .ms-row.pos-side .ms-main .name,.ms-row.pos-soup .ms-main .name{font-weight:500;font-size:13px;line-height:18px}
+      .ms-row .ms-main .chev{position:absolute;right:2px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;color:var(--ink2)}
+      .ms-row .ms-main .empty{color:var(--green-deep);font-size:13px;font-weight:800}
+      .ms-sub{display:block;margin-top:1px;line-height:1}
+      .prot1{display:inline-block;font-size:11px;font-weight:800;background:var(--tomato-soft);color:var(--tomato);border-radius:999px;padding:1px 7px}
+      .day.is-today .ms-row.pos-main .ms-main .name,.day.is-today .ms-row.pos-complete .ms-main .name{font-size:16px;line-height:21px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
       .ms-x{flex:none;align-self:center;border:1.5px solid var(--line-soft);background:var(--surface2);color:var(--ink2);width:44px;height:44px;min-width:44px;min-height:44px;border-radius:8px;font-size:16px;line-height:1}
       .tagmini.prot{background:var(--tomato-soft);color:var(--tomato)}
+      .day>.slot:last-child .meal{border-bottom-left-radius:9px}
+      @media (max-width:480px){
+        .wrap{padding-left:10px;padding-right:10px}
+        .slot .meal{width:28px;font-size:12px}
+      }
       .pantrybtn{flex:none;display:inline-flex;align-items:center;justify-content:center;align-self:center;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:10px 12px;font-size:13px;font-weight:700;color:var(--ink2);min-height:48px}
       .pantrybtn.on{background:var(--green-soft);color:var(--green-deep);border-color:var(--green)}
       .empty-note{color:var(--ink2);font-size:14px;padding:16px 4px}
@@ -1738,6 +1759,7 @@
           <p class="sub" style="margin-top:8px">1食は「定食（主食＋主菜＋副菜＋汁物）」か「完結料理（丼・カレー・麺・鍋など1品で完結）」で組み立てます。PFCはグラム数のデータが無いので数値では出さず、主菜＝たんぱく源／副菜＝野菜／汁物／主食＝炭水化物の組み合わせでバランスを取ります。各枠のkcal表示は主食分を含みません。</p>
           <p class="sub" id="catalogNote" style="margin-top:10px"></p>
         </div>
+        <div class="todaybar"><button type="button" class="btn ghost small" id="todayJump">📍 今日へ</button></div>
         <div id="board"></div>
         <div class="card">
           <details class="customform">
@@ -2047,6 +2069,7 @@ function setSyncUI(mode, metaText){
   else if(mode==="local"){ pill.classList.add("off"); txt.textContent="この端末だけ"; banner.classList.remove("show"); }
   else { pill.classList.add("off"); txt.textContent="オフライン（この端末だけ）"; banner.classList.add("show"); }
   if(metaText!=null) meta.textContent = metaText; else if(fb.lastMeta) meta.textContent = fb.lastMeta;
+  if(typeof updateStickyTop === "function") updateStickyTop();
 }
 function persistLocal(){
   try{ localStorage.setItem(roomCode ? ("mmk_state_"+roomCode) : LS_LOCAL, JSON.stringify(S)); }catch(e){}
@@ -2121,51 +2144,59 @@ function tagMinis(d){
 }
 function proteinChip(d){
   var p = proteinOf(d);
-  return p ? '<span class="tagmini prot">たんぱく源：' + esc(p) + '</span>' : "";
+  if(!p) return "";
+  var one = (p === "大豆") ? "豆" : p.charAt(0);
+  return '<span class="ms-sub"><span class="prot1" title="たんぱく源：' + esc(p) + '">' + esc(one) + '</span></span>';
 }
 function msRowHtml(key, pos, o, day, meal){
   var id = o[pos];
   var d = id ? dishById[id] : null;
   var label = POS_LABEL[pos];
   if(d){
-    return '<div class="ms-row"><span class="ms-pos">' + label + '</span>'
+    return '<div class="ms-row pos-' + pos + '"><span class="ms-pos">' + label + '</span>'
       + '<button type="button" class="ms-main" data-detail="' + key + '" data-pos="' + pos + '" data-dish="' + esc(d.id) + '" aria-label="' + day + '曜日 ' + meal + ' ' + label + ' ' + esc(d.name) + ' のレシピを見る">'
-      + '<span class="name">' + esc(d.name) + '</span><br><span class="meta">' + esc(dishMeta(d)) + '</span>'
-      + (pos === "main" ? proteinChip(d) : "") + tagMinis(d)
-      + '<br><span class="recipe-hint">📖 レシピを見る ›</span></button>'
+      + '<span class="name">' + esc(d.name) + '</span><span class="chev" aria-hidden="true">›</span>'
+      + (pos === "main" ? proteinChip(d) : "") + '</button>'
       + '<button type="button" class="ms-x" data-clearpos="' + key + '" data-pos="' + pos + '" aria-label="' + label + 'を外す">✕</button></div>';
   }
-  return '<div class="ms-row"><span class="ms-pos">' + label + '</span>'
+  return '<div class="ms-row pos-' + pos + '"><span class="ms-pos">' + label + '</span>'
     + '<button type="button" class="ms-main" data-pick="' + key + '" data-pos="' + pos + '" aria-label="' + day + '曜日 ' + meal + ' の' + label + 'を選ぶ">'
-    + '<span class="empty">＋ ' + label + 'を選ぶ</span></button></div>';
+    + '<span class="empty">＋ 選ぶ</span></button></div>';
+}
+function updateStickyTop(){
+  var sb = document.querySelector(".syncbar");
+  if(sb) document.documentElement.style.setProperty("--dht", sb.offsetHeight + "px");
 }
 function renderBoard(){
   var todayDow = (new Date().getDay() + 6) % 7; /* 月=0 */
   var html = "";
   DAYS.forEach(function(day, di){
     var filled = MEALS.filter(function(m){ return slotHasMainDish(getSlot(slotKey(di, m))); }).length;
-    html += '<div class="day"><div class="dayhead"><span class="dow">' + day + '曜日</span>'
-      + (di === todayDow ? '<span class="today">今日</span>' : '')
+    var isToday = di === todayDow;
+    html += '<div class="day' + (isToday ? ' is-today' : '') + '"' + (isToday ? ' id="todayCard"' : '') + '><div class="dayhead"><span class="dow">' + day + '曜日</span>'
+      + (isToday ? '<span class="today">今日</span>' : '')
       + '<span class="cnt">' + filled + ' / 3 食</span></div>';
     MEALS.forEach(function(meal){
       var key = slotKey(di, meal);
       var o = getSlot(key);
       var k = slotKcal(o);
       var kcalHtml = "";
-      if(k.total && k.known === k.total) kcalHtml = '<span class="ms-kcal">計' + k.sum + 'kcal</span>';
-      else if(k.known > 0) kcalHtml = '<span class="ms-kcal">判明分' + k.sum + 'kcal</span>';
+      if(k.total && k.known === k.total && k.sum > 0) kcalHtml = '<span class="ms-kcal">計' + k.sum + 'kcal</span>';
+      else if(k.known > 0 && k.sum > 0) kcalHtml = '<span class="ms-kcal">判明分' + k.sum + 'kcal</span>';
       html += '<div class="slot"><span class="meal">' + meal + '</span><div class="ms-body">';
       if(o.complete){
-        html += '<div class="ms-head"><span class="ms-mode">完結</span>' + kcalHtml
-          + '<button type="button" class="ms-mini" data-toteishoku="' + key + '">定食に戻す</button></div>'
+        html += '<details class="ms-edit"><summary class="ms-head"><span class="ms-mode">完結</span>'
+          + '<span class="ms-head-right">' + kcalHtml + '<span class="ms-edit-caret">変更 ▾</span></span></summary>'
+          + '<div class="ms-edit-body"><button type="button" class="ms-mini" data-toteishoku="' + key + '">定食に戻す</button></div></details>'
           + msRowHtml(key, "complete", o, day, meal);
       } else {
-        html += '<div class="ms-head"><span class="ms-staple" role="group" aria-label="' + day + '曜日 ' + meal + ' の主食">'
+        html += '<details class="ms-edit"><summary class="ms-head"><span class="ms-staple-label">主食：<b>' + esc(o.staple) + '</b></span>'
+          + '<span class="ms-head-right">' + kcalHtml + '<span class="ms-edit-caret">変更 ▾</span></span></summary>'
+          + '<div class="ms-edit-body"><span class="ms-staple" role="group" aria-label="' + day + '曜日 ' + meal + ' の主食">'
           + STAPLES.map(function(s){
               return '<button type="button" data-staple="' + key + '" data-val="' + s + '" aria-pressed="' + (o.staple === s) + '">' + s + '</button>';
             }).join("")
-          + '</span>' + kcalHtml
-          + '<button type="button" class="ms-mini" data-tocomplete="' + key + '">完結料理にする</button></div>'
+          + '</span><button type="button" class="ms-mini" data-tocomplete="' + key + '">完結料理にする</button></div></details>'
           + msRowHtml(key, "main", o, day, meal)
           + msRowHtml(key, "side", o, day, meal)
           + msRowHtml(key, "soup", o, day, meal);
@@ -2175,6 +2206,7 @@ function renderBoard(){
     html += '</div>';
   });
   $("board").innerHTML = html;
+  updateStickyTop();
   Array.prototype.forEach.call(document.querySelectorAll("[data-pick]"), function(b){
     b.addEventListener("click", function(){ openPicker(b.getAttribute("data-pick"), b.getAttribute("data-pos")); });
   });
@@ -3069,6 +3101,11 @@ $("storeHanamasa").addEventListener("click", function(){ if(S.store!=="hanamasa"
 $("storeSeiyu").addEventListener("click", function(){ if(S.store!=="seiyu"){ S.store="seiyu"; changed(); } });
 $("frozenToggle").addEventListener("click", function(){ frozenOnly=!frozenOnly; renderTags(); });
 $("fillBtn").addEventListener("click", fillBoard);
+$("todayJump").addEventListener("click", function(){
+  var t = $("todayCard");
+  if(t) t.scrollIntoView({ behavior:"smooth", block:"start" });
+});
+window.addEventListener("resize", updateStickyTop);
 $("clearBtn").addEventListener("click", function(){ S.slots={}; S.bought=[]; changed(); toast("ボードをクリアしたよ"); });
 $("copyBtn").addEventListener("click", function(){ copyText(listText(), "買い物リストをコピーしたよ"); });
 $("resetBoughtBtn").addEventListener("click", function(){ S.bought=[]; changed(); toast("チェックを全部外したよ"); });
