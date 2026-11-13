@@ -1964,6 +1964,18 @@ var deviceName = localStorage.getItem(LS_DEVICE) || "端末1";
 var roomCode = (localStorage.getItem(LS_ROOM) || "").trim();
 var S = defaultState();
 try{ var savedLocal = localStorage.getItem(roomCode ? ("mmk_state_"+roomCode) : LS_LOCAL); if(savedLocal) S = sanitizeState(JSON.parse(savedLocal)); }catch(e){}
+/* 端末側の保存メタ：まだリモートへ送れていない変更（dirty）とその時刻。
+   リモートより端末側が新しければ、再接続時のスナップショットで上書きせず端末側を送り直す */
+var localUpdatedAt = 0, localDirty = false;
+function metaKey(){ return roomCode ? ("mmk_meta_"+roomCode) : "mmk_meta_local"; }
+function loadLocalMeta(){
+  localUpdatedAt = 0; localDirty = false;
+  try{ var m = JSON.parse(localStorage.getItem(metaKey()) || "null"); if(m){ localUpdatedAt = m.t || 0; localDirty = !!m.dirty; } }catch(e){}
+}
+function saveLocalMeta(){
+  try{ localStorage.setItem(metaKey(), JSON.stringify({ t:localUpdatedAt, dirty:localDirty })); }catch(e){}
+}
+loadLocalMeta();
 var selectedTags = ["カロリー控えめ","節約"];
 var frozenOnly = false;
 
@@ -2073,23 +2085,36 @@ function setSyncUI(mode, metaText){
 }
 function persistLocal(){
   try{ localStorage.setItem(roomCode ? ("mmk_state_"+roomCode) : LS_LOCAL, JSON.stringify(S)); }catch(e){}
+  saveLocalMeta();
 }
 function applyState(newState, metaText){
+  localDirty = false;
   S = sanitizeState(newState); rebuildIndex(); persistLocal(); renderAll();
   if(metaText) { fb.lastMeta = metaText; }
   setSyncUI(fb.ok && roomCode ? "on" : (roomCode ? "off" : "local"), metaText);
 }
+function writeNow(){
+  if(!roomCode || !fb.ok || !fb.db) return;
+  clearTimeout(fb.writeTimer); fb.writeTimer = null;
+  var ts = localUpdatedAt || Date.now(); localUpdatedAt = ts;
+  var payload = { state:S, updatedAt:ts, updatedById:clientId, updatedByName:deviceName };
+  fb.db.collection("rooms").doc(roomCode).set(payload).then(function(){
+    if(localUpdatedAt === ts){ localDirty = false; saveLocalMeta(); }
+    fb.lastMeta = "最終更新：" + deviceName + "・" + new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+    setSyncUI("on");
+  }).catch(function(){ setSyncUI("off"); });
+}
 function queueWrite(){
+  /* 変更はまず「未送信」として記録する。接続前・オフラインでも消えないようにし、
+     送信はデバウンス（600ms）＋ページを閉じる／隠すタイミングの即時送信で取りこぼさない */
+  localDirty = true; localUpdatedAt = Date.now();
   persistLocal();
   if(!roomCode || !fb.ok || !fb.db) return;
   clearTimeout(fb.writeTimer);
-  fb.writeTimer = setTimeout(function(){
-    var payload = { state:S, updatedAt:Date.now(), updatedById:clientId, updatedByName:deviceName };
-    fb.db.collection("rooms").doc(roomCode).set(payload).then(function(){
-      fb.lastMeta = "最終更新：" + deviceName + "・" + new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
-      setSyncUI("on");
-    }).catch(function(){ setSyncUI("off"); });
-  }, 600);
+  fb.writeTimer = setTimeout(writeNow, 600);
+}
+function flushWrite(){
+  if(fb.writeTimer){ clearTimeout(fb.writeTimer); fb.writeTimer = null; writeNow(); }
 }
 function changed(){ queueWrite(); renderAll(); }
 function subscribeRoom(){
@@ -2100,8 +2125,18 @@ function subscribeRoom(){
     fb.ok = true;
     if(!snap.exists){ setSyncUI("on","ルームはまだ空です。この端末の内容を保存すると共有が始まります。"); queueWrite(); return; }
     var data = snap.data() || {};
-    if(data.updatedById === clientId){ fb.lastMeta = "最終更新：" + (data.updatedByName||"") + "（この端末）"; setSyncUI("on"); return; }
+    if(data.updatedById === clientId){
+      fb.lastMeta = "最終更新：" + (data.updatedByName||"") + "（この端末）"; setSyncUI("on");
+      /* 自分の前回保存より新しい未送信の変更があれば送り直す */
+      if(localDirty && localUpdatedAt > (data.updatedAt || 0)) writeNow();
+      return;
+    }
     if(data.state){
+      if(localDirty && localUpdatedAt > (data.updatedAt || 0)){
+        /* 端末側に未送信のもっと新しい変更がある：リモートで上書きせず、端末側を保存し直す */
+        setSyncUI("on"); writeNow(); return;
+      }
+      localUpdatedAt = data.updatedAt || localUpdatedAt;
       var when = data.updatedAt ? new Date(data.updatedAt).toLocaleString("ja-JP",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}) : "";
       applyState(data.state, "最終更新：" + (data.updatedByName||"相手の端末") + "・" + when);
     }
@@ -2870,7 +2905,7 @@ function renderRoom(){
     $("copyRoomBtn").addEventListener("click", function(){ copyText(roomCode, "ルームコードをコピーしたよ"); });
     $("leaveRoomBtn").addEventListener("click", function(){
       if(fb.unsub){ fb.unsub(); fb.unsub=null; }
-      roomCode=""; localStorage.removeItem(LS_ROOM); setSyncUI("local",""); renderRoom(); toast("この端末の共有をやめたよ（データは端末に残ります）");
+      roomCode=""; localStorage.removeItem(LS_ROOM); loadLocalMeta(); setSyncUI("local",""); renderRoom(); toast("この端末の共有をやめたよ（データは端末に残ります）");
     });
   } else {
     area.innerHTML = '<div class="actions" style="margin-top:0"><button type="button" class="btn primary" id="createRoomBtn">新しいルームを作る</button></div>'
@@ -2878,14 +2913,14 @@ function renderRoom(){
       + '<input type="text" id="joinCode" placeholder="例：K7QX9M2P" autocomplete="off" /></div>'
       + '<button type="button" class="btn green" id="joinRoomBtn">コードで参加する</button>';
     $("createRoomBtn").addEventListener("click", function(){
-      roomCode = genRoomCode(); localStorage.setItem(LS_ROOM, roomCode);
+      roomCode = genRoomCode(); localStorage.setItem(LS_ROOM, roomCode); loadLocalMeta();
       persistLocal(); subscribeRoom(); queueWrite(); renderRoom();
       toast("ルームを作ったよ。コードをパートナーに伝えてね");
     });
     $("joinRoomBtn").addEventListener("click", function(){
       var v = ($("joinCode").value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
       if(v.length < 6){ toast("コードが短すぎるみたい"); return; }
-      roomCode = v; localStorage.setItem(LS_ROOM, roomCode);
+      roomCode = v; localStorage.setItem(LS_ROOM, roomCode); loadLocalMeta();
       if(fb.db){ subscribeRoom(); toast("ルームに参加したよ"); }
       else { initFirebase(); toast("接続中…"); }
       renderRoom();
@@ -3140,8 +3175,13 @@ $("ciAdd").addEventListener("click", function(){
   S.customItems = (S.customItems||[]).concat([{ id:"ci"+Date.now().toString(36), name:name, amount:($("ciAmt").value||"").trim() }]);
   changed(); $("ciName").value=""; $("ciAmt").value=""; toast("リストに追加したよ");
 });
-window.addEventListener("online", function(){ if(roomCode && fb.db){ fb.ok=true; subscribeRoom(); } });
+window.addEventListener("online", function(){ if(roomCode && fb.db){ fb.ok=true; subscribeRoom(); if(localDirty) queueWrite(); } });
 window.addEventListener("offline", function(){ setSyncUI("off"); });
+/* ページを閉じる・アプリを切り替える前に、デバウンス待ちの保存を即時送信する。
+   送信が間に合わなくても未送信フラグが端末に残るので、次回起動時にリモートで上書きされず送り直される */
+window.addEventListener("pagehide", flushWrite);
+window.addEventListener("beforeunload", flushWrite);
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") flushWrite(); });
 
 /* ================= テーマ切替（端末ローカルのみ・Firestore同期対象外） ================= */
 var LS_THEME = "mmk_theme";
