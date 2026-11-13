@@ -85,7 +85,7 @@
       .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);
         border-top:2px solid var(--line);box-shadow:0 -6px 18px rgba(18,110,180,.14);
         padding-bottom:env(safe-area-inset-bottom)}
-      .tabbar .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr}
+      .tabbar .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr}
       .tabbtn{border:0;background:none;padding:10px 4px 12px;font-size:13px;font-weight:800;color:var(--ink2);min-height:3.4rem;position:relative}
       .tabbtn .ic{display:block;font-size:19px;line-height:1.2}
       .tabbtn[aria-selected="true"]{color:var(--green-deep);background:linear-gradient(180deg,var(--green-soft),transparent)}
@@ -210,6 +210,37 @@
       }
       .pantrybtn{flex:none;display:inline-flex;align-items:center;justify-content:center;align-self:center;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:10px 12px;font-size:13px;font-weight:700;color:var(--ink2);min-height:48px}
       .pantrybtn.on{background:var(--green-soft);color:var(--green-deep);border-color:var(--green)}
+      /* 在庫（冷蔵庫・冷凍庫） */
+      .stockrow{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;box-shadow:0 2px 6px rgba(18,110,180,.07);padding:10px 12px;margin-bottom:8px}
+      .stockrow .info{flex:1;min-width:0}
+      .stockrow .nm{font-weight:800;font-size:15px}
+      .stockrow .meta{font-size:12px;color:var(--ink2)}
+      .stockrow .acts{display:flex;flex-direction:column;gap:6px;flex:none}
+      .stockrow .acts button{border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 10px;font-size:12.5px;font-weight:800;color:var(--ink2);min-height:2.4rem}
+      .stockrow .acts button.use{background:var(--green);border-color:var(--green);color:#fff}
+      .daysleft{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 9px;margin-left:6px;vertical-align:2px;border-radius:999px;background:var(--green-soft);color:var(--green-deep)}
+      .daysleft.soon{background:#fff3d6;color:#9a6200}
+      .daysleft.over{background:var(--tomato);color:#fff}
+      @media (prefers-color-scheme: dark){ .daysleft.soon{background:#4a3a14;color:#ffd97a} }
+      .stockrow.urgent{border-color:var(--tomato)}
+      .stockrow.warn{border-color:#e8a13a}
+      .suggest{margin-bottom:10px}
+      .suggest .sug-ing{font-weight:800;font-size:14px}
+      .suggest .sug-dishes{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+      .sug-dishrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px}
+      .sug-dishname{font-weight:800;font-size:14px}
+      .sug-quick{border:0;background:linear-gradient(135deg,#22c3d6,#1290d8);color:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:800;min-height:2.4rem;box-shadow:inset 0 -2px 0 rgba(8,70,120,.3)}
+      .sug-pick{border:1.5px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;min-height:2.4rem}
+      .sug-dish{border:1.5px solid var(--green);background:var(--green-soft);color:var(--green-deep);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:800;min-height:2.4rem}
+      .stockbadge{display:inline-block;font-size:10.5px;font-weight:800;background:var(--market-soft);color:var(--market);padding:1px 9px;margin-left:4px;vertical-align:1px;border-radius:999px}
+      .stockbadge.miss{background:var(--amber-soft);color:var(--amber)}
+      .assignbar{display:none;background:var(--green-soft);border:1.5px solid var(--green);border-radius:8px;padding:10px 12px;margin-bottom:12px}
+      .assignbar.show{display:block}
+      .assignbar .row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+      .assignbar select{min-height:2.6rem;border:1.5px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;padding:4px 8px}
+      textarea.importbox{width:100%;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;padding:9px 11px}
+      .stockform .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .ingrow .usebtn{border:1.5px solid var(--green);background:var(--green-soft);color:var(--green-deep);border-radius:6px;padding:4px 12px;font-size:12.5px;font-weight:800;min-height:2.2rem;margin-left:8px}
       .empty-note{color:var(--ink2);font-size:14px;padding:16px 4px}
       /* チラシ */
       .flyer{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;
@@ -1753,6 +1784,7 @@
           </div>
           <div class="actions">
             <button type="button" class="btn primary" id="fillBtn">おすすめで埋める</button>
+            <button type="button" class="btn green" id="fillStockBtn">🧊 在庫から決める（今日・明日）</button>
             <button type="button" class="btn ghost" id="clearBtn">全部クリア</button>
           </div>
           <p class="sub" id="fillNote" style="margin-top:8px;display:none"></p>
@@ -1805,6 +1837,54 @@
             </div>
             <button type="button" class="btn green" id="ciAdd">リストに追加</button>
           </details>
+        </div>
+      </section>
+
+      <!-- 冷蔵庫・冷凍庫（在庫） -->
+      <section class="view" id="view-stock" aria-label="冷蔵庫と冷凍庫">
+        <div class="assignbar" id="stockAssign" role="group" aria-label="献立に入れる">
+          <div style="font-weight:800">「<span id="stockAssignName"></span>」を献立に入れる</div>
+          <div class="row2">
+            <select id="stockAssignDay" aria-label="曜日"></select>
+            <select id="stockAssignMeal" aria-label="食事"><option>朝</option><option>昼</option><option selected>晩</option></select>
+            <button type="button" class="btn primary small" id="stockAssignGo">入れる</button>
+            <button type="button" class="btn ghost small" id="stockAssignCancel">やめる</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2 data-en="USE SOON">そろそろ使って</h2>
+          <p class="sub">賞味期限が近い（目安2日以内）・切れた食材と、それを使う料理です。「今日の晩に入れる」ボタンで直近の枠にワンタップで入れられます。先の曜日に入れたいときは「曜日を選ぶ」からどうぞ。</p>
+          <div id="stockSuggest"></div>
+        </div>
+        <div class="card">
+          <h2 data-en="FRIDGE / FREEZER">冷蔵庫・冷凍庫の中身</h2>
+          <p class="sub">期限が近い順に並んでいます。在庫にある材料は買い物リストから自動で外れます。パートナーとも同期します。</p>
+          <div id="stockList"></div>
+        </div>
+        <div class="card">
+          <h2 data-en="RECEIPT IMPORT">レシートから取り込む</h2>
+          <p class="sub">レシートの内容を1行に1品目で貼ってね。例：「冷蔵,鶏むね肉,300g」「冷凍：冷凍うどん 5食」「卵 10個」。買った日は今日になり、賞味期限は目安で自動推定します（あとから直せます）。</p>
+          <textarea class="importbox" id="receiptText" rows="5" placeholder="冷蔵,鶏むね肉,300g&#10;冷凍：冷凍うどん 5食&#10;卵 10個&#10;キャベツ 1玉"></textarea>
+          <div class="actions"><button type="button" class="btn primary" id="receiptImportBtn">在庫に取り込む</button></div>
+        </div>
+        <div class="card">
+          <h2 data-en="ADD STOCK" id="stockFormTitle">在庫を追加</h2>
+          <div class="stockform">
+            <div class="field"><label for="stName">品名</label><input type="text" id="stName" placeholder="例：鶏むね肉" /></div>
+            <div class="grid2">
+              <div class="field"><label for="stQty">量（自由記述）</label><input type="text" id="stQty" placeholder="例：300g、2パック、半分" /></div>
+              <div class="field"><label for="stPlace">区分</label>
+                <select id="stPlace"><option value="fridge">冷蔵</option><option value="freezer">冷凍</option></select></div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="stBought">買った日</label><input type="date" id="stBought" /></div>
+              <div class="field"><label for="stExpiry">賞味期限（空欄なら目安で自動推定）</label><input type="date" id="stExpiry" /></div>
+            </div>
+            <div class="actions">
+              <button type="button" class="btn green" id="stSave">追加する</button>
+              <button type="button" class="btn ghost" id="stCancelEdit" style="display:none">編集をやめる</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1861,6 +1941,7 @@
       <div class="in">
         <button type="button" class="tabbtn" data-view="board" aria-selected="true"><span class="ic">🍽️</span>献立ボード</button>
         <button type="button" class="tabbtn" data-view="list" aria-selected="false"><span class="ic">🛒</span>買い物リスト<span class="bdg" id="listBadge" style="display:none"></span></button>
+        <button type="button" class="tabbtn" data-view="stock" aria-selected="false"><span class="ic">🧊</span>冷蔵庫<span class="bdg" id="stockBadge" style="display:none"></span></button>
         <button type="button" class="tabbtn" data-view="share" aria-selected="false"><span class="ic">👥</span>共有</button>
       </div>
     </nav>
@@ -1938,7 +2019,7 @@ function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"
 
 /* ================= 状態 ================= */
 var LS_ROOM="mmk_room", LS_DEVICE="mmk_device", LS_CLIENT="mmk_client", LS_LOCAL="mmk_local_state";
-function defaultState(){ return { v:1, store:"hanamasa", slots:{}, customDishes:[], customItems:[], pantry:[], bought:[], lastFill:[] }; }
+function defaultState(){ return { v:1, store:"hanamasa", slots:{}, customDishes:[], customItems:[], pantry:[], bought:[], lastFill:[], stock:[] }; }
 function sanitizeState(s){
   var d = defaultState(); if(!s || typeof s!=="object") return d;
   if(s.store==="seiyu"||s.store==="hanamasa") d.store=s.store;
@@ -1947,6 +2028,13 @@ function sanitizeState(s){
   if(Array.isArray(s.pantry)) d.pantry=s.pantry;
   if(Array.isArray(s.bought)) d.bought=s.bought;
   if(Array.isArray(s.lastFill)) d.lastFill=s.lastFill.filter(function(x){ return typeof x==="string"; });
+  if(Array.isArray(s.stock)) d.stock = s.stock.filter(function(it){ return it && typeof it.name==="string" && it.name.trim(); }).map(function(it){
+    return { id: (typeof it.id==="string" && it.id) ? it.id : ("st"+Math.random().toString(36).slice(2,9)),
+      name: it.name.trim(), qty: String(it.qty||""), place: it.place==="freezer" ? "freezer" : "fridge",
+      bought: (typeof it.bought==="string" && /^\d{4}-\d{2}-\d{2}$/.test(it.bought)) ? it.bought : "",
+      expiry: (typeof it.expiry==="string" && /^\d{4}-\d{2}-\d{2}$/.test(it.expiry)) ? it.expiry : "",
+      est: !!it.est };
+  });
   if(s.slots && typeof s.slots==="object"){
     var crm = {};
     (d.customDishes||[]).forEach(function(cd){ crm[cd.id] = cd.role || "main"; });
@@ -2445,6 +2533,320 @@ function fillBoard(){
   toast(filledPos ? (filledPos + "品を埋めたよ" + (notes.length ? "（" + notes.join("／") + "）" : "")) : "空いてる枠がないよ");
 }
 
+/* ================= 在庫（冷蔵庫・冷凍庫） =================
+   S.stock = [{id,name,qty,place:"fridge"|"freezer",bought:"YYYY-MM-DD",expiry:"YYYY-MM-DD",est:bool}]
+   賞味期限が空欄なら「買った日＋カテゴリ別目安日数」で推定し est=true（目安）と明示する。
+   在庫は S に含まれるので、既存の保存（未送信フラグ＋閉じる時即時送信）とルーム同期にそのまま乗る。 */
+function dateStr(d){ return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2); }
+function todayStr(){ return dateStr(new Date()); }
+function addDaysStr(s, n){ var d = new Date(s + "T00:00:00"); d.setDate(d.getDate() + n); return dateStr(d); }
+function daysLeftOf(it){
+  if(!it || !it.expiry) return null;
+  var a = new Date(todayStr() + "T00:00:00"), b = new Date(it.expiry + "T00:00:00");
+  return Math.round((b - a) / 86400000);
+}
+function guessShelfDays(name, place){
+  if(place === "freezer") return 30;
+  var n = String(name || "");
+  if(/卵|玉子|牛乳|チーズ|ヨーグルト|バター|生クリーム/.test(n)) return 14;
+  if(/鶏|豚|牛|ひき肉|挽き肉|肉|鮭|さば|サバ|鯖|たら|鱈|ぶり|あじ|いわし|魚|刺身|ハム|ベーコン|ソーセージ|ウインナー|しらす/.test(n)) return 3;
+  if(/豆腐|納豆|油揚げ|厚揚げ|豆乳|おから/.test(n)) return 5;
+  if(/もやし|葉|菜|レタス|ほうれん草|小松菜|ニラ|にら|ねぎ|ネギ/.test(n)) return 5;
+  return 7;
+}
+function effectiveExpiry(it){
+  if(it.expiry) return { date: it.expiry, est: false };
+  if(it.bought) return { date: addDaysStr(it.bought, guessShelfDays(it.name, it.place)), est: true };
+  return { date: "", est: false };
+}
+function daysLeftEff(it){ var e = effectiveExpiry(it); if(!e.date) return null; var a = new Date(todayStr()+"T00:00:00"), b = new Date(e.date+"T00:00:00"); return Math.round((b-a)/86400000); }
+function daysLabel(it){
+  var dl = daysLeftEff(it);
+  if(dl === null) return "";
+  if(dl < 0) return "期限切れ（" + (-dl) + "日過ぎ）";
+  if(dl === 0) return "今日まで";
+  return "あと" + dl + "日";
+}
+/* 材料名⇔在庫名の照合：表記ゆれ（冷凍・生などの接頭辞、括弧書き）を落として部分一致で見る */
+function normIngName(n){
+  var s = String(n || "").replace(/\s+/g, "");
+  s = s.replace(/（[^）]*）/g, "").replace(/\([^)]*\)/g, "");
+  s = s.replace(/^(冷凍|生|国産|新|塩|甘塩|釜揚げ)/, "");
+  s = s.replace(/\d+\/\d+$/, "").replace(/1\/$/, "");
+  return s;
+}
+function namesMatch(a, b){
+  var x = normIngName(a), y = normIngName(b);
+  if(!x || !y) return false;
+  if(x === y) return true;
+  if(x.length < 2 || y.length < 2) return false;
+  if(PRICE_ALIAS && (PRICE_ALIAS[x] === y || PRICE_ALIAS[y] === x)) return true;
+  return x.indexOf(y) >= 0 || y.indexOf(x) >= 0;
+}
+function stockItemFor(ingName){
+  var found = null;
+  (S.stock || []).forEach(function(it){ if(!found && namesMatch(it.name, ingName)) found = it; });
+  return found;
+}
+/* 料理と在庫の照合。調味料・その他は常備品として不足に数えない */
+function dishStockInfo(d){
+  var matched = [], missing = 0, urgency = 0, stockIds = {};
+  (d.ingredients || []).forEach(function(ing){
+    if(ing.category === "調味料・その他") return;
+    var it = stockItemFor(ing.name);
+    if(it){
+      matched.push(ing.name);
+      if(!stockIds[it.id]){ stockIds[it.id] = true; var dl = daysLeftEff(it); urgency += (dl === null ? 1 : (dl < 0 ? 6 : (dl <= 2 ? 5 : (dl <= 5 ? 3 : 1)))); }
+    } else missing++;
+  });
+  return { matched: matched, missing: missing, urgency: urgency, makeable: missing === 0 && matched.length > 0 };
+}
+function stockScore(d){ var i = dishStockInfo(d); return i.urgency * 10 - i.missing * 4 + i.matched.length; }
+function stockBadgeHtml(d){
+  if(!(S.stock || []).length) return "";
+  var i = dishStockInfo(d);
+  if(i.makeable) return '<span class="stockbadge">在庫で作れる</span>';
+  if(i.matched.length && i.missing <= 2) return '<span class="stockbadge miss">あと' + i.missing + '品</span>';
+  return "";
+}
+function removeStockItem(id){
+  S.stock = (S.stock || []).filter(function(it){ return it.id !== id; });
+}
+/* ---- レシート取り込み：1行1品目を緩く解釈する ---- */
+function parseReceiptLine(line){
+  var s = String(line || "").trim();
+  if(!s) return null;
+  var place = "fridge";
+  if(/冷凍/.test(s)) place = "freezer";
+  s = s.replace(/^[・\-*＊\s]+/, "");
+  var parts = s.split(/[,、:：\t]/).map(function(p){ return p.trim(); }).filter(Boolean);
+  var name = "", qty = "";
+  if(parts.length >= 2 && /^(冷蔵|冷凍)/.test(parts[0])){
+    name = parts[1] || ""; qty = parts.slice(2).join(" ");
+  } else if(parts.length >= 2 && !/^\d/.test(parts[0])){
+    name = parts[0]; qty = parts.slice(1).join(" ");
+  } else {
+    var m = s.replace(/^(冷蔵|冷凍)(?=[\s、,：:])\s*/, "").match(/^(.+?)\s+(\d.*)$/);
+    if(m){ name = m[1].trim(); qty = m[2].trim(); }
+    else name = s.replace(/^(冷蔵|冷凍)(?=[\s、,：:])\s*/, "").trim();
+  }
+  name = name.replace(/^(冷蔵|冷凍)(?=[\s、,：:])\s*/, "").trim();
+  if(!qty && name){
+    var m2 = name.match(/^(.+?)\s+(\d.*)$/);
+    if(m2){ name = m2[1].trim(); qty = m2[2].trim(); }
+  }
+  if(!name) return null;
+  return { name: name, qty: qty, place: place };
+}
+function importReceipt(){
+  var text = ($("receiptText").value || "");
+  var lines = text.split(/\n/), added = 0, t = todayStr();
+  lines.forEach(function(line){
+    var p = parseReceiptLine(line);
+    if(!p) return;
+    S.stock = (S.stock || []).concat([{ id: "st" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: p.name, qty: p.qty, place: p.place, bought: t, expiry: "", est: true }]);
+    added++;
+  });
+  if(!added){ toast("取り込める行がなかった…（1行に1品目で入れてね）"); return; }
+  $("receiptText").value = "";
+  changed(); toast(added + "品を在庫に取り込んだよ（期限は目安で推定）");
+}
+/* ---- 在庫の描画 ---- */
+var stockEditId = null;
+var assignDishId = null;
+function stockRowHtml(it){
+  var e = effectiveExpiry(it), dl = daysLeftEff(it);
+  var cls = (dl !== null && dl < 0) ? " urgent" : (dl !== null && dl <= 2 ? " warn" : "");
+  var dlCls = (dl !== null && dl < 0) ? " over" : (dl !== null && dl <= 2 ? " soon" : "");
+  var meta = [];
+  if(it.qty) meta.push(esc(it.qty));
+  if(it.bought) meta.push("買った日：" + esc(it.bought));
+  if(e.date) meta.push("賞味期限：" + esc(e.date) + (e.est ? "（目安）" : ""));
+  return '<div class="stockrow' + cls + '"><div class="info"><span class="nm">' + esc(it.name) + '</span>'
+    + (dl !== null ? '<span class="daysleft' + dlCls + '">' + esc(daysLabel(it)) + '</span>' : '')
+    + '<div class="meta">' + meta.join(" ／ ") + '</div></div>'
+    + '<div class="acts"><button type="button" class="use" data-stockuse="' + esc(it.id) + '">使った</button>'
+    + '<button type="button" data-stockedit="' + esc(it.id) + '">編集</button>'
+    + '<button type="button" data-stockdel="' + esc(it.id) + '">削除</button></div></div>';
+}
+function dishesUsingStock(it, limit){
+  var out = [];
+  allDishes().forEach(function(d){
+    var hit = (d.ingredients || []).some(function(ing){ return namesMatch(ing.name, it.name); });
+    if(hit) out.push(d);
+  });
+  out.sort(function(a, b){ return stockScore(b) - stockScore(a); });
+  return out.slice(0, limit || 3);
+}
+/* 直近（今日・明日）で、この料理を入れられる空き枠を探す。晩→昼→朝の順に優先 */
+function quickSlotsFor(d){
+  var pos = roleOf(d);
+  var todayDow = (new Date().getDay() + 6) % 7;
+  var mealOrder = ["晩", "昼", "朝"].filter(function(m){ return (d.meals || ["晩"]).indexOf(m) >= 0; });
+  var out = [];
+  [0, 1].forEach(function(off){
+    var di = (todayDow + off) % 7;
+    mealOrder.forEach(function(meal){
+      if(out.length >= 2) return;
+      var o = getSlot(slotKey(di, meal));
+      var free = pos === "complete" ? (!o.complete && !o.main) : (!o[pos] && !o.complete);
+      if(free) out.push({ di: di, meal: meal, label: (off === 0 ? "今日" : "明日") + "の" + meal + "に入れる" });
+    });
+  });
+  return out;
+}
+function renderStock(){
+  var list = $("stockList"); if(!list) return;
+  var items = (S.stock || []).slice();
+  var urgentCount = items.filter(function(it){ var dl = daysLeftEff(it); return dl !== null && dl <= 2; }).length;
+  var badge = $("stockBadge");
+  if(badge){ if(urgentCount > 0){ badge.style.display = ""; badge.textContent = urgentCount; } else badge.style.display = "none"; }
+  /* そろそろ使って：期限2日以内・期限切れ */
+  var urgent = items.filter(function(it){ var dl = daysLeftEff(it); return dl !== null && dl <= 2; })
+    .sort(function(a, b){ return (daysLeftEff(a) || 0) - (daysLeftEff(b) || 0); });
+  var sug = $("stockSuggest");
+  if(!urgent.length){
+    sug.innerHTML = '<p class="empty-note">' + (items.length ? "期限が近いものはないよ。この調子！" : "まだ在庫がありません。下のレシート取り込みか追加フォームから入れてね。") + '</p>';
+  } else {
+    sug.innerHTML = urgent.map(function(it){
+      var ds = dishesUsingStock(it, 3);
+      var chips = ds.length ? ds.map(function(d){
+          var qs = quickSlotsFor(d);
+          var btns = qs.length ? qs.map(function(q){ return '<button type="button" class="sug-quick" data-quickassign="' + esc(d.id) + '|' + q.di + '|' + q.meal + '">' + esc(q.label) + '</button>'; }).join("")
+            : '<span style="font-size:12px;color:var(--ink2)">今日・明日の対象枠は埋まっています</span>';
+          return '<div class="sug-dishrow"><span class="sug-dishname">' + esc(d.name) + '</span>' + stockBadgeHtml(d) + btns
+            + '<button type="button" class="sug-pick" data-assign="' + esc(d.id) + '">曜日を選ぶ</button></div>';
+        }).join("")
+        : '<span class="meta" style="font-size:12.5px;color:var(--ink2)">この食材を使う料理がカタログに見つからなかった</span>';
+      return '<div class="suggest"><span class="sug-ing">' + (it.place === "freezer" ? "🧊 " : "") + esc(it.name) + '</span>'
+        + '<span class="daysleft' + (daysLeftEff(it) < 0 ? " over" : " soon") + '">' + esc(daysLabel(it)) + '</span>'
+        + '<div class="sug-dishes">' + chips + '</div></div>';
+    }).join("");
+  }
+  /* 一覧：冷蔵→冷凍、各グループ内は期限が近い順（期限なしは最後） */
+  if(!items.length){ list.innerHTML = '<p class="empty-note">在庫は空です。</p>'; }
+  else {
+    var html = "";
+    [["fridge", "🧊 冷蔵庫"], ["freezer", "❄️ 冷凍庫"]].forEach(function(g){
+      var rows = items.filter(function(it){ return it.place === g[0]; });
+      if(!rows.length) return;
+      rows.sort(function(a, b){
+        var da = daysLeftEff(a), db = daysLeftEff(b);
+        if(da === null && db === null) return 0;
+        if(da === null) return 1; if(db === null) return -1; return da - db;
+      });
+      html += '<div class="cat">' + g[1] + '（' + rows.length + '品）</div>' + rows.map(stockRowHtml).join("");
+    });
+    list.innerHTML = html;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stockuse]"), function(b){
+    b.addEventListener("click", function(){ removeStockItem(b.getAttribute("data-stockuse")); changed(); toast("使ったことにして在庫から消したよ"); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stockdel]"), function(b){
+    b.addEventListener("click", function(){ removeStockItem(b.getAttribute("data-stockdel")); if(stockEditId === b.getAttribute("data-stockdel")) resetStockForm(); changed(); toast("在庫から削除したよ"); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stockedit]"), function(b){
+    b.addEventListener("click", function(){
+      var it = (S.stock || []).filter(function(x){ return x.id === b.getAttribute("data-stockedit"); })[0];
+      if(!it) return;
+      stockEditId = it.id;
+      $("stName").value = it.name; $("stQty").value = it.qty || ""; $("stPlace").value = it.place;
+      $("stBought").value = it.bought || ""; $("stExpiry").value = it.expiry || "";
+      $("stockFormTitle").textContent = "在庫を編集"; $("stSave").textContent = "保存する"; $("stCancelEdit").style.display = "";
+      $("stName").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-quickassign]"), function(b){
+    b.addEventListener("click", function(){
+      var p = b.getAttribute("data-quickassign").split("|");
+      var d = dishById[p[0]]; if(!d) return;
+      var di = parseInt(p[1], 10), meal = p[2];
+      var todayDow = (new Date().getDay() + 6) % 7;
+      var when = di === todayDow ? "今日" : (di === (todayDow + 1) % 7 ? "明日" : DAYS[di] + "曜日");
+      setSlotPos(slotKey(di, meal), roleOf(d), d.id);
+      changed(); toast("「" + d.name + "」を" + when + "の" + meal + "に入れたよ");
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-assign]"), function(b){
+    b.addEventListener("click", function(){
+      var d = dishById[b.getAttribute("data-assign")]; if(!d) return;
+      assignDishId = d.id;
+      $("stockAssignName").textContent = d.name;
+      var daySel = $("stockAssignDay");
+      if(!daySel.options.length){
+        DAYS.forEach(function(day, di){ var op = document.createElement("option"); op.value = di; op.textContent = day + "曜日"; daySel.appendChild(op); });
+        daySel.value = (new Date().getDay() + 6) % 7;
+      }
+      $("stockAssign").classList.add("show");
+      $("stockAssign").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
+}
+function resetStockForm(){
+  stockEditId = null;
+  $("stName").value = ""; $("stQty").value = ""; $("stPlace").value = "fridge";
+  $("stBought").value = todayStr(); $("stExpiry").value = "";
+  $("stockFormTitle").textContent = "在庫を追加"; $("stSave").textContent = "追加する"; $("stCancelEdit").style.display = "none";
+}
+function saveStockForm(){
+  var name = ($("stName").value || "").trim();
+  if(!name){ toast("品名を入れてね"); return; }
+  var expiry = $("stExpiry").value || "";
+  var item = { name: name, qty: ($("stQty").value || "").trim(), place: $("stPlace").value === "freezer" ? "freezer" : "fridge",
+    bought: $("stBought").value || todayStr(), expiry: expiry, est: !expiry };
+  if(stockEditId){
+    S.stock = (S.stock || []).map(function(it){ return it.id === stockEditId ? Object.assign({}, it, item) : it; });
+    toast("在庫を更新したよ");
+  } else {
+    item.id = "st" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    S.stock = (S.stock || []).concat([item]);
+    toast("「" + name + "」を在庫に追加したよ");
+  }
+  resetStockForm(); changed();
+}
+/* ---- 在庫から決める：期限が近い食材を使う料理を最優先に、直近（今日・明日）の空き枠だけを埋める。
+   週一括で先に決め切るのではなく、その都度・直近分だけを決める粒度にする ---- */
+function fillBoardFromStock(){
+  if(!(S.stock || []).length){ toast("在庫がまだないよ。冷蔵庫タブから取り込んでね"); return; }
+  var todayDow = (new Date().getDay() + 6) % 7;
+  var used = {};
+  DAYS.forEach(function(day, di){ MEALS.forEach(function(meal){ slotDishIds(getSlot(slotKey(di, meal))).forEach(function(id){ used[id] = true; }); }); });
+  var filledPos = 0, usedIng = {};
+  function poolFor(meal, pos){
+    var base = allDishes().filter(function(d){ return roleOf(d) === pos && (!frozenOnly || d.frozen) && !used[d.id]; });
+    var p1 = base.filter(function(d){ return (d.meals || ["晩"]).indexOf(meal) >= 0 && hasAllTags(d, selectedTags); });
+    if(p1.length) return p1;
+    var p2 = base.filter(function(d){ return (d.meals || ["晩"]).indexOf(meal) >= 0; });
+    return p2.length ? p2 : base;
+  }
+  function chooseStock(pool){
+    if(!pool.length) return null;
+    var scored = pool.map(function(d){ return { d: d, s: stockScore(d) }; });
+    scored.sort(function(a, b){ return b.s - a.s; });
+    var top = scored.filter(function(x){ return x.s === scored[0].s; });
+    return shuffleArr(top.map(function(x){ return x.d; }))[0];
+  }
+  [todayDow, (todayDow + 1) % 7].forEach(function(di){
+    MEALS.forEach(function(meal){
+      var key = slotKey(di, meal), o = getSlot(key), dirty = false;
+      if(!o.complete && !o.main){
+        var ch = chooseStock(poolFor(meal, "main"));
+        if(ch){ o.main = ch.id; used[ch.id] = true; filledPos++; dirty = true; }
+      }
+      if(!o.complete && o.main){
+        if(!o.side){ var cs = chooseStock(poolFor(meal, "side")); if(cs){ o.side = cs.id; used[cs.id] = true; filledPos++; dirty = true; } }
+        if(!o.soup){ var cp = chooseStock(poolFor(meal, "soup")); if(cp){ o.soup = cp.id; used[cp.id] = true; filledPos++; dirty = true; } }
+      }
+      if(dirty) S.slots[key] = o;
+    });
+  });
+  (S.stock || []).forEach(function(it){ if(dishesUsingStock(it, 1).length) usedIng[it.name] = true; });
+  changed();
+  var noteEl = $("fillNote");
+  if(noteEl){ noteEl.textContent = filledPos ? "※ 在庫から決めました（今日・明日の空き枠だけ）：賞味期限が近い食材を使う料理を優先しています。先の日は在庫を見ながらその都度決めてね。在庫でまかなえる材料は買い物リストに出ません。" : ""; noteEl.style.display = filledPos ? "" : "none"; }
+  toast(filledPos ? (filledPos + "品を今日・明日に在庫優先で入れたよ") : "今日・明日に空いてる枠がないよ");
+}
+
 /* ================= 描画：買い物リスト ================= */
 function flyerActive(){
   if(!FLYER || !FLYER.period_end_iso) return false;
@@ -2761,11 +3163,11 @@ function renderList(){
   var items = aggregate();
   var active = flyerActive();
   $("listTitle").textContent = "買い物リスト（" + (S.store==="hanamasa" ? "肉のハナマサ 大井町店" : "SEIYU") + "）";
-  var need = items.filter(function(it){ return S.pantry.indexOf(it.name)<0; });
+  var need = items.filter(function(it){ return S.pantry.indexOf(it.name)<0 && !stockItemFor(it.name); });
   var boughtCount = need.filter(function(it){ return S.bought.indexOf(it.name+"|"+it.unit)>=0; }).length
     + (S.customItems||[]).filter(function(ci){ return S.bought.indexOf("ci:"+ci.id)>=0; }).length;
   var totalCount = need.length + (S.customItems||[]).length;
-  $("listSub").textContent = totalCount ? ("買うもの " + totalCount + "件 ／ チェック済み " + boughtCount + "件。「家にある」を押した食材は下に寄せてあります。") : "献立ボードに料理を入れると、材料がここに自動で合算されます。";
+  $("listSub").textContent = totalCount ? ("買うもの " + totalCount + "件 ／ チェック済み " + boughtCount + "件。「家にある」を押した食材と、冷蔵庫の在庫でまかなえる食材は下に寄せてあります。") : "献立ボードに料理を入れると、材料がここに自動で合算されます。";
   var badge = $("listBadge");
   if(totalCount - boughtCount > 0){ badge.style.display=""; badge.textContent = totalCount - boughtCount; } else badge.style.display="none";
   var html = "";
@@ -2808,12 +3210,14 @@ function renderList(){
         + '<button type="button" class="pantrybtn ci-del" data-id="'+esc(ci.id)+'">削除</button></div>';
     });
   }
-  var pantryItems = items.filter(function(it){ return S.pantry.indexOf(it.name)>=0; });
+  var pantryItems = items.filter(function(it){ return S.pantry.indexOf(it.name)>=0 || !!stockItemFor(it.name); });
   if(pantryItems.length){
     html += '<div class="cat">家にある（買わない）</div>';
     pantryItems.forEach(function(it){
-      html += '<div class="buyrow"><label><span><span class="nm" style="color:var(--ink2)">'+esc(it.name)+'</span> <span class="uses">'+fmtAmt(it.amount)+esc(it.unit)+' ／ '+it.uses.map(esc).join("、")+'</span></span></label>'
-        + '<button type="button" class="pantrybtn on" data-pantry="'+esc(it.name)+'">戻す</button></div>';
+      var stIt = stockItemFor(it.name);
+      var viaStock = stIt && S.pantry.indexOf(it.name)<0;
+      html += '<div class="buyrow"><label><span><span class="nm" style="color:var(--ink2)">'+esc(it.name)+'</span> <span class="uses">'+fmtAmt(it.amount)+esc(it.unit)+' ／ '+it.uses.map(esc).join("、")+(viaStock ? ' ／ 🧊 在庫「'+esc(stIt.name)+'」でまかないます' : '')+'</span></span></label>'
+        + (viaStock ? '<span class="pantrybtn on">冷蔵庫にあり</span>' : '<button type="button" class="pantrybtn on" data-pantry="'+esc(it.name)+'">戻す</button>') + '</div>';
     });
   }
   $("shopList").innerHTML = html;
@@ -2859,7 +3263,7 @@ function renderList(){
   });
 }
 function listText(){
-  var items = aggregate().filter(function(it){ return S.pantry.indexOf(it.name)<0; });
+  var items = aggregate().filter(function(it){ return S.pantry.indexOf(it.name)<0 && !stockItemFor(it.name); });
   var lines = ["【買い物リスト】" + (S.store==="hanamasa" ? "肉のハナマサ 大井町店" : "SEIYU") + "・2人分1週間"];
   CATEGORIES.forEach(function(cat){
     var rows = items.filter(function(it){ return it.category===cat; });
@@ -2940,7 +3344,7 @@ function copyText(text, msg){
 }
 
 /* ================= ピッカー ================= */
-var pickerSlot = null, pickerPos = "main", pickerShown = 40, pickerGroup = "", pickerTags = null;
+var pickerSlot = null, pickerPos = "main", pickerShown = 40, pickerGroup = "", pickerTags = null, pickerStockOnly = false;
 function groupOf(d){
   var hay = d.name + " " + (d.ingredients||[]).map(function(i){ return i.name; }).join(" ");
   for(var gi=0; gi<GROUPS.length; gi++){
@@ -2959,6 +3363,7 @@ function pickerPool(){
     }
     if(tags.length && !hasAllTags(d, tags)) return false;
     if(frozenOnly && !d.frozen) return false;
+    if(pickerStockOnly && (S.stock || []).length){ var si = dishStockInfo(d); if(!si.matched.length || si.missing > 1) return false; }
     if(pickerGroup && groupOf(d) !== pickerGroup) return false;
     if(q){
       var hay = d.name + " " + (d.ingredients || []).map(function(i){ return i.name; }).join(" ");
@@ -2970,11 +3375,12 @@ function pickerPool(){
 
 function renderPicker(){
   var pool = pickerPool();
-  $("pickerCount").textContent = pool.length + "品が候補（役割：" + POS_LABEL[pickerPos] + "だけ表示・タグはAND条件）";
+  if(pickerStockOnly && (S.stock || []).length) pool = pool.slice().sort(function(a, b){ return stockScore(b) - stockScore(a); });
+  $("pickerCount").textContent = pool.length + "品が候補（役割：" + POS_LABEL[pickerPos] + "だけ表示・タグはAND条件" + (pickerStockOnly ? "・在庫で作れる／あと1品を期限が近い順に優先" : "") + "）";
   var html = pool.slice(0, pickerShown).map(function(d){
     var src = d.source ? '<br><span class="meta">出典：'+esc(d.source.label||"レシピ")+'</span>' : (d.custom ? '<br><span class="meta">出典なし・自作</span>' : "");
     var kcalNote = d.kcal ? ' <span class="src">（'+esc(d.kcalSource||"出典の表示")+'）</span>' : "";
-    return '<div class="pick"><button type="button" class="pick-main" data-id="'+esc(d.id)+'"><span><span class="nm">'+esc(d.name)+'</span>'+tagMinis(d)
+    return '<div class="pick"><button type="button" class="pick-main" data-id="'+esc(d.id)+'"><span><span class="nm">'+esc(d.name)+'</span>'+tagMinis(d)+stockBadgeHtml(d)
       + '<br><span class="meta">'+esc(dishMeta(d))+'</span>'+kcalNote
       + '<br><span class="meta">材料：'+ (d.ingredients||[]).map(function(i){ return esc(i.name); }).join("、") +'</span>'+src
       + '</span><span class="go">選ぶ</span></button>'
@@ -3013,7 +3419,8 @@ function renderPickerControls(){
   $("pickerTags").innerHTML = TAGS.map(function(t){
     var on = (pickerTags||[]).indexOf(t)>=0;
     return '<button type="button" class="chip ptag" data-t="'+esc(t)+'" aria-pressed="'+on+'">'+esc(t)+'</button>';
-  }).join("") + '<button type="button" class="chip ptagf" aria-pressed="'+frozenOnly+'">🧊 冷凍活用</button>';
+  }).join("") + '<button type="button" class="chip ptagf" aria-pressed="'+frozenOnly+'">🧊 冷凍活用</button>'
+    + '<button type="button" class="chip ptagstock" aria-pressed="'+pickerStockOnly+'">🥬 在庫から決める</button>';
   Array.prototype.forEach.call(document.querySelectorAll(".ptag"), function(b){
     b.addEventListener("click", function(){
       var t=b.getAttribute("data-t"), i=pickerTags.indexOf(t);
@@ -3023,6 +3430,11 @@ function renderPickerControls(){
   });
   document.querySelector(".ptagf").addEventListener("click", function(){
     frozenOnly = !frozenOnly; $("frozenToggle").setAttribute("aria-pressed", frozenOnly?"true":"false");
+    pickerShown=40; renderPickerControls(); renderPicker();
+  });
+  document.querySelector(".ptagstock").addEventListener("click", function(){
+    if(!(S.stock || []).length){ toast("在庫がまだないよ。冷蔵庫タブから取り込んでね"); return; }
+    pickerStockOnly = !pickerStockOnly;
     pickerShown=40; renderPickerControls(); renderPicker();
   });
 }
@@ -3065,7 +3477,9 @@ function openDetail(dishId, opts){
   if(d.ingredients && d.ingredients.length){
     ingHtml = d.ingredients.map(function(ing){
       var amt = (ing.amount != null && ing.amount !== "") ? (fmtAmt(ing.amount) + esc(ing.unit || "")) : "表示なし";
-      return '<div class="ingrow"><span>' + esc(ing.name) + '</span><span class="amt">' + amt + '</span></div>';
+      var stIt = stockItemFor(ing.name);
+      var mark = stIt ? ' <span class="stockbadge">在庫あり' + (daysLeftEff(stIt) !== null ? "・" + esc(daysLabel(stIt)) : "") + '</span>' : "";
+      return '<div class="ingrow"><span>' + esc(ing.name) + mark + '</span><span class="amt">' + amt + '</span></div>';
     }).join("");
   } else {
     ingHtml = '<p class="detail-note">材料：表示なし</p>';
@@ -3080,11 +3494,36 @@ function openDetail(dishId, opts){
   } else {
     sourceHtml = '<div class="detail-sec">出典</div><p class="detail-note">出典：表示なし</p>';
   }
+  var stockSec = "";
+  var matchedStock = [];
+  (d.ingredients || []).forEach(function(ing){
+    var it = stockItemFor(ing.name);
+    if(it && matchedStock.indexOf(it) < 0) matchedStock.push(it);
+  });
+  if(matchedStock.length){
+    stockSec = '<div class="detail-sec">冷蔵庫の在庫と一致（' + matchedStock.length + '品）</div>'
+      + matchedStock.map(function(it){
+          return '<div class="ingrow"><span>' + (it.place === "freezer" ? "❄️ " : "🧊 ") + esc(it.name) + (it.qty ? "（" + esc(it.qty) + "）" : "")
+            + (daysLeftEff(it) !== null ? ' <span class="daysleft' + (daysLeftEff(it) < 0 ? " over" : (daysLeftEff(it) <= 2 ? " soon" : "")) + '">' + esc(daysLabel(it)) + '</span>' : "")
+            + '</span><button type="button" class="usebtn" data-detailstockuse="' + esc(it.id) + '">使った</button></div>';
+        }).join("")
+      + '<p class="detail-note">作ったら「使った」を押すと在庫から消えます。</p>';
+  }
   $("detailBody").innerHTML =
       '<div class="detail-meta">' + metas.map(function(m){ return '<span class="dm">' + esc(m) + '</span>'; }).join("") + '</div>'
     + '<div>' + tagsHtml + '</div>'
     + '<div class="detail-sec">材料（2人分）</div>' + ingHtml
+    + stockSec
     + sourceHtml;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-detailstockuse]"), function(b){
+    b.addEventListener("click", function(){
+      var keep = { slot: detailSlot, pos: detailPos, fromPicker: detailFromPicker };
+      removeStockItem(b.getAttribute("data-detailstockuse"));
+      changed();
+      openDetail(detailDishId, keep);
+      toast("使ったことにして在庫から消したよ");
+    });
+  });
   var acts = "";
   if(detailFromPicker && detailSlot){
     acts = '<button type="button" class="btn primary" id="detailPickBtn">この料理を' + POS_LABEL[detailPos] + 'に選ぶ</button>'
@@ -3122,7 +3561,7 @@ function openDetail(dishId, opts){
 function closeDetail(){ $("detailModal").classList.remove("open"); detailDishId=null; detailSlot=null; detailPos="main"; detailFromPicker=false; }
 
 /* ================= 全体描画とイベント ================= */
-function renderAll(){ renderStore(); renderTags(); renderBoard(); renderFlyer(); renderList(); }
+function renderAll(){ renderStore(); renderTags(); renderBoard(); renderFlyer(); renderList(); renderStock(); }
 document.querySelectorAll(".tabbtn").forEach(function(b){
   b.addEventListener("click", function(){
     document.querySelectorAll(".tabbtn").forEach(function(x){ x.setAttribute("aria-selected","false"); });
@@ -3136,6 +3575,20 @@ $("storeHanamasa").addEventListener("click", function(){ if(S.store!=="hanamasa"
 $("storeSeiyu").addEventListener("click", function(){ if(S.store!=="seiyu"){ S.store="seiyu"; changed(); } });
 $("frozenToggle").addEventListener("click", function(){ frozenOnly=!frozenOnly; renderTags(); });
 $("fillBtn").addEventListener("click", fillBoard);
+$("fillStockBtn").addEventListener("click", fillBoardFromStock);
+$("receiptImportBtn").addEventListener("click", importReceipt);
+$("stSave").addEventListener("click", saveStockForm);
+$("stCancelEdit").addEventListener("click", resetStockForm);
+$("stBought").value = todayStr();
+$("stockAssignGo").addEventListener("click", function(){
+  if(!assignDishId) return;
+  var d = dishById[assignDishId]; if(!d) return;
+  var key = slotKey(parseInt($("stockAssignDay").value, 10) || 0, $("stockAssignMeal").value);
+  setSlotPos(key, roleOf(d), d.id);
+  assignDishId = null; $("stockAssign").classList.remove("show");
+  changed(); toast("「" + d.name + "」を献立に入れたよ");
+});
+$("stockAssignCancel").addEventListener("click", function(){ assignDishId = null; $("stockAssign").classList.remove("show"); });
 $("todayJump").addEventListener("click", function(){
   var t = $("todayCard");
   if(t) t.scrollIntoView({ behavior:"smooth", block:"start" });
