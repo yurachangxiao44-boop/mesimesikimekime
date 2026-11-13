@@ -240,6 +240,35 @@
       .assignbar select{min-height:2.6rem;border:1.5px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;padding:4px 8px}
       textarea.importbox{width:100%;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;padding:9px 11px}
       .stockform .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      /* 在庫ホーム：今日・明日の献立（表示専用・操作は既存の枠操作を流用） */
+      .near-day{background:var(--surface2);border:1.5px solid var(--line-soft);border-radius:8px;margin-bottom:10px;overflow:hidden}
+      .near-dayhead{display:flex;align-items:center;gap:8px;padding:6px 10px 5px;background-image:linear-gradient(100deg, var(--green-soft) 0%, var(--green-soft) 52%, transparent 82%);border-bottom:1px solid var(--line-soft)}
+      .near-dayhead .dow{font-weight:800;font-size:15px}
+      .near-dayhead .dow::before{content:"";display:inline-block;width:8px;height:14px;margin-right:7px;vertical-align:-2px;background:var(--green);transform:skewX(-18deg)}
+      .near-dayhead .when{font-size:11px;font-weight:800;color:#22385a;background:var(--halo);padding:2px 10px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+      .near-day .slot .body,.near-day .ms-body{background:var(--surface)}
+      .near-dayhead + .slot .ms-body{border-top:0}
+      .near-day>.slot:last-child .meal{border-bottom-left-radius:7px}
+      .near-staple{font-size:12px;font-weight:700;color:var(--ink2);padding:2px 2px 3px}
+      .near-staple b{color:var(--ink)}
+      /* 在庫サマリ */
+      .sumchips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+      .sumchip{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--ink2);background:var(--surface2);border:1.5px solid var(--line-soft);border-radius:999px;padding:5px 13px;min-height:2.25rem}
+      .sumchip b{font-size:15px;color:var(--ink)}
+      .sumchip.warn{border-color:#e8a13a;color:#9a6200}
+      .sumchip.warn b{color:#9a6200}
+      .sumchip.over{border-color:var(--tomato);background:var(--tomato-soft);color:var(--tomato)}
+      .sumchip.over b{color:var(--tomato)}
+      @media (prefers-color-scheme: dark){ .sumchip.warn{color:#ffd97a} .sumchip.warn b{color:#ffd97a} }
+      .estmark{font-size:11px;font-weight:700;color:var(--ink2);margin-left:5px}
+      .sug-toggle{margin:2px 0 4px}
+      /* details型カード（フォーム・低頻度ツールの格納） */
+      details.card>summary{cursor:pointer;font-weight:800;font-size:16px;color:var(--ink);min-height:44px;display:flex;align-items:center;gap:8px;list-style:none;padding:2px 0 8px}
+      details.card>summary::-webkit-details-marker{display:none}
+      details.card>summary::marker{content:""}
+      details.card>summary::before{content:"";width:9px;height:17px;flex:none;background:linear-gradient(180deg,var(--cyan),var(--green));transform:skewX(-18deg)}
+      details.card>summary .caret{margin-left:auto;font-size:12px;color:var(--green-deep);font-weight:800}
+      .home-quick .actions{margin-top:2px}
       .ingrow .usebtn{border:1.5px solid var(--green);background:var(--green-soft);color:var(--green-deep);border-radius:6px;padding:4px 12px;font-size:12.5px;font-weight:800;min-height:2.2rem;margin-left:8px}
       .empty-note{color:var(--ink2);font-size:14px;padding:16px 4px}
       /* チラシ */
@@ -1767,16 +1796,13 @@
     </div>
 
     <main class="wrap">
-      <!-- 献立ボード -->
-      <section class="view active" id="view-board" aria-label="献立ボード">
-        <div class="card">
-          <h2 data-en="STORE SELECT">今週のお店（1店だけ）</h2>
-          <p class="sub">買い物リストはこのお店1店分にまとまります。2人分・1週間分。</p>
-          <div class="seg" role="group" aria-label="お店の選択">
-            <button type="button" id="storeHanamasa" aria-pressed="true">肉のハナマサ<small>大井町店・お肉と大容量が得意</small></button>
-            <button type="button" id="storeSeiyu" aria-pressed="false">SEIYU<small>西友・日用品までバランス型</small></button>
-          </div>
-          <h2 data-en="TAG FILTER" style="margin-top:16px">タグで選ぶ（AND条件）</h2>
+      <!-- 献立ボード（週全体を見る補助画面。在庫ホームが起点） -->
+      <section class="view" id="view-board" aria-label="献立ボード">
+        <div class="todaybar"><button type="button" class="btn ghost small" id="todayJump">📍 今日へ</button></div>
+        <div id="board"></div>
+        <details class="card" id="boardTools">
+          <summary>献立の補助ツール（タグ・一括操作・自作の追加）<span class="caret">開く ▾</span></summary>
+          <h2 data-en="TAG FILTER">タグで選ぶ（AND条件）</h2>
           <p class="sub">選んだタグを全部持つ料理が「おすすめで埋める」とピッカーの候補になります。</p>
           <div class="chips" id="tagChips"></div>
           <div class="chips" style="margin-top:8px">
@@ -1784,39 +1810,39 @@
           </div>
           <div class="actions">
             <button type="button" class="btn primary" id="fillBtn">おすすめで埋める</button>
-            <button type="button" class="btn green" id="fillStockBtn">🧊 在庫から決める（今日・明日）</button>
             <button type="button" class="btn ghost" id="clearBtn">全部クリア</button>
           </div>
-          <p class="sub" id="fillNote" style="margin-top:8px;display:none"></p>
-          <p class="sub" style="margin-top:8px">1食は「定食（主食＋主菜＋副菜＋汁物）」か「完結料理（丼・カレー・麺・鍋など1品で完結）」で組み立てます。PFCはグラム数のデータが無いので数値では出さず、主菜＝たんぱく源／副菜＝野菜／汁物／主食＝炭水化物の組み合わせでバランスを取ります。各枠のkcal表示は主食分を含みません。</p>
+          <p class="sub" style="margin-top:10px">1食は「定食（主食＋主菜＋副菜＋汁物）」か「完結料理（丼・カレー・麺・鍋など1品で完結）」で組み立てます。PFCはグラム数のデータが無いので数値では出さず、主菜＝たんぱく源／副菜＝野菜／汁物／主食＝炭水化物の組み合わせでバランスを取ります。各枠のkcal表示は主食分を含みません。</p>
           <p class="sub" id="catalogNote" style="margin-top:10px"></p>
-        </div>
-        <div class="todaybar"><button type="button" class="btn ghost small" id="todayJump">📍 今日へ</button></div>
-        <div id="board"></div>
-        <div class="card">
-          <details class="customform">
-            <summary>自分の献立を追加する</summary>
-            <div class="field"><label for="cdName">料理名</label><input type="text" id="cdName" placeholder="例：うちの肉じゃが" /></div>
-            <div class="grid2">
-              <div class="field"><label for="cdMeal">食事区分</label>
-                <select id="cdMeal"><option>晩</option><option>昼</option><option>朝</option></select></div>
-              <div class="field"><label for="cdMinutes">目安時間（分）</label><input type="text" inputmode="numeric" id="cdMinutes" value="20" /></div>
-            </div>
-            <div class="grid2">
-              <div class="field"><label for="cdRole">役割（定食のどこに入るか）</label>
-                <select id="cdRole"><option value="main">主菜</option><option value="side">副菜</option><option value="soup">汁物</option><option value="complete">完結（丼・カレー・麺・鍋など）</option></select></div>
-              <div class="field"><label for="cdProtein">たんぱく源（主菜のとき）</label>
-                <select id="cdProtein"><option value="">なし・不明</option><option>肉</option><option>魚</option><option>卵</option><option>大豆</option></select></div>
-            </div>
-            <div class="field"><label for="cdIngs">材料（1行に1つ「名前 量 単位」・2人分）</label>
-              <textarea id="cdIngs" rows="4" placeholder="じゃがいも 3 個&#10;玉ねぎ 1 個&#10;豚こま切れ肉 200 g"></textarea></div>
-            <button type="button" class="btn green" id="cdAdd">カタログに追加</button>
-          </details>
-        </div>
+          <h2 data-en="MY DISH" style="margin-top:18px">自分の献立を追加する</h2>
+          <div class="field"><label for="cdName">料理名</label><input type="text" id="cdName" placeholder="例：うちの肉じゃが" /></div>
+          <div class="grid2">
+            <div class="field"><label for="cdMeal">食事区分</label>
+              <select id="cdMeal"><option>晩</option><option>昼</option><option>朝</option></select></div>
+            <div class="field"><label for="cdMinutes">目安時間（分）</label><input type="text" inputmode="numeric" id="cdMinutes" value="20" /></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label for="cdRole">役割（定食のどこに入るか）</label>
+              <select id="cdRole"><option value="main">主菜</option><option value="side">副菜</option><option value="soup">汁物</option><option value="complete">完結（丼・カレー・麺・鍋など）</option></select></div>
+            <div class="field"><label for="cdProtein">たんぱく源（主菜のとき）</label>
+              <select id="cdProtein"><option value="">なし・不明</option><option>肉</option><option>魚</option><option>卵</option><option>大豆</option></select></div>
+          </div>
+          <div class="field"><label for="cdIngs">材料（1行に1つ「名前 量 単位」・2人分）</label>
+            <textarea id="cdIngs" rows="4" placeholder="じゃがいも 3 個&#10;玉ねぎ 1 個&#10;豚こま切れ肉 200 g"></textarea></div>
+          <button type="button" class="btn green" id="cdAdd">カタログに追加</button>
+        </details>
       </section>
 
       <!-- 買い物リスト -->
       <section class="view" id="view-list" aria-label="買い物リスト">
+        <div class="card">
+          <h2 data-en="STORE SELECT">今週のお店（1店だけ）</h2>
+          <p class="sub">買い物リストはこのお店1店分にまとまります。2人分・1週間分。</p>
+          <div class="seg" role="group" aria-label="お店の選択">
+            <button type="button" id="storeHanamasa" aria-pressed="true">肉のハナマサ<small>大井町店・お肉と大容量が得意</small></button>
+            <button type="button" id="storeSeiyu" aria-pressed="false">SEIYU<small>西友・日用品までバランス型</small></button>
+          </div>
+        </div>
         <div id="flyerBox"></div>
         <div class="card">
           <h2 data-en="SHOPPING LIST" id="listTitle">買い物リスト</h2>
@@ -1840,35 +1866,59 @@
         </div>
       </section>
 
-      <!-- 冷蔵庫・冷凍庫（在庫） -->
-      <section class="view" id="view-stock" aria-label="冷蔵庫と冷凍庫">
-        <div class="assignbar" id="stockAssign" role="group" aria-label="献立に入れる">
-          <div style="font-weight:800">「<span id="stockAssignName"></span>」を献立に入れる</div>
-          <div class="row2">
-            <select id="stockAssignDay" aria-label="曜日"></select>
-            <select id="stockAssignMeal" aria-label="食事"><option>朝</option><option>昼</option><option selected>晩</option></select>
-            <button type="button" class="btn primary small" id="stockAssignGo">入れる</button>
-            <button type="button" class="btn ghost small" id="stockAssignCancel">やめる</button>
+      <!-- 在庫ホーム（起動先）：在庫と期限を見ながら、その都度・直近の献立を決める -->
+      <section class="view active" id="view-stock" aria-label="在庫ホーム">
+        <!-- ① 登録の入口（同期状態は上の同期バーに常時表示） -->
+        <div class="card home-quick">
+          <h2 data-en="STOCK HOME">在庫から決める</h2>
+          <p class="sub">買ったものを登録すると、期限が近い順に「そろそろ使って」へ出てきます。献立は今日・明日をその都度決める形です。</p>
+          <div class="actions">
+            <button type="button" class="btn primary" id="quickReceipt">🧾 レシートから登録</button>
+            <button type="button" class="btn green" id="quickAdd">＋ 1品追加</button>
           </div>
         </div>
+        <!-- ② そろそろ使って（期限食材→献立はここで完結） -->
         <div class="card">
           <h2 data-en="USE SOON">そろそろ使って</h2>
-          <p class="sub">賞味期限が近い（目安2日以内）・切れた食材と、それを使う料理です。「今日の晩に入れる」ボタンで直近の枠にワンタップで入れられます。先の曜日に入れたいときは「曜日を選ぶ」からどうぞ。</p>
+          <p class="sub">賞味期限が近い（2日以内）・切れた食材と、それを使う料理です。「今日の晩に入れる」ボタンで直近の枠にワンタップで入れられます。先の曜日に入れたいときは「曜日を選ぶ」からどうぞ。</p>
           <div id="stockSuggest"></div>
+          <div class="assignbar" id="stockAssign" role="group" aria-label="献立に入れる" style="margin:10px 0 0">
+            <div style="font-weight:800">「<span id="stockAssignName"></span>」を献立に入れる</div>
+            <div class="row2">
+              <select id="stockAssignDay" aria-label="曜日"></select>
+              <select id="stockAssignMeal" aria-label="食事"><option>朝</option><option>昼</option><option selected>晩</option></select>
+              <button type="button" class="btn primary small" id="stockAssignGo">入れる</button>
+              <button type="button" class="btn ghost small" id="stockAssignCancel">やめる</button>
+            </div>
+          </div>
         </div>
+        <!-- ③ 今日・明日の献立 -->
+        <div class="card">
+          <h2 data-en="TODAY / TOMORROW">今日・明日の献立</h2>
+          <p class="sub">直近2日分だけ表示しています。料理名タップで詳細、「＋ 選ぶ」で料理を入れられます。週全体は下のボタンからどうぞ。</p>
+          <div id="nearMeals"></div>
+          <div class="actions">
+            <button type="button" class="btn green" id="fillStockBtn">🧊 在庫から決める（今日・明日）</button>
+            <button type="button" class="btn ghost" id="gotoBoard">週全体を見る</button>
+            <button type="button" class="btn ghost" id="gotoList">買い物リストへ</button>
+          </div>
+          <p class="sub" id="fillNote" style="margin-top:8px;display:none"></p>
+        </div>
+        <!-- ④ 在庫サマリ ＋ ⑤ 冷蔵・冷凍の中身 -->
         <div class="card">
           <h2 data-en="FRIDGE / FREEZER">冷蔵庫・冷凍庫の中身</h2>
+          <div class="sumchips" id="stockSummary"></div>
           <p class="sub">期限が近い順に並んでいます。在庫にある材料は買い物リストから自動で外れます。パートナーとも同期します。</p>
           <div id="stockList"></div>
         </div>
-        <div class="card">
+        <!-- ⑥ 取り込み・追加フォーム（一覧の長さに左右されない位置に格納） -->
+        <details class="card" id="stockForms">
+          <summary>レシート取り込み・在庫の追加<span class="caret">開く ▾</span></summary>
           <h2 data-en="RECEIPT IMPORT">レシートから取り込む</h2>
           <p class="sub">レシートの内容を1行に1品目で貼ってね。例：「冷蔵,鶏むね肉,300g」「冷凍：冷凍うどん 5食」「卵 10個」。買った日は今日になり、賞味期限は目安で自動推定します（あとから直せます）。</p>
           <textarea class="importbox" id="receiptText" rows="5" placeholder="冷蔵,鶏むね肉,300g&#10;冷凍：冷凍うどん 5食&#10;卵 10個&#10;キャベツ 1玉"></textarea>
           <div class="actions"><button type="button" class="btn primary" id="receiptImportBtn">在庫に取り込む</button></div>
-        </div>
-        <div class="card">
-          <h2 data-en="ADD STOCK" id="stockFormTitle">在庫を追加</h2>
+          <h2 data-en="ADD STOCK" id="stockFormTitle" style="margin-top:20px">在庫を追加</h2>
           <div class="stockform">
             <div class="field"><label for="stName">品名</label><input type="text" id="stName" placeholder="例：鶏むね肉" /></div>
             <div class="grid2">
@@ -1885,7 +1935,7 @@
               <button type="button" class="btn ghost" id="stCancelEdit" style="display:none">編集をやめる</button>
             </div>
           </div>
-        </div>
+        </details>
       </section>
 
       <!-- 共有 -->
@@ -1939,10 +1989,10 @@
 
     <nav class="tabbar" aria-label="画面切り替え">
       <div class="in">
-        <button type="button" class="tabbtn" data-view="board" aria-selected="true"><span class="ic">🍽️</span>献立ボード</button>
-        <button type="button" class="tabbtn" data-view="list" aria-selected="false"><span class="ic">🛒</span>買い物リスト<span class="bdg" id="listBadge" style="display:none"></span></button>
-        <button type="button" class="tabbtn" data-view="stock" aria-selected="false"><span class="ic">🧊</span>冷蔵庫<span class="bdg" id="stockBadge" style="display:none"></span></button>
-        <button type="button" class="tabbtn" data-view="share" aria-selected="false"><span class="ic">👥</span>共有</button>
+        <button type="button" class="tabbtn" data-view="stock" aria-selected="true"><span class="ic">🧊</span>在庫<span class="bdg" id="stockBadge" style="display:none"></span></button>
+        <button type="button" class="tabbtn" data-view="board" aria-selected="false"><span class="ic">🍽️</span>献立</button>
+        <button type="button" class="tabbtn" data-view="list" aria-selected="false"><span class="ic">🛒</span>買い物<span class="bdg" id="listBadge" style="display:none"></span></button>
+        <button type="button" class="tabbtn" data-view="share" aria-selected="false"><span class="ic">👥</span>共有・設定</button>
       </div>
     </nav>
 
@@ -2328,31 +2378,32 @@ function renderBoard(){
     });
     html += '</div>';
   });
-  $("board").innerHTML = html;
+  var boardEl = $("board");
+  boardEl.innerHTML = html;
   updateStickyTop();
-  Array.prototype.forEach.call(document.querySelectorAll("[data-pick]"), function(b){
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-pick]"), function(b){
     b.addEventListener("click", function(){ openPicker(b.getAttribute("data-pick"), b.getAttribute("data-pos")); });
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-detail]"), function(b){
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-detail]"), function(b){
     b.addEventListener("click", function(){ openDetail(b.getAttribute("data-dish"), { slot: b.getAttribute("data-detail"), pos: b.getAttribute("data-pos"), fromPicker: false }); });
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-clearpos]"), function(b){
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-clearpos]"), function(b){
     b.addEventListener("click", function(){
       clearSlotPos(b.getAttribute("data-clearpos"), b.getAttribute("data-pos"));
       changed(); toast("外したよ");
     });
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-staple]"), function(b){
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-staple]"), function(b){
     b.addEventListener("click", function(){
       var key = b.getAttribute("data-staple");
       var o = getSlot(key); o.staple = b.getAttribute("data-val");
       S.slots[key] = o; changed();
     });
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-tocomplete]"), function(b){
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-tocomplete]"), function(b){
     b.addEventListener("click", function(){ openPicker(b.getAttribute("data-tocomplete"), "complete"); });
   });
-  Array.prototype.forEach.call(document.querySelectorAll("[data-toteishoku]"), function(b){
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-toteishoku]"), function(b){
     b.addEventListener("click", function(){
       var key = b.getAttribute("data-toteishoku");
       clearSlotPos(key, "complete");
@@ -2695,20 +2746,62 @@ function quickSlotsFor(d){
   });
   return out;
 }
+/* 今日・明日の献立（ホーム用・表示専用）：既存 S.slots を読むだけ。
+   枠の操作ボタンは週ボードと同じ data-* を使い、クリックは #nearMeals へのイベント委譲で処理する */
+function renderNearMeals(){
+  var box = $("nearMeals"); if(!box) return;
+  var todayDow = (new Date().getDay() + 6) % 7; /* 月=0 */
+  var html = "";
+  [0, 1].forEach(function(off){
+    var di = (todayDow + off) % 7, day = DAYS[di];
+    html += '<div class="near-day"><div class="near-dayhead"><span class="dow">' + day + '曜日</span><span class="when">' + (off === 0 ? "今日" : "明日") + '</span></div>';
+    MEALS.forEach(function(meal){
+      var key = slotKey(di, meal);
+      var o = getSlot(key);
+      var k = slotKcal(o);
+      var kcalHtml = "";
+      if(k.total && k.known === k.total && k.sum > 0) kcalHtml = '<span class="ms-kcal">計' + k.sum + 'kcal</span>';
+      else if(k.known > 0 && k.sum > 0) kcalHtml = '<span class="ms-kcal">判明分' + k.sum + 'kcal</span>';
+      html += '<div class="slot"><span class="meal">' + meal + '</span><div class="ms-body">';
+      if(o.complete){
+        html += '<div class="near-staple"><span class="ms-mode">完結</span> ' + kcalHtml + '</div>'
+          + msRowHtml(key, "complete", o, day, meal);
+      } else {
+        html += '<div class="near-staple">主食：<b>' + esc(o.staple) + '</b> ' + kcalHtml + '</div>'
+          + msRowHtml(key, "main", o, day, meal)
+          + msRowHtml(key, "side", o, day, meal)
+          + msRowHtml(key, "soup", o, day, meal);
+      }
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+  box.innerHTML = html;
+}
 function renderStock(){
   var list = $("stockList"); if(!list) return;
   var items = (S.stock || []).slice();
   var urgentCount = items.filter(function(it){ var dl = daysLeftEff(it); return dl !== null && dl <= 2; }).length;
   var badge = $("stockBadge");
   if(badge){ if(urgentCount > 0){ badge.style.display = ""; badge.textContent = urgentCount; } else badge.style.display = "none"; }
-  /* そろそろ使って：期限2日以内・期限切れ */
+  /* 在庫サマリ */
+  var sumEl = $("stockSummary");
+  if(sumEl){
+    var fridgeN = items.filter(function(it){ return it.place === "fridge"; }).length;
+    var freezerN = items.filter(function(it){ return it.place === "freezer"; }).length;
+    var overN = items.filter(function(it){ var dl = daysLeftEff(it); return dl !== null && dl < 0; }).length;
+    sumEl.innerHTML = '<span class="sumchip">🧊 冷蔵 <b>' + fridgeN + '</b>品</span>'
+      + '<span class="sumchip">❄️ 冷凍 <b>' + freezerN + '</b>品</span>'
+      + '<span class="sumchip' + (overN ? " over" : (urgentCount ? " warn" : "")) + '">⏰ 期限2日以内 <b>' + urgentCount + '</b>品' + (overN ? '（期限切れ ' + overN + '品）' : '') + '</span>';
+  }
+  /* そろそろ使って：期限2日以内・期限切れ。初期表示は先頭の食材＋候補のみ、残りは展開式 */
   var urgent = items.filter(function(it){ var dl = daysLeftEff(it); return dl !== null && dl <= 2; })
     .sort(function(a, b){ return (daysLeftEff(a) || 0) - (daysLeftEff(b) || 0); });
   var sug = $("stockSuggest");
   if(!urgent.length){
-    sug.innerHTML = '<p class="empty-note">' + (items.length ? "期限が近いものはないよ。この調子！" : "まだ在庫がありません。下のレシート取り込みか追加フォームから入れてね。") + '</p>';
+    sug.innerHTML = '<p class="empty-note">' + (items.length ? "期限が近いものはないよ。この調子！" : "まだ在庫がありません。上の「レシートから登録」か下の追加フォームから入れてね。") + '</p>';
   } else {
-    sug.innerHTML = urgent.map(function(it){
+    var sugItem = function(it){
       var ds = dishesUsingStock(it, 3);
       var chips = ds.length ? ds.map(function(d){
           var qs = quickSlotsFor(d);
@@ -2720,8 +2813,23 @@ function renderStock(){
         : '<span class="meta" style="font-size:12.5px;color:var(--ink2)">この食材を使う料理がカタログに見つからなかった</span>';
       return '<div class="suggest"><span class="sug-ing">' + (it.place === "freezer" ? "🧊 " : "") + esc(it.name) + '</span>'
         + '<span class="daysleft' + (daysLeftEff(it) < 0 ? " over" : " soon") + '">' + esc(daysLabel(it)) + '</span>'
+        + (effectiveExpiry(it).est ? '<span class="estmark">期限は目安</span>' : '')
         + '<div class="sug-dishes">' + chips + '</div></div>';
-    }).join("");
+    };
+    var sugHtml = sugItem(urgent[0]);
+    if(urgent.length > 1){
+      sugHtml += '<div id="sugMore" hidden>' + urgent.slice(1).map(sugItem).join("") + '</div>'
+        + '<button type="button" class="ms-mini sug-toggle" id="sugMoreBtn" aria-expanded="false" aria-controls="sugMore">残り' + (urgent.length - 1) + '件を表示 ▾</button>';
+    }
+    sug.innerHTML = sugHtml;
+    var moreBtn = $("sugMoreBtn");
+    if(moreBtn) moreBtn.addEventListener("click", function(){
+      var m = $("sugMore"); if(!m) return;
+      var open = m.hidden;
+      m.hidden = !open;
+      moreBtn.textContent = open ? "閉じる ▴" : ("残り" + (urgent.length - 1) + "件を表示 ▾");
+      moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   }
   /* 一覧：冷蔵→冷凍、各グループ内は期限が近い順（期限なしは最後） */
   if(!items.length){ list.innerHTML = '<p class="empty-note">在庫は空です。</p>'; }
@@ -2753,7 +2861,9 @@ function renderStock(){
       $("stName").value = it.name; $("stQty").value = it.qty || ""; $("stPlace").value = it.place;
       $("stBought").value = it.bought || ""; $("stExpiry").value = it.expiry || "";
       $("stockFormTitle").textContent = "在庫を編集"; $("stSave").textContent = "保存する"; $("stCancelEdit").style.display = "";
+      openStockForms();
       $("stName").scrollIntoView({ behavior: "smooth", block: "center" });
+      $("stName").focus({ preventScroll: true });
     });
   });
   Array.prototype.forEach.call(document.querySelectorAll("[data-quickassign]"), function(b){
@@ -3561,15 +3671,48 @@ function openDetail(dishId, opts){
 function closeDetail(){ $("detailModal").classList.remove("open"); detailDishId=null; detailSlot=null; detailPos="main"; detailFromPicker=false; }
 
 /* ================= 全体描画とイベント ================= */
-function renderAll(){ renderStore(); renderTags(); renderBoard(); renderFlyer(); renderList(); renderStock(); }
+function renderAll(){ renderStore(); renderTags(); renderBoard(); renderFlyer(); renderList(); renderStock(); renderNearMeals(); }
+/* 画面切替の共通処理：タブの選択状態と表示セクションを必ず一致させる。
+   targetId を渡すと、その要素までスクロールする */
+function switchView(view, targetId){
+  document.querySelectorAll(".tabbtn").forEach(function(x){ x.setAttribute("aria-selected", x.getAttribute("data-view") === view ? "true" : "false"); });
+  document.querySelectorAll("section.view").forEach(function(v){ v.classList.remove("active"); });
+  var sec = $("view-" + view); if(sec) sec.classList.add("active");
+  if(targetId){
+    var t = $(targetId);
+    if(t){ t.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  }
+  window.scrollTo({ top: 0 });
+}
 document.querySelectorAll(".tabbtn").forEach(function(b){
-  b.addEventListener("click", function(){
-    document.querySelectorAll(".tabbtn").forEach(function(x){ x.setAttribute("aria-selected","false"); });
-    b.setAttribute("aria-selected","true");
-    document.querySelectorAll("section.view").forEach(function(v){ v.classList.remove("active"); });
-    $("view-"+b.getAttribute("data-view")).classList.add("active");
-    window.scrollTo({top:0});
-  });
+  b.addEventListener("click", function(){ switchView(b.getAttribute("data-view")); });
+});
+/* ホーム内の画面リンク */
+$("gotoBoard").addEventListener("click", function(){ switchView("board"); });
+$("gotoList").addEventListener("click", function(){ switchView("list"); });
+/* フォーム格納（details）を開く共通処理 */
+function openStockForms(){ var d = $("stockForms"); if(d) d.open = true; }
+$("quickReceipt").addEventListener("click", function(){
+  openStockForms();
+  var t = $("receiptText");
+  t.scrollIntoView({ behavior: "smooth", block: "center" });
+  t.focus({ preventScroll: true });
+});
+$("quickAdd").addEventListener("click", function(){
+  if(stockEditId) resetStockForm();
+  openStockForms();
+  var t = $("stName");
+  t.scrollIntoView({ behavior: "smooth", block: "center" });
+  t.focus({ preventScroll: true });
+});
+/* 今日・明日の枠操作は #nearMeals へのイベント委譲で受ける（renderBoard 側の登録と二重にならない） */
+$("nearMeals").addEventListener("click", function(ev){
+  var el = ev.target;
+  var b = el && el.closest ? el.closest("[data-detail],[data-pick],[data-clearpos]") : null;
+  if(!b) return;
+  if(b.hasAttribute("data-detail")) openDetail(b.getAttribute("data-dish"), { slot: b.getAttribute("data-detail"), pos: b.getAttribute("data-pos"), fromPicker: false });
+  else if(b.hasAttribute("data-pick")) openPicker(b.getAttribute("data-pick"), b.getAttribute("data-pos"));
+  else if(b.hasAttribute("data-clearpos")){ clearSlotPos(b.getAttribute("data-clearpos"), b.getAttribute("data-pos")); changed(); toast("外したよ"); }
 });
 $("storeHanamasa").addEventListener("click", function(){ if(S.store!=="hanamasa"){ S.store="hanamasa"; changed(); } });
 $("storeSeiyu").addEventListener("click", function(){ if(S.store!=="seiyu"){ S.store="seiyu"; changed(); } });
