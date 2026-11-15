@@ -235,6 +235,29 @@
       .eaten-cand .nm{font-weight:800;font-size:14.5px}
       .eaten-cand .meta{font-size:12px;color:var(--ink2)}
       .eaten-cand[aria-pressed="true"]{border-color:var(--green);border-width:2.5px}
+      /* 実食の複数選択：カテゴリチップ・候補行・選択中トレイ */
+      .cat-chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
+      .cat-chip{border:1.5px solid var(--line);background:var(--surface2);color:var(--ink2);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:800;min-height:44px}
+      .cat-chip[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);box-shadow:inset 0 0 0 1px var(--green)}
+      .pick-row{display:flex;width:100%;text-align:left;gap:10px;background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;padding:10px 12px;color:var(--ink);align-items:center;min-height:56px}
+      .pick-row .pick-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+      .pick-row .nm{font-weight:800;font-size:15px;line-height:1.35}
+      .pick-row .meta{font-size:12px;color:var(--ink2)}
+      .pick-row .pick-kcal{flex:none;font-size:17px;font-weight:800;color:var(--tomato);white-space:nowrap}
+      .pick-row .pick-kcal small{font-size:11px;font-weight:700}
+      .pick-row .pick-kcal.none{font-size:12px;color:var(--ink2)}
+      .pick-row[aria-pressed="true"]{border-color:var(--green);border-width:2.5px;background:var(--green-soft)}
+      .pick-row .pick-check{flex:none;font-size:12px;font-weight:800;color:var(--green-deep);white-space:nowrap}
+      .tray{margin-top:10px;background:var(--surface);border:2px solid var(--green);border-radius:8px;padding:10px 12px}
+      .tray-head{font-weight:800;font-size:13.5px;color:var(--green-deep)}
+      .tray-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px dashed var(--line-soft);margin-top:7px}
+      .tray-item .tray-info{flex:1;min-width:0;display:flex;flex-direction:column}
+      .tray-item .nm{font-weight:800;font-size:14px}
+      .tray-item .meta{font-size:12px;color:var(--ink2)}
+      .tray-qty{display:flex;align-items:center;gap:5px;flex:none}
+      .tray-qty button{width:40px;height:40px;min-width:40px;min-height:40px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:18px;font-weight:800;line-height:1}
+      .tray-qty .qv{font-weight:800;min-width:38px;text-align:center;font-size:14.5px}
+      .tray-x{flex:none;width:40px;height:40px;min-width:40px;min-height:40px;border-radius:8px;border:1.5px solid var(--line-soft);background:var(--surface2);color:var(--ink2);font-size:14px}
       /* 数量ステッパー（寿司1貫・焼肉1人前など、個数・量がバラバラな品の記録用。0.5刻み） */
       .qty-box{margin-top:10px;background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;padding:11px 12px}
       .qty-box .qty-nm{font-weight:800;font-size:14.5px}
@@ -335,9 +358,10 @@
       .stockcard .meta{font-size:11px;color:var(--ink2);line-height:1.45;margin-top:2px;overflow:hidden;text-overflow:ellipsis}
       .stockcard .daysleft{margin-left:0;margin-top:4px;font-size:10.5px;padding:0 7px}
       .stockcard .exp{display:block;font-size:11px;color:var(--ink2);margin-top:3px}
-      .stockcard .acts{display:flex;gap:5px;margin-top:7px}
-      .stockcard .acts button{flex:1;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 2px;font-size:11.5px;font-weight:800;color:var(--ink2);min-height:2.3rem}
+      .stockcard .acts{display:flex;gap:8px;margin-top:8px}
+      .stockcard .acts button{flex:1;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 2px;font-size:11.5px;font-weight:800;color:var(--ink2);min-height:2.75rem}
       .stockcard .acts button.use{background:var(--green);border-color:var(--green);color:#fff}
+      .stockcard .acts button[data-stockdel]{flex:0 0 52px;border-style:dashed}
       .suggest{margin-bottom:10px}
       .suggest .sug-ing{font-weight:800;font-size:14px}
       .suggest .sug-dishes{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
@@ -454,6 +478,9 @@
         box-shadow:0 6px 16px rgba(13,32,54,.28);opacity:0;pointer-events:none;transition:opacity .25s;max-width:92vw;text-align:center}
       @media (prefers-color-scheme: dark){ .toast{color:#122539} }
       .toast.show{opacity:1}
+      .toast .toast-undo{pointer-events:auto;margin-left:10px;border:1.5px solid currentColor;background:transparent;color:inherit;
+        border-radius:999px;padding:5px 14px;font-size:13px;font-weight:800;min-height:2.4rem;text-decoration:underline}
+      .toast:has(.toast-undo){pointer-events:auto}
       .src{font-size:11.5px;color:var(--ink2)}
       details.customform summary{font-weight:800;cursor:pointer;padding:8px 0;min-height:2.25rem;color:var(--green-deep)}
       .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -2246,7 +2273,28 @@ function slotKey(di, meal){ return di + "_" + meal; }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function $(id){ return document.getElementById(id); }
 var toastTimer = null;
-function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove("show"); }, 2600); }
+function toast(msg){ toastUndoItems = null; var t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove("show"); }, 2600); }
+/* 在庫を消した直後専用：「元に戻す」付きトースト。誤タップでも6秒以内なら復旧できる */
+var toastUndoItems = null;
+function toastUndo(msg, items){
+  if(!items || !items.length){ toast(msg); return; }
+  var t = $("toast");
+  toastUndoItems = items;
+  t.innerHTML = "";
+  var span = document.createElement("span"); span.textContent = msg;
+  var btn = document.createElement("button");
+  btn.type = "button"; btn.className = "toast-undo"; btn.textContent = "元に戻す";
+  btn.addEventListener("click", function(){
+    var back = toastUndoItems; toastUndoItems = null;
+    clearTimeout(toastTimer); t.classList.remove("show");
+    restoreStockItems(back);
+    changed(); toast("在庫に戻したよ");
+  });
+  t.appendChild(span); t.appendChild(btn);
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); toastUndoItems = null; }, 6000);
+}
 
 /* ================= 状態 ================= */
 var LS_ROOM="mmk_room", LS_DEVICE="mmk_device", LS_CLIENT="mmk_client", LS_LOCAL="mmk_local_state";
@@ -2266,7 +2314,7 @@ var EST_GENRES = [
   { key: "ramen", label: "ラーメン店", kcal: [600, 900, 1300, 1600], ratio: [15, 35, 50], hint: "ラーメン＋餃子・替玉など" },
   { key: "buffet", label: "食べ放題（汎用）", kcal: [800, 1200, 1700, 2200], ratio: [18, 37, 45], hint: "ビュッフェ全般" }
 ];
-function defaultState(){ return { v:1, store:"hanamasa", slots:{}, snacks:{}, customDishes:[], customItems:[], pantry:[], bought:[], lastFill:[], stock:[], profiles:[] }; }
+function defaultState(){ return { v:1, store:"hanamasa", slots:{}, snacks:{}, customDishes:[], customItems:[], pantry:[], bought:[], lastFill:[], stock:[], stockGone:[], profiles:[], usage:{} }; }
 /* プロフィール（共有state内）の検証。非公開プロフィールは生の値（性別・年齢・身長・体重・活動量・目的）を
    ここで必ず落とし、名前と算出済みの目標だけを通す（ルームに生の値を残さないための最終防衛線）。 */
 function sanitizeProfile(p){
@@ -2308,6 +2356,7 @@ function sanitizeState(s){
       expiry: (typeof it.expiry==="string" && /^\d{4}-\d{2}-\d{2}$/.test(it.expiry)) ? it.expiry : "",
       est: !!it.est };
   });
+  if(Array.isArray(s.stockGone)) d.stockGone = normStockGone(s.stockGone);
   if(s.snacks && typeof s.snacks==="object"){
     Object.keys(s.snacks).forEach(function(k){
       var di = parseInt(k, 10);
@@ -2329,6 +2378,17 @@ function sanitizeState(s){
       });
       if(list.length) d.snacks[String(di)] = list;
     });
+  }
+  if(s.usage && typeof s.usage==="object"){
+    var uEntries = Object.keys(s.usage).map(function(id){
+      var u = s.usage[id];
+      if(!u || typeof u !== "object") return null;
+      var c = Math.floor(Number(u.c)), t = Number(u.t) || 0;
+      if(!(c > 0)) return null;
+      return { id: id, c: Math.min(c, 9999), t: t };
+    }).filter(Boolean);
+    uEntries.sort(function(a, b){ return b.t - a.t; });
+    uEntries.slice(0, 300).forEach(function(e){ d.usage[e.id] = { c: e.c, t: e.t }; });
   }
   if(s.slots && typeof s.slots==="object"){
     var crm = {};
@@ -2398,7 +2458,35 @@ function proteinOf(d){
   if(d.custom) return d.protein || "";
   return PROTEIN_OF[d.id] || "";
 }
-function emptySlot(){ return { staple:"ごはん", main:null, side:null, soup:null, complete:null, eaten:false, actualId:null, actualName:"" }; }
+function emptySlot(){ return { staple:"ごはん", main:null, side:null, soup:null, complete:null, eaten:false, actualId:null, actualName:"", items:null }; }
+/* 実食の複数品リスト（[{id, qty}]）の正規化：カタログID＋数量だけを残し、重複は1つにまとめる */
+function normItems(v){
+  if(!Array.isArray(v)) return null;
+  var out = [], seen = {};
+  v.slice(0, 12).forEach(function(x){
+    if(!x || typeof x !== "object" || typeof x.id !== "string" || !x.id || seen[x.id]) return;
+    seen[x.id] = true;
+    out.push({ id: x.id, qty: validQty(x.qty) });
+  });
+  return out.length ? out : null;
+}
+/* 記録（枠／メンバー別／間食）から実食の品リストを取り出す。
+   新形式 items があればそれを、無ければ従来の単品 actualId を1品のリストとして読む（互換） */
+function recItems(rec){
+  if(!rec) return [];
+  var items = normItems(rec.items);
+  if(items) return items;
+  if(rec.actualId) return [{ id: rec.actualId, qty: validQty(rec.actualQty) }];
+  return [];
+}
+function recItemsLabel(rec){
+  var items = recItems(rec);
+  if(!items.length) return "";
+  return items.map(function(x){
+    var d = dishById[x.id];
+    return d ? (d.name + qtySuffix(x.qty)) : "";
+  }).filter(Boolean).join(" ＋ ");
+}
 /* 数量（倍率）：寿司1貫・焼肉1人前みたいに個数・量がバラバラな品を、1品ずつ登録せず
    記録時に ×N で調整するための倍率。既定1・0.5刻み・0.5〜20に丸める */
 function validQty(v){
@@ -2459,6 +2547,7 @@ function normalizeSlotValue(v, customRoleMap){
           actualId: (typeof r.actualId === "string" && r.actualId) ? r.actualId : null,
           actualName: (typeof r.actualName === "string") ? r.actualName.trim().slice(0, 80) : "",
           actualQty: validQty(r.actualQty),
+          items: normItems(r.items),
           est: validEst(r.est) };
       });
       if(Object.keys(by2).length) o2.by = by2;
@@ -2466,8 +2555,9 @@ function normalizeSlotValue(v, customRoleMap){
     if(typeof v.actualId === "string" && v.actualId) o2.actualId = v.actualId;
     if(typeof v.actualName === "string" && v.actualName.trim()) o2.actualName = v.actualName.trim().slice(0, 80);
     if(v.actualQty !== undefined) o2.actualQty = validQty(v.actualQty);
+    o2.items = normItems(v.items);
     o2.est = validEst(v.est);
-    if(!o2.eaten){ o2.actualId = null; o2.actualName = ""; o2.actualQty = 1; o2.est = null; }
+    if(!o2.eaten){ o2.actualId = null; o2.actualName = ""; o2.actualQty = 1; o2.items = null; o2.est = null; }
     return o2;
   }
   return null;
@@ -2523,6 +2613,13 @@ function snackDisplayName(it){
   var d = snackDishOf(it);
   if(d) return d.name;
   return (it && it.name) || "間食";
+}
+/* 間食の実食ラベル（数量サフィックスなし：数量は呼び出し側が qty として別に持つ） */
+function snackActualLabel(it){
+  if(!it) return "";
+  if(it.est && estPreset(it.est)) return estLabel(it.est);
+  if(it.actualId && dishById[it.actualId]) return dishById[it.actualId].name;
+  return it.actualName || "";
 }
 function addSnackItem(di, dish, freeName, ownerKey, ownerName, qty){
   var list = daySnacks(di).slice();
@@ -2657,10 +2754,11 @@ function estLabel(est){
 function actualNameOf(o){
   if(!o) return "";
   if(o.est && estPreset(o.est)) return estLabel(o.est);
-  if(o.actualId && dishById[o.actualId]) return dishById[o.actualId].name;
+  var lbl = recItemsLabel(o);
+  if(lbl) return lbl;
   return o.actualName || "";
 }
-function hasActual(o){ return !!(o && o.eaten && (o.actualId || o.actualName)); }
+function hasActual(o){ return !!(o && o.eaten && (recItems(o).length || o.actualName)); }
 function eatenBtnHtml(key, day, meal, o){
   var on = !!(o && slotAnyEaten(o));
   var note = on ? (o.by && Object.keys(o.by).length ? 'メンバー別に記録済み' : (hasActual(o) ? '実食で記録済み' : '食べた記録あり')) : '食べたら押してね';
@@ -2675,15 +2773,15 @@ function actualHtml(o){
     Object.keys(o.by).forEach(function(mk){
       var r = o.by[mk];
       if(r && r.s === "actual"){
-        var nm = (r.est && estPreset(r.est)) ? estLabel(r.est) : (r.actualId && dishById[r.actualId] ? dishById[r.actualId].name : (r.actualName || ""));
+        var nm = (r.est && estPreset(r.est)) ? estLabel(r.est) : (recItemsLabel(r) || (r.actualName || ""));
         var who = ""; mem.forEach(function(m){ if(m.key === mk) who = m.name; });
-        lines += '<div class="actual-line">実食' + (who ? '（' + esc(who) + '）' : '') + '：<b>' + esc(nm) + (r.actualId ? esc(qtySuffix(r.actualQty)) : '') + '</b><span class="tagmini frz">予定と違う</span></div>';
+        lines += '<div class="actual-line">実食' + (who ? '（' + esc(who) + '）' : '') + '：<b>' + esc(nm) + '</b><span class="tagmini frz">予定と違う</span></div>';
       }
     });
   }
   if(lines) return lines;
   if(!hasActual(o)) return "";
-  return '<div class="actual-line">実食：<b>' + esc(actualNameOf(o)) + (o.actualId ? esc(qtySuffix(o.actualQty)) : '') + '</b><span class="tagmini frz">予定と違う</span></div>';
+  return '<div class="actual-line">実食：<b>' + esc(actualNameOf(o)) + '</b><span class="tagmini frz">予定と違う</span></div>';
 }
 /* 実食候補の類似度：名前の部分一致と文字バイグラム一致でざっくり測る */
 function bigramDice(a, b){
@@ -2711,14 +2809,111 @@ function actualCandidates(q, key){
     if(score >= 14) scored.push({ d: d, score: score });
   });
   scored.sort(function(a, b){ return b.score - a.score; });
-  return scored.slice(0, 6).map(function(x){ return x.d; });
+  return scored.slice(0, 12).map(function(x){ return x.d; });
+}
+/* ================= 実食の使用履歴とカテゴリ =================
+   記録した品は S.usage（ルーム共有state）に回数と最終使用時刻を持ち、「よく使う」に自動で集まる。
+   カテゴリは品名・役割から判定する（1品が複数カテゴリに属してよい） */
+function usageOf(id){ var u = S.usage && S.usage[id]; return u ? (u.c || 0) : 0; }
+function lastUsedOf(id){ var u = S.usage && S.usage[id]; return u ? (u.t || 0) : 0; }
+function bumpUsage(ids){
+  if(!ids || !ids.length) return;
+  if(!S.usage) S.usage = {};
+  var now = Date.now();
+  var seen = {};
+  ids.forEach(function(id){
+    if(!id || seen[id] || !dishById[id]) return;
+    seen[id] = true;
+    var u = S.usage[id] || { c: 0, t: 0 };
+    u.c = Math.min((u.c || 0) + 1, 9999); u.t = now;
+    S.usage[id] = u;
+  });
+}
+/* その記録で実際に食べたカタログ品のID一覧（予定どおり＝予定の品／実食＝実食の品、メンバー別も合算） */
+function eatenDishIdsForUsage(o){
+  var ids = [];
+  if(!o) return ids;
+  if(o.by && Object.keys(o.by).length){
+    var planned = slotDishIds(o);
+    Object.keys(o.by).forEach(function(mk){
+      var r = o.by[mk];
+      if(!r) return;
+      if(r.s === "planned") planned.forEach(function(id){ ids.push(id); });
+      else if(r.s === "actual") recItems(r).forEach(function(x){ ids.push(x.id); });
+    });
+    return ids;
+  }
+  if(hasActual(o)){ recItems(o).forEach(function(x){ ids.push(x.id); }); return ids; }
+  if(eatenSnack){ eatenPlannedDishes(o).forEach(function(d){ ids.push(d.id); }); return ids; }
+  if(o.eaten) slotDishIds(o).forEach(function(id){ ids.push(id); });
+  return ids;
+}
+var EAT_CATS = [
+  { key: "rec", label: "おすすめ" },
+  { key: "freq", label: "よく使う" },
+  { key: "bread", label: "パン" },
+  { key: "rice", label: "ごはん・麺" },
+  { key: "okazu", label: "おかず" },
+  { key: "out", label: "寿司・外食" },
+  { key: "sweet", label: "スイーツ・お菓子" },
+  { key: "drink", label: "飲み物・その他" }
+];
+function dishCats(d){
+  var n = (d && d.name) || "";
+  var cats = [];
+  function has(){
+    for(var i = 0; i < arguments.length; i++) if(n.indexOf(arguments[i]) >= 0) return true;
+    return false;
+  }
+  /* 「パン粉焼き」のような複合語の一部はパンに数えない（kwTier が主要素一致のときだけ）。
+     「ワンパン」（フライパン1つ調理）と「ナンプラー」の「ナン」もパンではないので除く */
+  if(kwTier(n.split("ワンパン").join("").split("パン粉").join(""), "パン") >= 2 || kwTier(n.split("ナンプラー").join(""), "ナン") >= 2 || has("クロワッサン", "ベーグル", "マフィン", "コロネ", "デニッシュ", "フォカッチャ", "ブリオッシュ", "バゲット", "サンドイッチ", "ドーナツ", "スコーン", "ワッフル")) cats.push("bread");
+  if(has("ごはん", "ご飯", "丼", "ライス", "チャーハン", "ピラフ", "おにぎり", "リゾット", "雑炊", "お粥", "麺", "うどん", "そば", "ラーメン", "パスタ", "スパゲッティ", "焼きそば", "カレー")) cats.push("rice");
+  if(has("寿司", "すし", "にぎり", "軍艦", "ちらし", "手巻き", "鉄火巻", "焼肉", "カルビ", "ロース", "ハラミ", "タン塩", "ホルモン", "タコス", "ブリトー", "ピザ", "ハンバーガー", "ステーキ")) cats.push("out");
+  var r = roleOf(d);
+  if(r === "snack" || has("ケーキ", "プリン", "アイス", "チョコ", "クッキー", "羊羹", "カステラ", "おはぎ", "たい焼き", "どら焼き", "ゼリー", "パフェ", "タルト", "大福", "まんじゅう", "饅頭", "せんべい", "煎餅", "ポテトチップス", "グミ", "みたらし", "あんみつ", "かき氷", "シャーベット", "ムース", "ティラミス", "マカロン", "フィナンシェ", "マドレーヌ", "カヌレ", "パンケーキ", "ホットケーキ", "クレープ", "エクレア", "シュークリーム", "チーズケーキ", "モンブラン", "わらび餅", "おしるこ", "ぜんざい", "ポップコーン", "柿の種")) cats.push("sweet");
+  /* 鍋・煮物など飲み物で味付けした料理は飲み物に数えない */
+  if(!has("鍋", "煮") && has("ジュース", "コーヒー", "カフェラテ", "ラテ", "紅茶", "緑茶", "お茶", "麦茶", "牛乳", "豆乳", "スムージー", "ソーダ", "コーラ", "サイダー", "ビール", "ワイン", "日本酒", "焼酎", "サワー", "ハイボール", "ウイスキー", "ドリンク", "ミルクティー")) cats.push("drink");
+  if(r === "main" || r === "side" || r === "soup" || r === "complete") cats.push("okazu");
+  if(!cats.length) cats.push("drink");
+  return cats;
+}
+function byUsageSort(a, b){
+  var dc = usageOf(b.id) - usageOf(a.id);
+  if(dc) return dc;
+  var dt = lastUsedOf(b.id) - lastUsedOf(a.id);
+  if(dt) return dt;
+  return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0);
+}
+/* 実食シートの候補一覧：検索語があれば類似候補（カテゴリで絞り込み可）、
+   無ければ「おすすめ＝よく使う＋最近」やカテゴリ別一覧を出す */
+function eatenCandList(){
+  var q = (($("eatenActualInput") || {}).value || "").trim();
+  var cat = eatenCat;
+  var all = allDishes();
+  if(q){
+    var pool = actualCandidates(q, eatenKey);
+    if(cat === "freq") pool = pool.filter(function(d){ return usageOf(d.id) > 0; });
+    else if(cat !== "rec") pool = pool.filter(function(d){ return dishCats(d).indexOf(cat) >= 0; });
+    return pool;
+  }
+  if(cat === "freq") return all.filter(function(d){ return usageOf(d.id) > 0; }).sort(byUsageSort).slice(0, 24);
+  if(cat === "rec"){
+    var used = all.filter(function(d){ return usageOf(d.id) > 0; }).sort(byUsageSort);
+    if(used.length) return used.slice(0, 12);
+    var o = eatenKey ? getSlot(eatenKey) : null;
+    var wantRole = eatenSnack ? "snack" : (o && o.complete ? "complete" : "main");
+    return all.filter(function(d){ return roleOf(d) === wantRole; }).sort(byUsageSort).slice(0, 10);
+  }
+  return all.filter(function(d){ return dishCats(d).indexOf(cat) >= 0; }).sort(byUsageSort).slice(0, 24);
 }
 /* 食べた品（予定どおり＝枠の全品／実食＝実食の品）の材料と一致する在庫品目を集める（品目単位・重複なし）。
    名前だけ記録（カタログ外）の場合は照合しない */
 function stockMatchesForEaten(o, plannedDishes){
   if(!o || !o.eaten) return [];
   var dishes = [];
-  if(o.actualId){ var ad = dishById[o.actualId]; if(ad) dishes = [ad]; }
+  var items = recItems(o);
+  if(items.length){ dishes = items.map(function(x){ return dishById[x.id]; }).filter(Boolean); }
   else if(o.actualName){ return []; }
   else if(plannedDishes){ dishes = plannedDishes; }
   else { dishes = slotDishIds(o).map(function(id){ return dishById[id]; }).filter(Boolean); }
@@ -2901,11 +3096,11 @@ function memberAte(o, mkey, membersCount){
     var r = o.by[mkey];
     if(!r) return null;
     if(r.s === "none") return { ate: false };
-    if(r.s === "actual") return { ate: true, actualId: r.actualId || null, actualName: r.actualName || "", actualQty: validQty(r.actualQty), est: validEst(r.est) };
+    if(r.s === "actual") return { ate: true, actualId: r.actualId || null, actualName: r.actualName || "", actualQty: validQty(r.actualQty), items: recItems(r), est: validEst(r.est) };
     return { ate: true, actualId: null, actualName: "" };
   }
   if(!o.eaten) return (membersCount >= 2 && o.by) ? null : { ate: false };
-  return { ate: true, actualId: o.actualId || null, actualName: o.actualName || "", actualQty: validQty(o.actualQty), est: validEst(o.est) };
+  return { ate: true, actualId: o.actualId || null, actualName: o.actualName || "", actualQty: validQty(o.actualQty), items: recItems(o), est: validEst(o.est) };
 }
 function slotAnyEaten(o){
   if(o.by && Object.keys(o.by).length) return Object.keys(o.by).some(function(k){ var r = o.by[k]; return r && (r.s === "planned" || r.s === "actual"); });
@@ -2926,21 +3121,30 @@ function todayNutritionTotals(){
   var perMember = {};
   members.forEach(function(m){ perMember[m.key] = { key: m.key, name: m.name, targetKcal: m.targetKcal, targetPfc: m.pfc, kcal: 0, known: 0, total: 0, count: 0, p: 0, f: 0, c: 0, pfcKnown: false, actual: [] }; });
   function addActualToAgg(agg, meal, rec){
-    agg.total++; agg.count++;
-    var q = validQty(rec.actualQty);
+    agg.count++;
     var ep = rec.est ? estPreset(rec.est) : null;
     if(ep){
+      agg.total++;
       agg.actual.push({ meal: meal, name: estLabel(rec.est), qty: 1 });
       agg.known++; agg.kcal += ep.kcal;
       agg.pfcKnown = true; agg.p += ep.protein; agg.f += ep.fat; agg.c += ep.carbs;
       return;
     }
-    if(rec.actualName || rec.actualId) agg.actual.push({ meal: meal, name: rec.actualId && dishById[rec.actualId] ? dishById[rec.actualId].name : (rec.actualName || ""), qty: rec.actualId ? q : 1 });
-    var ad = rec.actualId ? dishById[rec.actualId] : null;
-    if(ad){
-      if(ad.kcal){ agg.known++; agg.kcal += ad.kcal * q; }
-      if(hasPfc(ad)){ agg.pfcKnown = true; agg.p += ad.protein * q; agg.f += ad.fat * q; agg.c += ad.carbs * q; }
+    /* 実食は複数品リストが正：品ごとに数量倍率込みで合計する（旧・単品データも1品として読まれる） */
+    var items = recItems(rec);
+    if(items.length){
+      items.forEach(function(x){
+        agg.total++;
+        var ad = dishById[x.id];
+        agg.actual.push({ meal: meal, name: ad ? ad.name : "", qty: x.qty });
+        if(ad){
+          if(ad.kcal){ agg.known++; agg.kcal += ad.kcal * x.qty; }
+          if(hasPfc(ad)){ agg.pfcKnown = true; agg.p += ad.protein * x.qty; agg.f += ad.fat * x.qty; agg.c += ad.carbs * x.qty; }
+        }
+      });
+      return;
     }
+    if(rec.actualName){ agg.total++; agg.actual.push({ meal: meal, name: rec.actualName, qty: 1 }); }
   }
   function addPlannedToAgg(agg, k, t, complete, staple){
     agg.total++;
@@ -2978,7 +3182,7 @@ function todayNutritionTotals(){
         var rec = memberAte(o, m.key, mcount);
         if(!rec || !rec.ate) return;
         var agg = perMember[m.key];
-        if(rec.actualId || rec.actualName) addActualToAgg(agg, meal, rec);
+        if(rec.actualId || rec.actualName || (rec.items && rec.items.length)) addActualToAgg(agg, meal, rec);
         else if(ids.length) addPlannedToAgg(agg, k, t, !!o.complete, o.staple);
         else { agg.count++; }
       });
@@ -3000,7 +3204,7 @@ function todayNutritionTotals(){
     var srcDish = null, isActual = hasActual(it);
     var srcQty = isActual ? validQty(it.actualQty) : q;
     var ep = isActual ? estPreset(it.est) : null;
-    if(isActual){ srcDish = it.actualId ? dishById[it.actualId] : null; snackAgg.eTotal++; if(isActual) eActual.push({ meal: "間食", name: actualNameOf(it), qty: it.actualId ? srcQty : 1 }); }
+    if(isActual){ srcDish = it.actualId ? dishById[it.actualId] : null; snackAgg.eTotal++; if(isActual) eActual.push({ meal: "間食", name: snackActualLabel(it), qty: it.actualId ? srcQty : 1 }); }
     else if(d){ srcDish = d; snackAgg.eTotal++; }
     else { snackAgg.eTotal++; }
     eTotal++;
@@ -3019,7 +3223,7 @@ function todayNutritionTotals(){
       else targets = members.map(function(m){ return { agg: perMember[m.key], share: 0.5 }; });
       targets.forEach(function(tg){
         tg.agg.count++; tg.agg.total++;
-        if(isActual) tg.agg.actual.push({ meal: "間食", name: actualNameOf(it), qty: it.actualId ? srcQty : 1 });
+        if(isActual) tg.agg.actual.push({ meal: "間食", name: snackActualLabel(it), qty: it.actualId ? srcQty : 1 });
         if(ep){
           tg.agg.known++; tg.agg.kcal += ep.kcal * tg.share;
           tg.agg.pfcKnown = true; tg.agg.p += ep.protein * tg.share; tg.agg.f += ep.fat * tg.share; tg.agg.c += ep.carbs * tg.share;
@@ -3070,22 +3274,68 @@ function persistLocal(){
   try{ localStorage.setItem(roomCode ? ("mmk_state_"+roomCode) : LS_LOCAL, JSON.stringify(S)); }catch(e){}
   saveLocalMeta();
 }
+/* ================= 在庫の合体（消えないための仕組み） =================
+   共有stateはルーム全体を1ドキュメントに丸ごと書くため、古い状態を持った端末が
+   別の変更（食べた記録など）を送るだけで、相手が追加した在庫が丸ごと消えてしまう。
+   対策として在庫だけは「消した記録（stockGone＝墓標）」を一緒に同期し、
+   受信時も送信時も、墓標に無い在庫は両側の合体（union）で残す。
+   意図的な削除は墓標が同期されるので、合体で復活することはない。 */
+function normStockGone(list){
+  var out = [], seen = {};
+  if(Array.isArray(list)) list.forEach(function(g){
+    var id = (typeof g === "string") ? g : (g && typeof g.id === "string" ? g.id : "");
+    if(!id || seen[id]) return;
+    seen[id] = true;
+    out.push({ id: id, t: (g && Number(g.t)) || 0 });
+  });
+  out.sort(function(a, b){ return b.t - a.t; });
+  return out.slice(0, 300);
+}
+function stockGoneMap(list){
+  var m = {};
+  (list || []).forEach(function(g){ if(g && g.id) m[g.id] = g.t || 0; });
+  return m;
+}
+function mergeStockData(localStock, localGone, remoteStock, remoteGone, preferLocal){
+  var gone = normStockGone([].concat(localGone || [], remoteGone || []));
+  var gm = stockGoneMap(gone);
+  var byId = {}, order = [];
+  function add(it, overwrite){
+    if(!it || !it.id || gm[it.id]) return;
+    if(!byId[it.id]){ order.push(it.id); byId[it.id] = it; }
+    else if(overwrite) byId[it.id] = it;
+  }
+  var first = preferLocal ? (localStock || []) : (remoteStock || []);
+  var second = preferLocal ? (remoteStock || []) : (localStock || []);
+  second.forEach(function(it){ add(it, false); });
+  first.forEach(function(it){ add(it, true); });
+  return { stock: order.map(function(id){ return byId[id]; }), gone: gone };
+}
+function addStockGone(ids){
+  if(!ids || !ids.length) return;
+  var gm = stockGoneMap(S.stockGone), now = Date.now(), touched = false;
+  ids.forEach(function(id){ if(id && !gm[id]){ gm[id] = now; touched = true; } });
+  if(!touched) return;
+  S.stockGone = normStockGone(Object.keys(gm).map(function(id){ return { id: id, t: gm[id] }; }));
+}
+function clearStockGone(ids){
+  if(!ids || !ids.length || !(S.stockGone || []).length) return;
+  var drop = {};
+  ids.forEach(function(id){ drop[id] = true; });
+  S.stockGone = (S.stockGone || []).filter(function(g){ return !drop[g.id]; });
+}
 function applyState(newState, metaText){
-  /* 未送信の変更があるのに相手の新しいstateで上書きされる場合、在庫だけはID単位で合流させて
-     取り込んだ分が丸ごと消えないようにする（同じIDは相手側＝新しい方を優先） */
-  var keepStock = null;
-  if(localDirty && S.stock && S.stock.length){
-    var remoteIds = {};
-    ((newState && newState.stock) || []).forEach(function(it){ if(it && it.id) remoteIds[it.id] = true; });
-    keepStock = S.stock.filter(function(it){ return it && it.id && !remoteIds[it.id]; });
-    if(!keepStock.length) keepStock = null;
-  }
+  /* 在庫は常に合体してから反映する：相手のstateに無い在庫でも、墓標（意図的な削除）が
+     無い限り端末側の分を残し、残した分は送り直して共有側も復旧させる */
+  var remote = sanitizeState(newState);
+  var merged = mergeStockData(S.stock, S.stockGone, remote.stock, remote.stockGone, false);
+  var goneIds = function(list){ return (list || []).map(function(g){ return g.id; }).sort().join(","); };
+  var rescued = merged.stock.length !== remote.stock.length
+    || goneIds(merged.gone) !== goneIds(remote.stockGone);
   localDirty = false;
-  S = sanitizeState(newState); rebuildIndex();
-  if(keepStock){
-    S.stock = (S.stock || []).concat(keepStock);
-    persistLocal(); queueWrite();
-  }
+  S = remote; rebuildIndex();
+  S.stock = merged.stock; S.stockGone = merged.gone;
+  if(rescued){ persistLocal(); queueWrite(); }
   /* 相手のstateで自分のエントリが消えていたら、自分の分（公開範囲どおり）を戻して送り直す */
   if(syncOwnProfileToState()){ persistLocal(); queueWrite(); }
   persistLocal(); renderAll();
@@ -3101,12 +3351,39 @@ function writeNow(){
   if(!fb.gotRemote) return;
   clearTimeout(fb.writeTimer); fb.writeTimer = null;
   var ts = localUpdatedAt || Date.now(); localUpdatedAt = ts;
-  var payload = { state:S, updatedAt:ts, updatedById:clientId, updatedByName:deviceName };
-  fb.db.collection("rooms").doc(roomCode).set(payload).then(function(){
+  var ref = fb.db.collection("rooms").doc(roomCode);
+  var payloadState = S;
+  function onWriteOk(){
+    if(payloadState !== S){
+      /* トランザクションで取り込んだ相手側の在庫を端末側にも反映する（合体なので送信中の追加も消えない） */
+      var merged = mergeStockData(S.stock, S.stockGone, payloadState.stock, payloadState.stockGone, true);
+      S.stock = merged.stock; S.stockGone = merged.gone;
+      persistLocal(); renderAll();
+    }
     if(localUpdatedAt === ts){ localDirty = false; saveLocalMeta(); }
     fb.lastMeta = "最終更新：" + deviceName + "・" + new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
     setSyncUI("on");
-  }).catch(function(){ setSyncUI("off"); });
+  }
+  function onWriteNg(){ setSyncUI("off"); }
+  if(typeof fb.db.runTransaction === "function"){
+    /* 書く直前にサーバー側の最新stateを読み、在庫だけ合体してから書く。
+       古い状態を持った端末が別の変更を送っても、取り込んだ在庫が上書きで消えない */
+    fb.db.runTransaction(function(tx){
+      return tx.get(ref).then(function(snap){
+        if(snap.exists){
+          var rd = snap.data() || {};
+          if(rd.state && rd.updatedById !== clientId){
+            var remote = sanitizeState(rd.state);
+            var merged = mergeStockData(S.stock, S.stockGone, remote.stock, remote.stockGone, true);
+            payloadState = Object.assign({}, S, { stock: merged.stock, stockGone: merged.gone });
+          }
+        }
+        tx.set(ref, { state: payloadState, updatedAt: ts, updatedById: clientId, updatedByName: deviceName });
+      });
+    }).then(onWriteOk).catch(onWriteNg);
+  } else {
+    ref.set({ state: payloadState, updatedAt: ts, updatedById: clientId, updatedByName: deviceName }).then(onWriteOk).catch(onWriteNg);
+  }
 }
 function queueWrite(){
   /* 変更はまず「未送信」として記録する。接続前・オフラインでも消えないようにし、
@@ -3558,8 +3835,29 @@ function stockBadgeHtml(d){
   if(i.matched.length && i.missing <= 2) return '<span class="stockbadge miss">あと' + i.missing + '品</span>';
   return "";
 }
+/* 在庫の削除は必ず墓標（stockGone）を残す。墓標が同期されることで、
+   合体（union）時に「相手の古いコピーから復活」も「誤って消えたまま」も防ぐ。
+   戻り値は消した品（「元に戻す」用） */
 function removeStockItem(id){
+  var removed = (S.stock || []).filter(function(it){ return it.id === id; });
+  if(!removed.length) return removed;
   S.stock = (S.stock || []).filter(function(it){ return it.id !== id; });
+  addStockGone([id]);
+  return removed;
+}
+function removeStockItems(ids){
+  var removed = (S.stock || []).filter(function(it){ return ids.indexOf(it.id) >= 0; });
+  if(!removed.length) return removed;
+  S.stock = (S.stock || []).filter(function(it){ return ids.indexOf(it.id) < 0; });
+  addStockGone(ids);
+  return removed;
+}
+function restoreStockItems(items){
+  if(!items || !items.length) return;
+  clearStockGone(items.map(function(it){ return it.id; }));
+  var have = {};
+  (S.stock || []).forEach(function(it){ have[it.id] = true; });
+  S.stock = (S.stock || []).concat(items.filter(function(it){ return it && it.id && !have[it.id]; }));
 }
 /* ---- レシート取り込み：1行1品目を緩く解釈する ---- */
 function parseReceiptLine(line){
@@ -3750,10 +4048,10 @@ function renderStock(){
     list.innerHTML = html;
   }
   Array.prototype.forEach.call(document.querySelectorAll("[data-stockuse]"), function(b){
-    b.addEventListener("click", function(){ removeStockItem(b.getAttribute("data-stockuse")); changed(); toast("使ったことにして在庫から消したよ"); });
+    b.addEventListener("click", function(){ var removed = removeStockItem(b.getAttribute("data-stockuse")); changed(); toastUndo("使ったことにして在庫から消したよ", removed); });
   });
   Array.prototype.forEach.call(document.querySelectorAll("[data-stockdel]"), function(b){
-    b.addEventListener("click", function(){ removeStockItem(b.getAttribute("data-stockdel")); if(stockEditId === b.getAttribute("data-stockdel")) resetStockForm(); changed(); toast("在庫から削除したよ"); });
+    b.addEventListener("click", function(){ var removed = removeStockItem(b.getAttribute("data-stockdel")); if(stockEditId === b.getAttribute("data-stockdel")) resetStockForm(); changed(); toastUndo("在庫から削除したよ", removed); });
   });
   Array.prototype.forEach.call(document.querySelectorAll("[data-stockedit]"), function(b){
     b.addEventListener("click", function(){
@@ -4678,10 +4976,10 @@ function openDetail(dishId, opts){
   Array.prototype.forEach.call(document.querySelectorAll("[data-detailstockuse]"), function(b){
     b.addEventListener("click", function(){
       var keep = { slot: detailSlot, pos: detailPos, fromPicker: detailFromPicker };
-      removeStockItem(b.getAttribute("data-detailstockuse"));
+      var removed = removeStockItem(b.getAttribute("data-detailstockuse"));
       changed();
       openDetail(detailDishId, keep);
-      toast("使ったことにして在庫から消したよ");
+      toastUndo("使ったことにして在庫から消したよ", removed);
     });
   });
   var acts = "";
@@ -4817,19 +5115,22 @@ function renderSnackQtyBox(){
 
 /* ================= 食べた記録シート =================
    ①予定どおり／②違うもの（実食）を選ぶ。記録直後、材料と一致する在庫があれば消費確認ステップを出す */
-var eatenKey = null, eatenShowDiff = false, eatenSnack = null, eatenMemberDiff = null, eatenPendingId = null, eatenQtySel = 1;
+var eatenKey = null, eatenShowDiff = false, eatenSnack = null, eatenMemberDiff = null;
+/* 実食の選択中トレイ：[{id, qty}]。候補をタップしても閉じず、ここに積み上げて最後にまとめて記録する */
+var eatenSel = [], eatenCat = "rec";
 var eatenMode = "search", eatenEstGenre = "yakiniku", eatenEstLevel = "lots";
 function memberModeActive(){ return !!eatenKey && !eatenSnack && membersList().length >= 2; }
 function setMemberRec(o, mkey, rec){
   if(!o.by) o.by = {};
   if(rec) o.by[mkey] = rec; else delete o.by[mkey];
   if(!Object.keys(o.by).length) delete o.by;
-  o.actualId = null; o.actualName = ""; o.est = null;
+  o.actualId = null; o.actualName = ""; o.items = null; o.est = null;
   o.eaten = slotAnyEaten(o);
 }
-function closeEatenSheet(){ var m = $("eatenModal"); if(m) m.classList.remove("open"); eatenKey = null; eatenSnack = null; eatenShowDiff = false; eatenMemberDiff = null; eatenPendingId = null; eatenQtySel = 1; eatenMode = "search"; }
-function openEatenSheet(key){ eatenKey = key; eatenSnack = null; eatenShowDiff = false; eatenMemberDiff = null; eatenPendingId = null; eatenQtySel = 1; eatenMode = "search"; renderEatenSheet(); $("eatenModal").classList.add("open"); }
-function openSnackEaten(di, id){ eatenKey = null; eatenSnack = { di: di, id: id }; eatenShowDiff = false; eatenPendingId = null; eatenQtySel = 1; eatenMode = "search"; renderEatenSheet(); $("eatenModal").classList.add("open"); }
+function resetEatenPicker(){ eatenSel = []; eatenCat = "rec"; }
+function closeEatenSheet(){ var m = $("eatenModal"); if(m) m.classList.remove("open"); eatenKey = null; eatenSnack = null; eatenShowDiff = false; eatenMemberDiff = null; resetEatenPicker(); eatenMode = "search"; }
+function openEatenSheet(key){ eatenKey = key; eatenSnack = null; eatenShowDiff = false; eatenMemberDiff = null; resetEatenPicker(); eatenMode = "search"; renderEatenSheet(); $("eatenModal").classList.add("open"); }
+function openSnackEaten(di, id){ eatenKey = null; eatenSnack = { di: di, id: id }; eatenShowDiff = false; resetEatenPicker(); eatenMode = "search"; renderEatenSheet(); $("eatenModal").classList.add("open"); }
 function snackItemByRef(ref){ if(!ref) return null; return daySnacks(ref.di).filter(function(it){ return it.id === ref.id; })[0] || null; }
 function getEatenObj(){
   if(eatenSnack){ var it = snackItemByRef(eatenSnack); return it ? { staple:"なし", main:null, side:null, soup:null, complete:null, eaten: !!it.eaten, actualId: it.actualId || null, actualName: it.actualName || "", qty: validQty(it.qty), actualQty: validQty(it.actualQty), est: validEst(it.est) } : null; }
@@ -4872,7 +5173,7 @@ function renderEatenSheet(){
   }
   if(o.eaten){
     html += '<p class="eaten-planned">' + (hasActual(o)
-      ? 'いまの記録：<b>✓ 食べた（実食：' + esc(actualNameOf(o)) + (o.actualId ? esc(qtySuffix(o.actualQty)) : '') + '）</b>'
+      ? 'いまの記録：<b>✓ 食べた（実食：' + esc(actualNameOf(o)) + '）</b>'
       : 'いまの記録：<b>✓ 食べた（予定どおり）</b>') + '</p>';
   }
   html += '<div class="eaten-actions">';
@@ -4884,10 +5185,11 @@ function renderEatenSheet(){
     + eatenDiffToggleHtml()
     + '<div id="eatenSearchBox"' + (eatenMode === "est" ? ' hidden' : '') + '>'
     + '<div class="field"><label for="eatenActualInput">食べたものの名前・キーワード</label>'
-    + '<input type="text" id="eatenActualInput" placeholder="例：とんこつラーメン、コンビニのサラダ" value="' + esc(hasActual(o) && !o.est ? actualNameOf(o) : "") + '" /></div>'
-    + '<p class="sub" style="margin:0">似たレシピが候補に出ます。選ぶと実食として記録し、実績の栄養はその品で計算します。</p>'
+    + '<input type="text" id="eatenActualInput" placeholder="例：とんこつラーメン、コンビニのサラダ" value="' + esc(hasActual(o) && !o.est && !recItems(o).length ? (o.actualName || "") : "") + '" /></div>'
+    + '<p class="sub" style="margin:0">候補をタップすると「選択中」にたまります。何品でも選べて、品ごとに数量も変えられます。最後に「これで記録する」でまとめて記録します。</p>'
+    + '<div id="eatenTray"></div>'
+    + '<div class="cat-chips" id="eatenChips"></div>'
     + '<div class="eaten-cands" id="eatenCands"></div>'
-    + '<div id="eatenQtyBox"></div>'
     + '<div class="eaten-actions"><button type="button" class="btn ghost" id="eatenNameOnlyBtn">候補にないので、この名前だけで記録する</button></div>'
     + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。在庫との照合も行いません。</p>'
     + '</div>'
@@ -4897,21 +5199,21 @@ function renderEatenSheet(){
   bindModeToggle();
   var pb = $("eatenPlannedBtn");
   if(pb) pb.addEventListener("click", function(){
-    var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = ""; oo.actualQty = 1; oo.est = null; commitEatenObj(oo);
+    var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = ""; oo.actualQty = 1; oo.items = null; oo.est = null; commitEatenObj(oo);
     afterEatenRecorded();
   });
   var db = $("eatenDiffBtn");
   if(db) db.addEventListener("click", function(){
     eatenShowDiff = true;
     var oo = getEatenObj();
-    if(oo && oo.est && estPreset(oo.est)){ eatenMode = "est"; eatenEstGenre = oo.est.genre; eatenEstLevel = oo.est.level; eatenPendingId = null; }
-    else if(oo && oo.actualId){ eatenMode = "search"; eatenPendingId = oo.actualId; eatenQtySel = validQty(oo.actualQty); }
+    if(oo && oo.est && estPreset(oo.est)){ eatenMode = "est"; eatenEstGenre = oo.est.genre; eatenEstLevel = oo.est.level; eatenSel = []; }
+    else if(oo && recItems(oo).length){ eatenMode = "search"; eatenSel = recItems(oo).map(function(x){ return { id: x.id, qty: x.qty }; }); }
     renderEatenSheet();
     if(eatenMode !== "est"){ var inp = $("eatenActualInput"); if(inp) inp.focus(); }
   });
   var cb = $("eatenCancelBtn");
   if(cb) cb.addEventListener("click", function(){
-    var oo = getEatenObj(); if(!oo) return; oo.eaten = false; oo.actualId = null; oo.actualName = ""; oo.actualQty = 1; oo.est = null; commitEatenObj(oo);
+    var oo = getEatenObj(); if(!oo) return; oo.eaten = false; oo.actualId = null; oo.actualName = ""; oo.actualQty = 1; oo.items = null; oo.est = null; commitEatenObj(oo);
     changed(); closeEatenSheet(); toast("「食べた」を取り消したよ");
   });
   var inp2 = $("eatenActualInput");
@@ -4920,16 +5222,16 @@ function renderEatenSheet(){
   if(nb) nb.addEventListener("click", function(){
     var v = (($("eatenActualInput") || {}).value || "").trim();
     if(!v){ toast("食べたものの名前を入れてね"); return; }
-    var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = v; oo.actualQty = 1; oo.est = null; commitEatenObj(oo);
+    var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = v; oo.actualQty = 1; oo.items = null; oo.est = null; commitEatenObj(oo);
     changed(); closeEatenSheet(); toast("「" + v + "」を実食として記録したよ（kcalは不明）");
   });
-  if(eatenShowDiff){ if(eatenMode === "est") renderEstBox(); else { renderEatenCands(); renderEatenQtyBox(); } }
+  if(eatenShowDiff){ if(eatenMode === "est") renderEstBox(); else { renderEatenChips(); renderEatenCands(); renderEatenTray(); } }
 }
 function memberRecLabel(o, mkey){
   var r = o.by && o.by[mkey];
   if(!r) return "未記録";
   if(r.s === "none") return "食べてない";
-  if(r.s === "actual") return "実食：" + ((r.est && estPreset(r.est)) ? estLabel(r.est) : (r.actualId && dishById[r.actualId] ? dishById[r.actualId].name : (r.actualName || "")) + (r.actualId ? qtySuffix(r.actualQty) : ""));
+  if(r.s === "actual") return "実食：" + ((r.est && estPreset(r.est)) ? estLabel(r.est) : (recItemsLabel(r) || (r.actualName || "")));
   return "予定どおり";
 }
 function renderEatenSheetMembers(o, day, meal){
@@ -4951,9 +5253,10 @@ function renderEatenSheetMembers(o, day, meal){
     + '<div id="eatenSearchBox"' + (eatenMode === "est" ? ' hidden' : '') + '>'
     + '<div class="field"><label for="eatenActualInput">' + (diffMember ? esc(diffMember.name) + 'が' : '') + '食べたものの名前・キーワード</label>'
     + '<input type="text" id="eatenActualInput" placeholder="例：とんこつラーメン、コンビニのサラダ" value="" /></div>'
-    + '<p class="sub" style="margin:0">似たレシピが候補に出ます。選ぶとそのメンバーの実食として記録します。</p>'
+    + '<p class="sub" style="margin:0">候補をタップすると「選択中」にたまります。何品でも選べて、最後に「これで記録する」でそのメンバーの実食としてまとめて記録します。</p>'
+    + '<div id="eatenTray"></div>'
+    + '<div class="cat-chips" id="eatenChips"></div>'
     + '<div class="eaten-cands" id="eatenCands"></div>'
-    + '<div id="eatenQtyBox"></div>'
     + '<div class="eaten-actions"><button type="button" class="btn ghost" id="eatenNameOnlyBtn">候補にないので、この名前だけで記録する</button></div>'
     + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。在庫との照合も行いません。</p>'
     + '</div>'
@@ -4987,11 +5290,11 @@ function renderEatenSheetMembers(o, day, meal){
   Array.prototype.forEach.call(document.querySelectorAll("[data-mdiff]"), function(b){
     b.addEventListener("click", function(){
       eatenMemberDiff = b.getAttribute("data-mdiff");
-      eatenPendingId = null; eatenQtySel = 1; eatenMode = "search";
+      eatenSel = []; eatenMode = "search";
       var oo = getEatenObj();
       var r = oo && oo.by ? oo.by[eatenMemberDiff] : null;
       if(r && r.s === "actual" && r.est && estPreset(r.est)){ eatenMode = "est"; eatenEstGenre = r.est.genre; eatenEstLevel = r.est.level; }
-      else if(r && r.s === "actual" && r.actualId){ eatenPendingId = r.actualId; eatenQtySel = validQty(r.actualQty); }
+      else if(r && r.s === "actual"){ eatenSel = recItems(r).map(function(x){ return { id: x.id, qty: x.qty }; }); }
       renderEatenSheet();
       if(eatenMode !== "est"){ var inp = $("eatenActualInput"); if(inp) inp.focus(); }
     });
@@ -5003,8 +5306,8 @@ function renderEatenSheetMembers(o, day, meal){
     var v = (($("eatenActualInput") || {}).value || "").trim();
     if(!v || !eatenMemberDiff){ toast("食べたものの名前を入れてね"); return; }
     var oo = getEatenObj(); if(!oo) return;
-    setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: null, actualName: v, actualQty: 1 });
-    commitEatenObj(oo); changed(); eatenMemberDiff = null; eatenPendingId = null; renderEatenSheet();
+    setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: null, actualName: v, actualQty: 1, items: null });
+    commitEatenObj(oo); changed(); eatenMemberDiff = null; eatenSel = []; renderEatenSheet();
     toast("「" + v + "」を実食として記録したよ（kcalは不明）");
   });
   $("eatenFinishBtn").addEventListener("click", function(){
@@ -5014,10 +5317,10 @@ function renderEatenSheetMembers(o, day, meal){
   });
   $("eatenClearBtn").addEventListener("click", function(){
     var oo = getEatenObj(); if(!oo) return;
-    delete oo.by; oo.eaten = false; oo.actualId = null; oo.actualName = ""; oo.actualQty = 1; oo.est = null;
+    delete oo.by; oo.eaten = false; oo.actualId = null; oo.actualName = ""; oo.actualQty = 1; oo.items = null; oo.est = null;
     commitEatenObj(oo); changed(); renderEatenSheet(); toast("メンバー別の記録を消したよ");
   });
-  if(diffMember){ if(eatenMode === "est") renderEstBox(); else { renderEatenCands(); renderEatenQtyBox(); } }
+  if(diffMember){ if(eatenMode === "est") renderEstBox(); else { renderEatenChips(); renderEatenCands(); renderEatenTray(); } }
 }
 function eatenStockDishes(o){
   /* 在庫照合用の「食べた品」一覧。メンバー別記録では、食べたメンバーの実食／予定品を集める（重複なし） */
@@ -5028,41 +5331,139 @@ function eatenStockDishes(o){
     var r = o.by[mk];
     if(!r || r.s === "none") return;
     if(r.s === "actual"){
-      var ad = r.actualId ? dishById[r.actualId] : null;
-      if(ad && !seen[ad.id]){ seen[ad.id] = true; out.push(ad); }
+      recItems(r).forEach(function(x){
+        var ad = dishById[x.id];
+        if(ad && !seen[ad.id]){ seen[ad.id] = true; out.push(ad); }
+      });
     } else {
       planned.forEach(function(d){ if(!seen[d.id]){ seen[d.id] = true; out.push(d); } });
     }
   });
   return out;
 }
+function renderEatenChips(){
+  var box = $("eatenChips"); if(!box) return;
+  box.innerHTML = EAT_CATS.map(function(c){
+    return '<button type="button" class="cat-chip" data-catchip="' + c.key + '" aria-pressed="' + (eatenCat === c.key) + '">' + esc(c.label) + '</button>';
+  }).join("");
+  Array.prototype.forEach.call(box.querySelectorAll("[data-catchip]"), function(b){
+    b.addEventListener("click", function(){
+      eatenCat = b.getAttribute("data-catchip");
+      renderEatenChips(); renderEatenCands();
+    });
+  });
+}
 function renderEatenCands(){
   var box = $("eatenCands"); if(!box || (!eatenKey && !eatenSnack)) return;
   var q = (($("eatenActualInput") || {}).value || "").trim();
-  if(!q){ box.innerHTML = '<p class="sub" style="margin:4px 0 0">名前を入れると候補が出ます。</p>'; return; }
-  var cands = actualCandidates(q, eatenKey);
-  if(!cands.length){ box.innerHTML = '<p class="sub" style="margin:4px 0 0">似たレシピが見つからなかった…下のボタンで名前だけで記録できます。</p>'; return; }
+  var cands = eatenCandList();
+  if(!cands.length){
+    box.innerHTML = '<p class="sub" style="margin:4px 0 0">' + (q
+      ? '似たレシピが見つからなかった…カテゴリを変えるか、下のボタンで名前だけで記録できます。'
+      : (eatenCat === "freq" ? 'まだ記録した品がありません。記録した品はここに自動で集まります。' : 'このカテゴリの品は見つかりませんでした。')) + '</p>';
+    return;
+  }
+  var selIds = {};
+  eatenSel.forEach(function(x){ selIds[x.id] = true; });
   box.innerHTML = cands.map(function(d){
     var meta = [POS_LABEL[roleOf(d)]];
-    if(d.kcal) meta.push(d.kcal + "kcal");
+    if(usageOf(d.id) > 0) meta.push("よく使う ×" + usageOf(d.id));
     if(hasPfc(d)) meta.push("P " + fmtG(d.protein) + "g・F " + fmtG(d.fat) + "g・C " + fmtG(d.carbs) + "g");
-    return '<button type="button" class="eaten-cand" data-eatencand="' + esc(d.id) + '" aria-pressed="' + (eatenPendingId === d.id) + '"><span class="nm">' + esc(d.name) + '</span><span class="meta">' + esc(meta.join("・")) + '</span></button>';
+    var sel = !!selIds[d.id];
+    return '<button type="button" class="pick-row" data-eatencand="' + esc(d.id) + '" aria-pressed="' + sel + '" aria-label="' + esc(d.name) + (sel ? ' を選択中から外す' : ' を選択中に入れる') + '">'
+      + '<span class="pick-main"><span class="nm">' + esc(d.name) + '</span><span class="meta">' + esc(meta.join("・")) + '</span></span>'
+      + (d.kcal ? '<span class="pick-kcal">' + d.kcal + '<small>kcal</small></span>' : '<span class="pick-kcal none">kcal不明</span>')
+      + '<span class="pick-check">' + (sel ? '✓ 選択中' : '＋') + '</span></button>';
   }).join("");
   Array.prototype.forEach.call(box.querySelectorAll("[data-eatencand]"), function(b){
     b.addEventListener("click", function(){
       var d = dishById[b.getAttribute("data-eatencand")]; if(!d || (!eatenKey && !eatenSnack)) return;
-      /* すぐ記録せず、数量（倍率）をステッパーで決めてから確定する */
-      if(eatenPendingId !== d.id){ eatenPendingId = d.id; eatenQtySel = 1; }
-      Array.prototype.forEach.call(box.querySelectorAll("[data-eatencand]"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-      renderEatenQtyBox();
+      /* タップで選択中に積む／外す。シートは閉じず、何品でも続けて選べる */
+      var idx = -1;
+      eatenSel.forEach(function(x, i){ if(x.id === d.id) idx = i; });
+      if(idx >= 0) eatenSel.splice(idx, 1);
+      else eatenSel.push({ id: d.id, qty: 1 });
+      renderEatenCands(); renderEatenTray();
     });
   });
+}
+/* 選択中トレイ：品ごとの数量ステッパーと取り外し、合計kcal、まとめて記録するボタン */
+function renderEatenTray(){
+  var box = $("eatenTray"); if(!box) return;
+  eatenSel = eatenSel.filter(function(x){ return !!dishById[x.id]; });
+  if(!eatenSel.length){ box.innerHTML = ""; return; }
+  var totalK = 0, allKnown = true;
+  var rows = eatenSel.map(function(x, i){
+    var d = dishById[x.id];
+    var q = validQty(x.qty);
+    if(d.kcal) totalK += d.kcal * q; else allKnown = false;
+    return '<div class="tray-item"><div class="tray-info"><span class="nm">' + esc(d.name) + '</span>'
+      + '<span class="meta">' + (d.kcal ? (q !== 1 ? Math.round(d.kcal * q) + 'kcal（' + d.kcal + 'kcal×' + fmtG(q) + '）' : d.kcal + 'kcal') : 'kcal不明') + '</span></div>'
+      + '<div class="tray-qty"><button type="button" data-trayminus="' + i + '" aria-label="' + esc(d.name) + 'の数量を0.5減らす">−</button>'
+      + '<span class="qv">×' + fmtG(q) + '</span>'
+      + '<button type="button" data-trayplus="' + i + '" aria-label="' + esc(d.name) + 'の数量を0.5増やす">＋</button></div>'
+      + '<button type="button" class="tray-x" data-traydel="' + i + '" aria-label="' + esc(d.name) + 'を選択中から外す">✕</button></div>';
+  }).join("");
+  box.innerHTML = '<div class="tray"><div class="tray-head">選択中（' + eatenSel.length + '品）'
+    + (totalK ? '・合計 約' + Math.round(totalK).toLocaleString("ja-JP") + 'kcal' + (allKnown ? '' : '（判明分）') : '') + '</div>'
+    + rows
+    + '<div class="eaten-actions" style="margin-bottom:2px"><button type="button" class="btn primary" id="eatenSelConfirm">これで記録する（' + eatenSel.length + '品）</button></div></div>';
+  Array.prototype.forEach.call(box.querySelectorAll("[data-trayminus]"), function(b){
+    b.addEventListener("click", function(){ var i = +b.getAttribute("data-trayminus"); eatenSel[i].qty = validQty(eatenSel[i].qty - 0.5); renderEatenTray(); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll("[data-trayplus]"), function(b){
+    b.addEventListener("click", function(){ var i = +b.getAttribute("data-trayplus"); eatenSel[i].qty = validQty(eatenSel[i].qty + 0.5); renderEatenTray(); });
+  });
+  Array.prototype.forEach.call(box.querySelectorAll("[data-traydel]"), function(b){
+    b.addEventListener("click", function(){ eatenSel.splice(+b.getAttribute("data-traydel"), 1); renderEatenTray(); renderEatenCands(); });
+  });
+  $("eatenSelConfirm").addEventListener("click", commitEatenSelection);
+}
+/* 選択中の複数品をまとめて実食として記録する。概算モードとは混在させない（記録時は est を消す）。
+   間食では1品目をその間食の実食にし、2品目以降は食べた間食として別エントリで足す */
+function commitEatenSelection(){
+  if(!eatenSel.length){ toast("品を選んでね"); return; }
+  var items = eatenSel.map(function(x){ return { id: x.id, qty: validQty(x.qty) }; });
+  var ids = items.map(function(x){ return x.id; });
+  if(eatenSnack){
+    var ref = eatenSnack, it = snackItemByRef(ref); if(!it) return;
+    var oo = getEatenObj(); if(!oo) return;
+    var first = items[0], fd = dishById[first.id];
+    oo.eaten = true; oo.actualId = first.id; oo.actualName = fd ? fd.name : ""; oo.actualQty = first.qty; oo.est = null;
+    commitEatenObj(oo);
+    if(items.length > 1){
+      var list = daySnacks(ref.di).slice();
+      items.slice(1).forEach(function(x){
+        var d = dishById[x.id]; if(!d) return;
+        list.push({ id: "sn" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+          dishId: d.id, name: d.name, eaten: true,
+          ownerKey: it.ownerKey || "", ownerName: it.ownerName || "",
+          actualId: null, actualName: "", qty: x.qty, actualQty: 1, est: null });
+      });
+      setDaySnacks(ref.di, list);
+    }
+    bumpUsage(ids);
+    finishEatenWithStock({ eaten: true, items: items }, null);
+    return;
+  }
+  var oo2 = getEatenObj(); if(!oo2) return;
+  if(eatenMemberDiff && memberModeActive()){
+    setMemberRec(oo2, eatenMemberDiff, { s: "actual", actualId: null, actualName: "", actualQty: 1, items: items });
+    commitEatenObj(oo2); changed(); eatenMemberDiff = null; eatenSel = [];
+    renderEatenSheet();
+    toast("実食として記録したよ（" + items.length + "品）");
+    return;
+  }
+  oo2.eaten = true; oo2.actualId = null; oo2.actualName = ""; oo2.actualQty = 1; oo2.items = items; oo2.est = null;
+  commitEatenObj(oo2);
+  eatenSel = [];
+  afterEatenRecorded();
 }
 /* ================= 概算モードの入力欄 =================
    「違うものを食べた」の中に、品名検索と並ぶ切り替えとして出す。ジャンル×量を選ぶだけ */
 function eatenDiffToggleHtml(){
   return '<div class="mode-toggle" role="group" aria-label="記録方法の切り替え">'
-    + '<button type="button" id="eatenModeSearch" aria-pressed="' + (eatenMode !== "est") + '">品名で探す<small>1品ずつ・数量指定もOK</small></button>'
+    + '<button type="button" id="eatenModeSearch" aria-pressed="' + (eatenMode !== "est") + '">品名で探す<small>複数えらべる・数量指定もOK</small></button>'
     + '<button type="button" id="eatenModeEst" aria-pressed="' + (eatenMode === "est") + '">概算モード<small>ジャンル × 食べた量</small></button></div>';
 }
 function syncModeBoxes(){
@@ -5074,7 +5475,7 @@ function syncModeBoxes(){
 }
 function bindModeToggle(){
   var bs = $("eatenModeSearch"), be = $("eatenModeEst");
-  if(bs) bs.addEventListener("click", function(){ eatenMode = "search"; syncModeBoxes(); });
+  if(bs) bs.addEventListener("click", function(){ eatenMode = "search"; syncModeBoxes(); if($("eatenChips")){ renderEatenChips(); renderEatenCands(); renderEatenTray(); } });
   if(be) be.addEventListener("click", function(){ eatenMode = "est"; syncModeBoxes(); renderEstBox(); });
 }
 function renderEstBox(){
@@ -5112,42 +5513,26 @@ function commitEstRecord(){
   var label = estLabel(est);
   if(eatenMemberDiff && memberModeActive()){
     var oo = getEatenObj(); if(!oo) return;
-    setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: null, actualName: label, actualQty: 1, est: est });
-    commitEatenObj(oo); changed(); eatenMemberDiff = null; eatenPendingId = null;
+    setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: null, actualName: label, actualQty: 1, items: null, est: est });
+    commitEatenObj(oo); changed(); eatenMemberDiff = null; eatenSel = [];
     renderEatenSheet();
     toast("「" + label + "」を実食として記録したよ");
     return;
   }
   var oo2 = getEatenObj(); if(!oo2) return;
-  oo2.eaten = true; oo2.actualId = null; oo2.actualName = label; oo2.actualQty = 1; oo2.est = est;
+  oo2.eaten = true; oo2.actualId = null; oo2.actualName = label; oo2.actualQty = 1; oo2.items = null; oo2.est = est;
   commitEatenObj(oo2);
   afterEatenRecorded();
-}
-/* 実食：品を選んだら数量（倍率）をステッパーで決めてから記録する。kcal／PFCは数量分で計算される */
-function renderEatenQtyBox(){
-  var box = $("eatenQtyBox"); if(!box) return;
-  var d = eatenPendingId ? dishById[eatenPendingId] : null;
-  if(!d){ box.innerHTML = ""; return; }
-  box.innerHTML = qtyStepperHtml("eatenQty", d, eatenQtySel)
-    + '<div class="eaten-actions"><button type="button" class="btn primary" id="eatenQtyConfirm">この内容で記録する</button></div>';
-  bindQtyStepper("eatenQty", d, function(){ return eatenQtySel; }, function(v){ eatenQtySel = v; });
-  $("eatenQtyConfirm").addEventListener("click", function(){
-    var oo = getEatenObj(); if(!oo) return;
-    if(eatenMemberDiff && memberModeActive()){
-      setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: d.id, actualName: d.name, actualQty: validQty(eatenQtySel) });
-      commitEatenObj(oo); changed(); eatenMemberDiff = null; eatenPendingId = null; eatenQtySel = 1; renderEatenSheet();
-      toast("実食として記録したよ");
-      return;
-    }
-    oo.eaten = true; oo.actualId = d.id; oo.actualName = d.name; oo.actualQty = validQty(eatenQtySel); oo.est = null; commitEatenObj(oo);
-    eatenPendingId = null; eatenQtySel = 1;
-    afterEatenRecorded();
-  });
 }
 /* 記録直後：材料と一致する在庫があれば消費確認へ。無ければ記録だけで終わる */
 function afterEatenRecorded(){
   var o = getEatenObj(); if(!o){ closeEatenSheet(); return; }
-  var matches = stockMatchesForEaten(o, eatenStockDishes(o) || eatenPlannedDishes(o));
+  bumpUsage(eatenDishIdsForUsage(o));
+  finishEatenWithStock(o, eatenStockDishes(o) || eatenPlannedDishes(o));
+}
+/* 在庫消費ステップへの共通の締め：recForStock の材料と一致する在庫があれば確認を出す */
+function finishEatenWithStock(recForStock, fallbackDishes){
+  var matches = stockMatchesForEaten(recForStock, fallbackDishes);
   changed();
   if(matches.length) renderEatenStockStep(matches);
   else { closeEatenSheet(); toast("食べたよ！実績に記録したよ"); }
@@ -5185,12 +5570,11 @@ function renderEatenStockStep(matches){
       var sel = row.querySelector('button[data-usechoice="usedup"][aria-pressed="true"]');
       if(sel) ids.push(row.getAttribute("data-stockuserow"));
     });
-    if(ids.length){
-      S.stock = (S.stock || []).filter(function(it){ return ids.indexOf(it.id) < 0; });
-      changed();
-    }
+    var removed = ids.length ? removeStockItems(ids) : [];
+    if(removed.length) changed();
     closeEatenSheet();
-    toast(ids.length ? ("食べたよ！在庫 " + ids.length + "品を使い切ったことにしたよ") : "食べたよ！実績に記録したよ（在庫はそのまま）");
+    if(removed.length) toastUndo("食べたよ！在庫 " + removed.length + "品を使い切ったことにしたよ", removed);
+    else toast("食べたよ！実績に記録したよ（在庫はそのまま）");
   });
   $("eatenStockSkip").addEventListener("click", function(){ closeEatenSheet(); toast("食べたよ！実績に記録したよ（在庫はそのまま）"); });
 }
