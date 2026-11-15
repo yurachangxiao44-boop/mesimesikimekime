@@ -2686,6 +2686,10 @@ try{ var savedLocal = localStorage.getItem(roomCode ? ("mmk_state_"+roomCode) : 
 /* 端末側の保存メタ：まだリモートへ送れていない変更（dirty）とその時刻。
    リモートより端末側が新しければ、再接続時のスナップショットで上書きせず端末側を送り直す */
 var localUpdatedAt = 0, localDirty = false;
+/* このセッションで一度でも記録（在庫・献立・食べた記録など）を持ったか。
+   起動直後から空のまま一度も記録を持っていない端末が、ルームの記録を
+   空で上書きしてしまう事故を防ぐための判定に使う（writeNow のガード参照） */
+var sessionHadRecords = stateHasRecords(S);
 function metaKey(){ return roomCode ? ("mmk_meta_"+roomCode) : "mmk_meta_local"; }
 function loadLocalMeta(){
   localUpdatedAt = 0; localDirty = false;
@@ -3537,7 +3541,7 @@ function mealKcalBudget(meal, pos){
 
 /* ================= Firebase ================= */
 var FIREBASE_CONFIG = {"apiKey":"AIzaSyAXMrKqKijF2YFA0siWV1okzLy3tCVMiYM","appId":"1:127763276314:web:17bd235e344c9b962a27a3","authDomain":"mesimesikimekime.firebaseapp.com","messagingSenderId":"127763276314","projectId":"mesimesikimekime","storageBucket":"mesimesikimekime.firebasestorage.app"};
-var fb = { ok:false, db:null, unsub:null, lastRemoteApplied:0, writeTimer:null, lastMeta:null, gotRemote:false };
+var fb = { ok:false, db:null, unsub:null, lastRemoteApplied:0, writeTimer:null, lastMeta:null, gotRemote:false, pulledOnce:false };
 function setSyncUI(mode, metaText){
   var pill=$("syncPill"), txt=$("syncText"), banner=$("offlineBanner"), meta=$("syncMeta");
   pill.classList.remove("on","off");
@@ -3604,6 +3608,18 @@ function clearStockGone(ids){
   ids.forEach(function(id){ drop[id] = true; });
   S.stockGone = (S.stockGone || []).filter(function(g){ return !drop[g.id]; });
 }
+/* stateに「記録」と呼べる中身があるか。プロフィールは端末側の控えから自動で戻るため、
+   空判定からは外す（プロフィールだけ残って記録が空、という壊れ方を検出するため） */
+function stateHasRecords(st){
+  if(!st || typeof st !== "object") return false;
+  if((st.stock || []).length) return true;
+  if(st.slots && Object.keys(st.slots).length) return true;
+  if(st.snacks && Object.keys(st.snacks).length) return true;
+  if((st.pantry || []).length || (st.bought || []).length) return true;
+  if((st.customDishes || []).length || (st.customItems || []).length) return true;
+  if(st.usage && Object.keys(st.usage).length) return true;
+  return false;
+}
 function applyState(newState, metaText){
   /* 在庫は常に合体してから反映する：相手のstateに無い在庫でも、墓標（意図的な削除）が
      無い限り端末側の分を残し、残した分は送り直して共有側も復旧させる */
@@ -3615,6 +3631,7 @@ function applyState(newState, metaText){
   localDirty = false;
   S = remote; rebuildIndex();
   S.stock = merged.stock; S.stockGone = merged.gone;
+  if(stateHasRecords(S)) sessionHadRecords = true;
   if(rescued){ persistLocal(); queueWrite(); }
   /* 相手のstateで自分のエントリが消えていたら、自分の分（公開範囲どおり）を戻して送り直す */
   if(syncOwnProfileToState()){ persistLocal(); queueWrite(); }
@@ -3645,6 +3662,20 @@ function writeNow(){
     setSyncUI("on");
   }
   function onWriteNg(){ setSyncUI("off"); }
+  /* 空上書きガード：端末側が記録ゼロのまま一度も記録を持っておらず、ルーム側に記録が
+     あるときは、空で上書きせずルームを正として取り込み直す。端末内の控えが読めず
+     空で起動した端末が、プロフィールの自動復帰などに引っ張られてルームの在庫・
+     食事の記録を丸ごと消してしまう事故への対策。このセッションで記録を持った
+     ことがある端末（＝意図的な全消しを含む通常の編集）は対象外で、そのまま書く */
+  var guardRemote = null;
+  function guardHits(remoteState){
+    return !sessionHadRecords && !stateHasRecords(S) && stateHasRecords(remoteState);
+  }
+  function applyGuardRemote(){
+    var rd = guardRemote; guardRemote = null;
+    localUpdatedAt = rd.updatedAt || localUpdatedAt;
+    applyState(rd.state, "最終更新：" + (rd.updatedByName || "相手の端末"));
+  }
   if(typeof fb.db.runTransaction === "function"){
     /* 書く直前にサーバー側の最新stateを読み、在庫だけ合体してから書く。
        古い状態を持った端末が別の変更を送っても、取り込んだ在庫が上書きで消えない */
@@ -3652,23 +3683,35 @@ function writeNow(){
       return tx.get(ref).then(function(snap){
         if(snap.exists){
           var rd = snap.data() || {};
-          if(rd.state && rd.updatedById !== clientId){
+          if(rd.state){
             var remote = sanitizeState(rd.state);
-            var merged = mergeStockData(S.stock, S.stockGone, remote.stock, remote.stockGone, true);
-            payloadState = Object.assign({}, S, { stock: merged.stock, stockGone: merged.gone });
+            if(guardHits(remote)){ guardRemote = rd; return; }
+            if(rd.updatedById !== clientId){
+              var merged = mergeStockData(S.stock, S.stockGone, remote.stock, remote.stockGone, true);
+              payloadState = Object.assign({}, S, { stock: merged.stock, stockGone: merged.gone });
+            }
           }
         }
         tx.set(ref, { state: payloadState, updatedAt: ts, updatedById: clientId, updatedByName: deviceName });
       });
-    }).then(onWriteOk).catch(onWriteNg);
+    }).then(function(){ if(guardRemote){ applyGuardRemote(); return; } onWriteOk(); }).catch(onWriteNg);
   } else {
-    ref.set({ state: payloadState, updatedAt: ts, updatedById: clientId, updatedByName: deviceName }).then(onWriteOk).catch(onWriteNg);
+    ref.get().then(function(snap){
+      if(snap.exists){
+        var rd = snap.data() || {};
+        if(rd.state && guardHits(sanitizeState(rd.state))){ guardRemote = rd; applyGuardRemote(); return; }
+      }
+      ref.set({ state: payloadState, updatedAt: ts, updatedById: clientId, updatedByName: deviceName }).then(onWriteOk).catch(onWriteNg);
+    }).catch(function(){
+      ref.set({ state: payloadState, updatedAt: ts, updatedById: clientId, updatedByName: deviceName }).then(onWriteOk).catch(onWriteNg);
+    });
   }
 }
 function queueWrite(){
   /* 変更はまず「未送信」として記録する。接続前・オフラインでも消えないようにし、
      送信はデバウンス（600ms）＋ページを閉じる／隠すタイミングの即時送信で取りこぼさない */
   localDirty = true; localUpdatedAt = Date.now();
+  if(stateHasRecords(S)) sessionHadRecords = true;
   persistLocal();
   if(!roomCode || !fb.ok || !fb.db) return;
   clearTimeout(fb.writeTimer);
@@ -3681,22 +3724,34 @@ function changed(){ queueWrite(); renderAll(); }
 function subscribeRoom(){
   if(fb.unsub){ fb.unsub(); fb.unsub=null; }
   fb.gotRemote = false;
+  fb.pulledOnce = false;
   if(!roomCode || !fb.db) { setSyncUI("local",""); renderRoom(); return; }
   renderRoom();
   fb.unsub = fb.db.collection("rooms").doc(roomCode).onSnapshot(function(snap){
     fb.ok = true;
     fb.gotRemote = true;
-    if(!snap.exists){ setSyncUI("on","ルームはまだ空です。この端末の内容を保存すると共有が始まります。"); queueWrite(); return; }
+    if(!snap.exists){ fb.pulledOnce = true; setSyncUI("on","ルームはまだ空です。この端末の内容を保存すると共有が始まります。"); queueWrite(); return; }
     var data = snap.data() || {};
     if(data.updatedById === clientId){
       fb.lastMeta = "最終更新：" + (data.updatedByName||"") + "（この端末）"; setSyncUI("on");
       /* 自分の前回保存より新しい未送信の変更があれば送り直す */
-      if(localDirty && localUpdatedAt > (data.updatedAt || 0)) writeNow();
+      if(localDirty && localUpdatedAt > (data.updatedAt || 0)){ fb.pulledOnce = true; writeNow(); }
+      /* 起動直後は、最終更新が自端末でも必ず1回はルームの記録を取り込む。
+         端末内の控えが読めず空で起動した場合に取り込みを飛ばすと、ルームに
+         残っている在庫・食事の記録が画面に出ないままになってしまうため。
+         端末が空でルームに記録があれば、applyState がルームを正として
+         端末の控えごと復旧させる（在庫は合体、プロフィールは自動で戻る） */
+      else if(!fb.pulledOnce && data.state){
+        fb.pulledOnce = true;
+        localUpdatedAt = data.updatedAt || localUpdatedAt;
+        applyState(data.state, fb.lastMeta);
+      }
       /* 起動時に端末内へ反映した自分のプロフィールが共有stateと違えば、取り込み済みの今なら送ってよい */
       else if(syncOwnProfileToState()){ persistLocal(); queueWrite(); }
       return;
     }
     if(data.state){
+      fb.pulledOnce = true;
       if(localDirty && localUpdatedAt > (data.updatedAt || 0)){
         /* 端末側に未送信のもっと新しい変更がある：リモートで上書きせず、端末側を保存し直す */
         setSyncUI("on"); writeNow(); return;
@@ -5081,8 +5136,21 @@ function renderRoom(){
       + '<div class="roomcode">'+esc(fmtRoom(roomCode))+'</div>'
       + '<div class="actions" style="margin-top:0"><button type="button" class="btn green" id="copyRoomBtn">コードをコピー</button>'
       + '<button type="button" class="btn ghost" id="leaveRoomBtn">この端末では共有をやめる</button></div>'
-      + '<p class="sub" style="margin-top:10px">コードを入れた端末は全員、同じボードを編集できます。知らない人には教えないでね。</p>';
+      + '<div class="actions"><button type="button" class="btn ghost" id="reloadRoomBtn">ルームの記録を読み直す</button></div>'
+      + '<p class="sub" style="margin-top:10px">コードを入れた端末は全員、同じボードを編集できます。知らない人には教えないでね。在庫や食事の記録がこの端末で見えなくなったときは、「ルームの記録を読み直す」でルーム側の記録を取り込み直せます。</p>';
     $("copyRoomBtn").addEventListener("click", function(){ copyText(roomCode, "ルームコードをコピーしたよ"); });
+    $("reloadRoomBtn").addEventListener("click", function(){
+      if(!fb.db){ toast("まだ接続できていないみたい。少し待ってからもう一度試してね"); return; }
+      toast("ルームの記録を読み直しています…");
+      fb.db.collection("rooms").doc(roomCode).get().then(function(snap){
+        var data = snap.exists ? (snap.data() || {}) : {};
+        if(!data.state){ toast("ルームに記録が見つからなかったよ"); return; }
+        fb.gotRemote = true; fb.pulledOnce = true;
+        localUpdatedAt = data.updatedAt || localUpdatedAt;
+        applyState(data.state, "最終更新：" + (data.updatedByName || "相手の端末"));
+        toast("ルームの記録を読み直したよ");
+      }).catch(function(){ toast("読み直しに失敗したよ。通信状態を確認してね"); });
+    });
     $("leaveRoomBtn").addEventListener("click", function(){
       if(fb.unsub){ fb.unsub(); fb.unsub=null; }
       roomCode=""; localStorage.removeItem(LS_ROOM); loadLocalMeta(); setSyncUI("local",""); renderRoom(); toast("この端末の共有をやめたよ（データは端末に残ります）");
