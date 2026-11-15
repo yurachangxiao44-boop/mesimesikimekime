@@ -292,6 +292,12 @@
       .use-choices button{border:1.5px solid var(--line);background:var(--surface2);color:var(--ink2);border-radius:8px;padding:8px 4px;font-size:12.5px;font-weight:800;min-height:44px}
       .use-choices button[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);box-shadow:inset 0 0 0 1px var(--green)}
       .use-choices button[data-usechoice="usedup"][aria-pressed="true"]{border-color:var(--tomato);background:var(--tomato-soft);color:var(--tomato);box-shadow:inset 0 0 0 1px var(--tomato)}
+      /* 在庫つかった？：自動で一致しなかった在庫を手で選ぶ一覧 */
+      .stockpick{margin-top:14px;border-top:1.5px dashed var(--line);padding-top:12px}
+      .stockpick-title{font-weight:800;font-size:15px;margin:0 0 4px}
+      .stockpick .chip{max-width:100%;text-align:left;line-height:1.35}
+      .stockpick .chip small{display:block;font-weight:600;font-size:11px;opacity:.85}
+      .stockpick-empty{font-size:12.5px;color:var(--ink2);margin:2px 0 0}
       /* 間食エリア（1日ごとに複数品のリスト） */
       .snack-area{border-top:1.5px dashed var(--line);padding:9px 12px 11px;background:var(--surface)}
       .day>.snack-area:last-child{border-bottom-left-radius:9px;border-bottom-right-radius:9px}
@@ -3009,7 +3015,8 @@ function eatenCandList(){
   return all.filter(function(d){ return dishCats(d).indexOf(cat) >= 0; }).sort(byUsageSort).slice(0, 24);
 }
 /* 食べた品（予定どおり＝枠の全品／実食＝実食の品）の材料と一致する在庫品目を集める（品目単位・重複なし）。
-   名前だけ記録（カタログ外）の場合は照合しない */
+   これは自動マッチ（候補提示）専用：名前だけ記録・概算記録は材料が無いので自動候補は出さないが、
+   確認ステップ自体は出して、在庫一覧から手で選べるようにする（renderEatenStockStep 側） */
 function stockMatchesForEaten(o, plannedDishes){
   if(!o || !o.eaten) return [];
   var dishes = [];
@@ -3909,20 +3916,41 @@ function daysLabel(it){
   if(dl === 0) return "今日まで";
   return "あと" + dl + "日";
 }
-/* 材料名⇔在庫名の照合：表記ゆれ（冷凍・生などの接頭辞、括弧書き）を落として部分一致で見る */
+/* 材料名⇔在庫名の照合：正規化した上で「完全一致」または「一方が他方を含む」場合に候補とする。
+   正規化のルール（材料名・在庫名の両方に同じ処理をかける）：
+   1. 空白・括弧書き・【】書きを除去し、全角英数字を半角にそろえる
+   2. カタカナをひらがなにそろえる（モモ→もも、ネギ→ねぎ、シメジ→しめじ 等の表記ゆれ吸収）
+   3. 同義語を寄せる（たまご／玉子／タマゴ→卵）
+   4. 修飾語を文中のどこにあっても除去する（若・国産・冷凍・小間切・切り身・薄切り・スライス等。
+      ただし「生姜」の「生」のように食材名の一部になる字は壊さない）
+   5. 末尾の分数・数量・単位を落とす
+   マッチはあくまで候補提示で、消費の確定は従来どおり利用者の3択（使ってない で無効化できる） */
+var STOCK_MODIFIERS = ["小間切れ", "小間切", "こま切れ", "こま切", "切り身", "切身", "薄切り", "厚切り", "乱切り", "ぶつ切り", "スライス", "骨なし", "皮なし", "皮付き", "国内産", "国産", "冷凍", "冷蔵", "解凍", "甘塩", "釜揚げ", "特選", "厳選", "有機", "若", "生", "新", "塩"];
 function normIngName(n){
-  var s = String(n || "").replace(/\s+/g, "");
-  s = s.replace(/（[^）]*）/g, "").replace(/\([^)]*\)/g, "");
-  s = s.replace(/^(冷凍|生|国産|新|塩|甘塩|釜揚げ)/, "");
+  var s = String(n || "");
+  s = s.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+  s = s.replace(/\s+/g, "");
+  s = s.replace(/（[^）]*）/g, "").replace(/\([^)]*\)/g, "").replace(/【[^】]*】/g, "");
+  /* カタカナ→ひらがな（モモ／もも、ネギ／ねぎ 等を同じ形にする） */
+  s = s.replace(/[ァ-ヶ]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0x60); });
+  s = s.split("たまご").join("卵").split("玉子").join("卵");
+  /* 「生姜」は食材名そのものなので、修飾語「生」の除去から守る */
+  var keepShoga = s.indexOf("生姜") >= 0;
+  if(keepShoga) s = s.split("生姜").join("\uE001");
+  STOCK_MODIFIERS.forEach(function(w){ s = s.split(w).join(""); });
+  if(keepShoga) s = s.split("\uE001").join("生姜");
+  s = s.replace(/用$/, "");
   s = s.replace(/\d+\/\d+$/, "").replace(/1\/$/, "");
+  s = s.replace(/\d+([gG]|[kK][gG]|ml|個|枚|本|パック|袋|切|玉|缶)?$/, "");
   return s;
 }
 function namesMatch(a, b){
   var x = normIngName(a), y = normIngName(b);
   if(!x || !y) return false;
   if(x === y) return true;
+  if(typeof PRICE_ALIAS !== "undefined" && PRICE_ALIAS && (PRICE_ALIAS[x] === y || PRICE_ALIAS[y] === x)) return true;
+  /* 部分一致は2文字以上のときだけ（1文字同士の偶然の一致で候補を増やしすぎない） */
   if(x.length < 2 || y.length < 2) return false;
-  if(PRICE_ALIAS && (PRICE_ALIAS[x] === y || PRICE_ALIAS[y] === x)) return true;
   return x.indexOf(y) >= 0 || y.indexOf(x) >= 0;
 }
 function stockItemFor(ingName){
@@ -5315,7 +5343,7 @@ function renderEatenSheet(){
     + '<div class="cat-chips" id="eatenChips"></div>'
     + '<div class="eaten-cands" id="eatenCands"></div>'
     + '<div class="eaten-actions"><button type="button" class="btn ghost" id="eatenNameOnlyBtn">候補にないので、この名前だけで記録する</button></div>'
-    + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。在庫との照合も行いません。</p>'
+    + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。材料との自動照合は行いませんが、記録のあとに在庫から手で選ぶことはできます。</p>'
     + '</div>'
     + '<div id="eatenEstBox"' + (eatenMode === "est" ? '' : ' hidden') + '></div>'
     + '</div>';
@@ -5347,7 +5375,8 @@ function renderEatenSheet(){
     var v = (($("eatenActualInput") || {}).value || "").trim();
     if(!v){ toast("食べたものの名前を入れてね"); return; }
     var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = v; oo.actualQty = 1; oo.items = null; oo.est = null; commitEatenObj(oo);
-    changed(); closeEatenSheet(); toast("「" + v + "」を実食として記録したよ（kcalは不明）");
+    /* 名前だけの記録は材料が無いので自動照合はできないが、在庫があれば確認ステップを出して手で選べるようにする */
+    afterEatenRecorded();
   });
   if(eatenShowDiff){ if(eatenMode === "est") renderEstBox(); else { renderEatenChips(); renderEatenCands(); renderEatenTray(); } }
 }
@@ -5407,7 +5436,7 @@ function renderEatenSheetMembers(o, day, meal){
     + '<div class="cat-chips" id="eatenChips"></div>'
     + '<div class="eaten-cands" id="eatenCands"></div>'
     + '<div class="eaten-actions"><button type="button" class="btn ghost" id="eatenNameOnlyBtn">候補にないので、この名前だけで記録する</button></div>'
-    + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。在庫との照合も行いません。</p>'
+    + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。材料との自動照合は行いませんが、記録のあとに在庫から手で選ぶことはできます。</p>'
     + '</div>'
     + '<div id="eatenEstBox"' + (eatenMode === "est" ? '' : ' hidden') + '></div>'
     + '</div>'
@@ -5686,38 +5715,91 @@ function afterEatenRecorded(){
   bumpUsage(eatenDishIdsForUsage(o));
   finishEatenWithStock(o, eatenStockDishes(o) || eatenPlannedDishes(o));
 }
-/* 在庫消費ステップへの共通の締め：recForStock の材料と一致する在庫があれば確認を出す */
+/* 在庫消費ステップへの共通の締め：自動で一致した在庫があれば候補として出し、
+   一致が無くても在庫があれば確認ステップを出して手で選べるようにする。
+   自己流・概算・名前だけの記録でも、この手動選択だけで消費確認まで進める */
 function finishEatenWithStock(recForStock, fallbackDishes){
   var matches = stockMatchesForEaten(recForStock, fallbackDishes);
   changed();
-  if(matches.length) renderEatenStockStep(matches);
+  if(matches.length || (S.stock || []).length) renderEatenStockStep(matches);
   else { closeEatenSheet(); toast("食べたよ！実績に記録したよ"); }
 }
+/* 消費確認の1品分の行（自動候補・手動追加で共用）。ingName があれば材料名、無ければ「手で選んだもの」と出す */
+function eatenStockRowHtml(it, ingName){
+  var meta = [];
+  if(it.qty) meta.push(it.qty);
+  meta.push(ingName ? "材料：" + ingName : "手で選んだもの");
+  var dl = daysLeftEff(it); if(dl !== null) meta.push(daysLabel(it));
+  return '<div class="stockuse" data-stockuserow="' + esc(it.id) + '"><span class="nm">' + (it.place === "freezer" ? "❄️ " : "🧊 ") + esc(it.name) + '</span>'
+    + '<br><span class="meta">' + esc(meta.join(" ／ ")) + '</span>'
+    + '<div class="use-choices" role="group" aria-label="' + esc(it.name) + 'の在庫の扱い">'
+    + '<button type="button" data-usechoice="usedup" aria-pressed="false">使い切った</button>'
+    + '<button type="button" data-usechoice="left" aria-pressed="true">まだ残ってる</button>'
+    + '<button type="button" data-usechoice="notused" aria-pressed="false">使ってない</button>'
+    + '</div></div>';
+}
+function bindEatenStockRow(row){
+  if(!row) return;
+  Array.prototype.forEach.call(row.querySelectorAll(".use-choices button"), function(b){
+    b.addEventListener("click", function(){
+      var group = b.parentNode;
+      Array.prototype.forEach.call(group.querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    });
+  });
+}
 function renderEatenStockStep(matches){
-  var html = '<p style="font-weight:800;font-size:16px;margin:10px 0 4px">在庫つかった？</p>'
-    + '<p class="sub">食べた料理の材料と一致した在庫です。量は「1袋」「1パック」のまま数えず、品目ごとに選んでね。はじめは全部「まだ残ってる」なので、使い切ったものだけ変えればOK。在庫から消えるのは「使い切った」の品目だけです。</p>'
-    + matches.map(function(m){
-        var it = m.stock;
-        var meta = [];
-        if(it.qty) meta.push(it.qty);
-        meta.push("材料：" + m.ingName);
-        var dl = daysLeftEff(it); if(dl !== null) meta.push(daysLabel(it));
-        return '<div class="stockuse" data-stockuserow="' + esc(it.id) + '"><span class="nm">' + (it.place === "freezer" ? "❄️ " : "🧊 ") + esc(it.name) + '</span>'
-          + '<br><span class="meta">' + esc(meta.join(" ／ ")) + '</span>'
-          + '<div class="use-choices" role="group" aria-label="' + esc(it.name) + 'の在庫の扱い">'
-          + '<button type="button" data-usechoice="usedup" aria-pressed="false">使い切った</button>'
-          + '<button type="button" data-usechoice="left" aria-pressed="true">まだ残ってる</button>'
-          + '<button type="button" data-usechoice="notused" aria-pressed="false">使ってない</button>'
-          + '</div></div>';
-      }).join("")
+  var autoIds = {};
+  matches.forEach(function(m){ autoIds[m.stock.id] = true; });
+  /* 自動候補に出ていない在庫（冷蔵・冷凍の全アイテム）が手動選択の対象 */
+  var manual = (S.stock || []).filter(function(it){ return !autoIds[it.id]; });
+  var html = '<p style="font-weight:800;font-size:16px;margin:10px 0 4px">在庫つかった？</p>';
+  if(matches.length){
+    html += '<p class="sub">食べた料理の材料と一致した在庫です。量は「1袋」「1パック」のまま数えず、品目ごとに選んでね。はじめは全部「まだ残ってる」なので、使い切ったものだけ変えればOK。在庫から消えるのは「使い切った」の品目だけです。</p>';
+  } else {
+    html += '<p class="sub">材料と自動で一致した在庫はなかったよ。使ったものがあれば、下の「在庫から使ったものを選ぶ」から選んでね。量は「1袋」「1パック」のまま数えず、品目ごとに選べます。在庫から消えるのは「使い切った」の品目だけです。</p>';
+  }
+  html += '<div id="eatenStockRows">'
+    + matches.map(function(m){ return eatenStockRowHtml(m.stock, m.ingName); }).join("")
+    + '</div>'
+    + '<div class="stockpick"><p class="stockpick-title">在庫から使ったものを選ぶ</p>'
+    + '<p class="sub" style="margin:0 0 8px">自己流で作った料理や、材料名と商品名が違うものはここから。タップすると上の確認に追加されます（もう一度タップで外れます）。</p>';
+  if(manual.length){
+    html += '<div class="chips">'
+      + manual.map(function(it){
+          var meta = [];
+          if(it.qty) meta.push(it.qty);
+          var dl = daysLeftEff(it); if(dl !== null) meta.push(daysLabel(it));
+          return '<button type="button" class="chip' + (it.place === "freezer" ? " frozen" : "") + '" data-stockpick="' + esc(it.id) + '" aria-pressed="false">'
+            + (it.place === "freezer" ? "❄️ " : "🧊 ") + esc(it.name)
+            + (meta.length ? '<small>' + esc(meta.join(" ／ ")) + '</small>' : '')
+            + '</button>';
+        }).join("")
+      + '</div>';
+  } else {
+    html += '<p class="stockpick-empty">いまの在庫は全部、上の候補に出ています。</p>';
+  }
+  html += '</div>'
     + '<div class="eaten-actions"><button type="button" class="btn primary" id="eatenStockConfirm">この内容で確定する</button>'
     + '<button type="button" class="btn ghost" id="eatenStockSkip">そのまま閉じる（在庫は変えない）</button></div>';
   $("eatenBody").innerHTML = html;
   var bodyEl = $("eatenBody"); if(bodyEl) bodyEl.scrollTop = 0;
-  Array.prototype.forEach.call(document.querySelectorAll("[data-stockuserow] .use-choices button"), function(b){
-    b.addEventListener("click", function(){
-      var group = b.parentNode;
-      Array.prototype.forEach.call(group.querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stockuserow]"), function(row){ bindEatenStockRow(row); });
+  /* 手動選択：選んだ在庫を消費確認の行として追加する。自動候補と重複する品は一覧に出していないので二重にならない */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stockpick]"), function(chip){
+    chip.addEventListener("click", function(){
+      var id = chip.getAttribute("data-stockpick");
+      var on = chip.getAttribute("aria-pressed") === "true";
+      chip.setAttribute("aria-pressed", on ? "false" : "true");
+      var rowsBox = $("eatenStockRows"); if(!rowsBox) return;
+      var existing = rowsBox.querySelector('[data-stockuserow="' + id + '"]');
+      if(on){ if(existing) existing.parentNode.removeChild(existing); return; }
+      if(existing) return;
+      var it = (S.stock || []).filter(function(x){ return x.id === id; })[0]; if(!it) return;
+      var tmp = document.createElement("div");
+      tmp.innerHTML = eatenStockRowHtml(it, "");
+      var row = tmp.firstChild;
+      rowsBox.appendChild(row);
+      bindEatenStockRow(row);
     });
   });
   $("eatenStockConfirm").addEventListener("click", function(){
