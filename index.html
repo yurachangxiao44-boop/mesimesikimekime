@@ -5330,9 +5330,10 @@ function renderEatenSheet(){
   }
   html += '<div class="eaten-actions">';
   if(!o.eaten || hasActual(o)) html += '<button type="button" class="btn primary" id="eatenPlannedBtn">予定どおり食べた</button>';
-  html += '<button type="button" class="btn ' + (!o.eaten ? 'ghost' : 'primary') + '" id="eatenDiffBtn">' + (o.eaten && hasActual(o) ? '違うものを選び直す' : '違うものを食べた') + '</button>';
+  html += '<button type="button" class="btn ' + (!o.eaten ? 'ghost' : 'primary') + '" id="eatenDiffBtn">' + (o.eaten && hasActual(o) ? '予定と違うものを選び直す' : '予定と違うものを食べた（献立外）') + '</button>';
   if(o.eaten) html += '<button type="button" class="btn ghost" id="eatenCancelBtn">食べたを取り消す</button>';
   html += '</div>';
+  html += '<p class="sub" style="margin:0 0 8px">予定の献立と違うものを食べたときに使います</p>';
   html += '<div id="eatenDiffBox"' + (eatenShowDiff ? '' : ' hidden') + '>'
     + eatenDiffToggleHtml()
     + '<div id="eatenSearchBox"' + (eatenMode === "est" ? ' hidden' : '') + '>'
@@ -5412,7 +5413,8 @@ function renderEatenSheetMembers(o, day, meal){
   var keepVal = (prevInp && eatenLastDiffKey && eatenLastDiffKey === eatenMemberDiff) ? prevInp.value : null;
   var keepFocus = !!(prevInp && document.activeElement === prevInp);
   var mem = membersList();
-  var html = '<p class="eaten-planned">' + plannedNamesHtml(o) + '</p>'
+  var html = '<p class="sub" style="margin:0 0 8px">それぞれ、予定と比べて記録します。2人で違うものを食べたときは、各自の欄で別々に記録できます</p>'
+    + '<p class="eaten-planned">' + plannedNamesHtml(o) + '</p>'
     + '<div class="eaten-actions"><button type="button" class="btn primary" id="eatenBulkBtn">2人とも予定どおり</button></div>';
   mem.forEach(function(m){
     var rec0 = o.by ? o.by[m.key] : null;
@@ -5420,7 +5422,7 @@ function renderEatenSheetMembers(o, day, meal){
     html += '<div class="detail-sec"><span data-member-head="' + esc(m.key) + '">' + esc(m.name) + '：' + esc(memberRecLabel(o, m.key)) + '</span></div>'
       + '<div class="chips" style="margin-bottom:6px">'
       + '<button type="button" class="chip" data-mplanned="' + esc(m.key) + '" aria-pressed="' + (recS === "planned") + '">予定どおり</button>'
-      + '<button type="button" class="chip" data-mdiff="' + esc(m.key) + '" aria-pressed="' + (recS === "actual") + '">違うもの</button>'
+      + '<button type="button" class="chip" data-mdiff="' + esc(m.key) + '" aria-pressed="' + (recS === "actual") + '">予定と違うもの</button>'
       + '<button type="button" class="chip" data-mnone="' + esc(m.key) + '" aria-pressed="' + (recS === "none") + '">食べてない</button>'
       + '</div>';
   });
