@@ -206,6 +206,65 @@
       .prot1{display:inline-block;font-size:11px;font-weight:800;background:var(--tomato-soft);color:var(--tomato);border-radius:999px;padding:1px 7px}
       .day.is-today .ms-row.pos-main .ms-main .name,.day.is-today .ms-row.pos-complete .ms-main .name{font-size:16px;line-height:21px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
       .ms-x{flex:none;align-self:center;border:1.5px solid var(--line-soft);background:var(--surface2);color:var(--ink2);width:44px;height:44px;min-width:44px;min-height:44px;border-radius:8px;font-size:16px;line-height:1}
+      /* 食べた記録（ワンタップトグル） */
+      .eaten-row{display:flex;align-items:center;gap:8px;justify-content:flex-end;padding:7px 2px 3px;border-top:1px dashed var(--line-soft);margin-top:6px}
+      .eaten-note{font-size:11.5px;font-weight:700;color:var(--ink2);margin-right:auto}
+      .eaten-btn{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:7px 16px;font-size:13.5px;font-weight:800;min-height:44px;min-width:104px}
+      .eaten-btn[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);box-shadow:inset 0 0 0 1px var(--green)}
+      .slot.is-eaten .ms-body{background:var(--surface2)}
+      .near-day .slot.is-eaten .ms-body{background:var(--surface2)}
+      .slot.is-eaten .ms-row .ms-main .name{color:var(--ink2)}
+      .slot.is-eaten .meal{opacity:.72}
+      .nutri-eaten{margin-top:10px;padding-top:9px;border-top:1.5px dashed var(--line)}
+      .nutri-eaten .nutri-main{font-size:14px}
+      .nutri-eaten .nutri-main b{font-size:19px;color:var(--green-deep)}
+      .nutri-eaten .nutri-bar{height:9px;margin:6px 0 3px}
+      .nutri-eaten .nutri-bar>i{background:linear-gradient(90deg,var(--market),var(--green))}
+      /* 実食（予定と違うもの）表示 */
+      .actual-line{margin-top:6px;font-size:13px;font-weight:700;color:var(--ink);background:var(--amber-soft);border:1px dashed var(--lav);border-radius:8px;padding:6px 10px}
+      .actual-line b{font-weight:800}
+      .actual-line .tagmini{margin-left:6px}
+      /* 食べたシート */
+      .eaten-body{overflow-y:auto;padding:4px 16px calc(20px + env(safe-area-inset-bottom));flex:1}
+      .eaten-planned{font-size:13.5px;color:var(--ink2);margin:10px 0;line-height:1.6}
+      .eaten-planned b{color:var(--ink)}
+      .eaten-actions{display:grid;gap:9px;margin:12px 0}
+      .eaten-actions .btn{width:100%}
+      .eaten-cands{display:grid;gap:7px;margin-top:9px}
+      .eaten-cand{display:flex;width:100%;text-align:left;gap:8px;background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;padding:10px 12px;color:var(--ink);align-items:flex-start;flex-direction:column}
+      .eaten-cand .nm{font-weight:800;font-size:14.5px}
+      .eaten-cand .meta{font-size:12px;color:var(--ink2)}
+      .stockcheck{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;padding:11px 12px;margin-bottom:8px;cursor:pointer}
+      .stockcheck input[type="checkbox"]{width:28px;height:28px;min-width:28px;min-height:28px;margin-top:1px;accent-color:var(--green);flex:none}
+      .stockcheck .nm{font-weight:800;font-size:14.5px}
+      .stockcheck .meta{font-size:12px;color:var(--ink2)}
+      /* 在庫つかった？：品目ごとの3択（数量の減算はしない・品目単位） */
+      .stockuse{background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;padding:11px 12px;margin-bottom:9px}
+      .stockuse .nm{font-weight:800;font-size:14.5px}
+      .stockuse .meta{font-size:12px;color:var(--ink2)}
+      .use-choices{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:9px}
+      .use-choices button{border:1.5px solid var(--line);background:var(--surface2);color:var(--ink2);border-radius:8px;padding:8px 4px;font-size:12.5px;font-weight:800;min-height:44px}
+      .use-choices button[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);box-shadow:inset 0 0 0 1px var(--green)}
+      .use-choices button[data-usechoice="usedup"][aria-pressed="true"]{border-color:var(--tomato);background:var(--tomato-soft);color:var(--tomato);box-shadow:inset 0 0 0 1px var(--tomato)}
+      /* 間食エリア（1日ごとに複数品のリスト） */
+      .snack-area{border-top:1.5px dashed var(--line);padding:9px 12px 11px;background:var(--surface)}
+      .day>.snack-area:last-child{border-bottom-left-radius:9px;border-bottom-right-radius:9px}
+      .near-day .snack-area{border-bottom-left-radius:7px;border-bottom-right-radius:7px}
+      .snack-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+      .snack-title{font-weight:800;font-size:14px}
+      .snack-title::before{content:"";display:inline-block;width:8px;height:14px;margin-right:7px;vertical-align:-2px;background:var(--pink);transform:skewX(-18deg)}
+      .snack-count{font-size:11.5px;font-weight:800;color:var(--ink2)}
+      .snack-add{margin-left:auto;border:1.5px solid var(--green);background:var(--green-soft);color:var(--green-deep);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:800;min-height:44px}
+      .snack-item{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:7px 0;border-top:1px solid var(--line-soft);margin-top:7px}
+      .snack-item .snack-name{flex:1;min-width:120px;text-align:left;background:none;border:0;padding:4px 0;color:var(--ink);font-weight:700;font-size:14.5px;min-height:44px}
+      .snack-item span.snack-name{display:flex;align-items:center}
+      .snack-item .meta{font-size:12px;color:var(--ink2)}
+      .snack-item.is-eaten .snack-name{color:var(--ink2)}
+      .snack-item .actual-line{flex-basis:100%;margin-top:2px}
+      .snack-eaten{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:800;min-height:44px}
+      .snack-eaten[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);box-shadow:inset 0 0 0 1px var(--green)}
+      .snack-del{flex:none;border:1.5px solid var(--line-soft);background:var(--surface2);color:var(--ink2);width:44px;height:44px;border-radius:8px;font-size:15px}
+      .snack-empty{font-size:12.5px;color:var(--ink2);padding-top:6px}
       .tagmini.prot{background:var(--tomato-soft);color:var(--tomato)}
       .day>.slot:last-child .meal{border-bottom-left-radius:9px}
       @media (max-width:480px){
@@ -244,6 +303,18 @@
       @media (prefers-color-scheme: dark){ .daysleft.soon{background:#4a3a14;color:#ffd97a} }
       .stockrow.urgent{border-color:var(--tomato)}
       .stockrow.warn{border-color:#e8a13a}
+      /* 在庫一覧：2カラムのコンパクトカード */
+      .stockgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:6px}
+      .stockcard{background:var(--surface);border:1.5px solid var(--line-soft);border-radius:8px;box-shadow:0 2px 5px rgba(18,110,180,.06);padding:8px 9px 7px;min-width:0}
+      .stockcard.urgent{border-color:var(--tomato)}
+      .stockcard.warn{border-color:#e8a13a}
+      .stockcard .nm{font-weight:800;font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+      .stockcard .meta{font-size:11px;color:var(--ink2);line-height:1.45;margin-top:2px;overflow:hidden;text-overflow:ellipsis}
+      .stockcard .daysleft{margin-left:0;margin-top:4px;font-size:10.5px;padding:0 7px}
+      .stockcard .exp{display:block;font-size:11px;color:var(--ink2);margin-top:3px}
+      .stockcard .acts{display:flex;gap:5px;margin-top:7px}
+      .stockcard .acts button{flex:1;border:1.5px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 2px;font-size:11.5px;font-weight:800;color:var(--ink2);min-height:2.3rem}
+      .stockcard .acts button.use{background:var(--green);border-color:var(--green);color:#fff}
       .suggest{margin-bottom:10px}
       .suggest .sug-ing{font-weight:800;font-size:14px}
       .suggest .sug-dishes{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
@@ -1905,7 +1976,7 @@
         <!-- ② そろそろ使って（期限食材→献立はここで完結） -->
         <div class="card">
           <h2 data-en="USE SOON">そろそろ使って</h2>
-          <p class="sub">賞味期限が近い（2日以内）・切れた食材と、それを使う料理です。「今日の晩に入れる」ボタンで直近の枠にワンタップで入れられます。先の曜日に入れたいときは「曜日を選ぶ」からどうぞ。</p>
+          <p class="sub">賞味期限が近い（2日以内）・切れた食材と、それを使う料理です。「今日の晩に入れる」ボタンで直近の枠にワンタップで入れられます。当日は目安時刻（朝10時・昼15時・晩22時）を過ぎた食事には入れず、過ぎた分は明日が対象になります。先の曜日に入れたいときは「曜日を選ぶ」からどうぞ。</p>
           <div id="stockSuggest"></div>
           <div class="assignbar" id="stockAssign" role="group" aria-label="献立に入れる" style="margin:10px 0 0">
             <div style="font-weight:800">「<span id="stockAssignName"></span>」を献立に入れる</div>
@@ -1920,7 +1991,7 @@
         <!-- ③ 今日・明日の献立 -->
         <div class="card">
           <h2 data-en="TODAY / TOMORROW">今日・明日の献立</h2>
-          <p class="sub">直近2日分だけ表示しています。料理名タップで詳細、「＋ 選ぶ」で料理を入れられます。週全体は下のボタンからどうぞ。</p>
+          <p class="sub">直近2日分だけ表示しています。料理名タップで詳細、「＋ 選ぶ」で料理を入れられます。食べたら枠の「食べた」から記録してね（予定と違うものや、在庫を使った場合もその場で記録できます）。「在庫から決める」は当日の目安時刻（朝10時・昼15時・晩22時）を過ぎた食事には入れません。週全体は下のボタンからどうぞ。</p>
           <div id="nearMeals"></div>
           <div class="actions">
             <button type="button" class="btn green" id="fillStockBtn">🧊 在庫から決める（今日・明日）</button>
@@ -2079,6 +2150,24 @@
       </div>
     </div>
 
+    <!-- 食べた記録シート -->
+    <div class="modal" id="eatenModal" role="dialog" aria-modal="true" aria-labelledby="eatenTitle">
+      <div class="back" id="eatenBack"></div>
+      <div class="sheet">
+        <div class="head"><h2 data-en="ATE IT" id="eatenTitle">食べた記録</h2><button type="button" class="x" id="eatenClose" aria-label="閉じる">✕</button></div>
+        <div class="eaten-body" id="eatenBody"></div>
+      </div>
+    </div>
+
+    <!-- 間食の追加シート -->
+    <div class="modal" id="snackModal" role="dialog" aria-modal="true" aria-labelledby="snackTitle">
+      <div class="back" id="snackBack"></div>
+      <div class="sheet">
+        <div class="head"><h2 data-en="SNACK" id="snackTitle">間食を追加</h2><button type="button" class="x" id="snackClose" aria-label="閉じる">✕</button></div>
+        <div class="eaten-body" id="snackBody"></div>
+      </div>
+    </div>
+
     <div class="toast" id="toast" role="status"></div>
     </div><!-- /#appRoot -->
 
@@ -2108,6 +2197,15 @@ var FLYER = window.KONDATE_FLYER || null;
 var FLYER_MATCH = window.KONDATE_FLYER_MATCH || [];
 var DAYS = ["月","火","水","木","金","土","日"];
 var MEALS = ["朝","昼","晩"];
+/* 当日の食事の目安時刻：これを過ぎたら当日のその枠は「在庫から決める」の対象外（明日は全て対象）。
+   朝=10:00、昼=15:00、晩=22:00 */
+var MEAL_CUTOFF_MIN = {"朝":10*60,"昼":15*60,"晩":22*60};
+function isMealTimePast(meal, now){
+  var cut = MEAL_CUTOFF_MIN[meal];
+  if(cut == null) return false;
+  var n = now || new Date();
+  return (n.getHours() * 60 + n.getMinutes()) >= cut;
+}
 var TAGS = ["カロリー控えめ","節約","時短","あっさり","ガッツリ","作り置き"];
 var CATEGORIES = ["肉・魚","野菜","きのこ","豆腐・卵・乳製品","主食","乾物・缶詰","冷凍食品","調味料・その他"];
 var GROUPS = [
@@ -2129,7 +2227,7 @@ function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"
 
 /* ================= 状態 ================= */
 var LS_ROOM="mmk_room", LS_DEVICE="mmk_device", LS_CLIENT="mmk_client", LS_LOCAL="mmk_local_state";
-function defaultState(){ return { v:1, store:"hanamasa", slots:{}, customDishes:[], customItems:[], pantry:[], bought:[], lastFill:[], stock:[], profiles:[] }; }
+function defaultState(){ return { v:1, store:"hanamasa", slots:{}, snacks:{}, customDishes:[], customItems:[], pantry:[], bought:[], lastFill:[], stock:[], profiles:[] }; }
 /* プロフィール（共有state内）の検証。非公開プロフィールは生の値（性別・年齢・身長・体重・活動量・目的）を
    ここで必ず落とし、名前と算出済みの目標だけを通す（ルームに生の値を残さないための最終防衛線）。 */
 function sanitizeProfile(p){
@@ -2171,6 +2269,25 @@ function sanitizeState(s){
       expiry: (typeof it.expiry==="string" && /^\d{4}-\d{2}-\d{2}$/.test(it.expiry)) ? it.expiry : "",
       est: !!it.est };
   });
+  if(s.snacks && typeof s.snacks==="object"){
+    Object.keys(s.snacks).forEach(function(k){
+      var di = parseInt(k, 10);
+      if(!(di >= 0 && di <= 6) || !Array.isArray(s.snacks[k])) return;
+      var list = s.snacks[k].filter(function(it){ return it && (typeof it.dishId === "string" && it.dishId || typeof it.name === "string" && it.name.trim()); }).slice(0, 30).map(function(it){
+        var o = { id: (typeof it.id === "string" && it.id) ? it.id : ("sn" + Math.random().toString(36).slice(2, 9)),
+          dishId: (typeof it.dishId === "string" && it.dishId) ? it.dishId : null,
+          name: (typeof it.name === "string" && it.name.trim()) ? it.name.trim().slice(0, 80) : "",
+          eaten: it.eaten === true,
+          ownerKey: (typeof it.ownerKey === "string") ? it.ownerKey.slice(0, 60) : "",
+          ownerName: (typeof it.ownerName === "string") ? it.ownerName.trim().slice(0, 30) : "",
+          actualId: (typeof it.actualId === "string" && it.actualId) ? it.actualId : null,
+          actualName: (typeof it.actualName === "string") ? it.actualName.trim().slice(0, 80) : "" };
+        if(!o.eaten){ o.actualId = null; o.actualName = ""; }
+        return o;
+      });
+      if(list.length) d.snacks[String(di)] = list;
+    });
+  }
   if(s.slots && typeof s.slots==="object"){
     var crm = {};
     (d.customDishes||[]).forEach(function(cd){ crm[cd.id] = cd.role || "main"; });
@@ -2223,8 +2340,11 @@ Object.keys(ROLES.main || {}).forEach(function(id){ ROLE_OF[id] = "main"; if(ROL
 (ROLES.side || []).forEach(function(id){ ROLE_OF[id] = "side"; });
 (ROLES.soup || []).forEach(function(id){ ROLE_OF[id] = "soup"; });
 (ROLES.complete || []).forEach(function(id){ ROLE_OF[id] = "complete"; });
+/* 間食専用カタログ（お菓子・スイーツ等）は roles.snack にIDリストで後からマージされる。現時点で0件でも安全に動く */
+(ROLES.snack || []).forEach(function(id){ ROLE_OF[id] = "snack"; });
+function snackRoleDishes(){ return allDishes().filter(function(d){ return roleOf(d) === "snack"; }); }
 var POSITIONS = ["main", "side", "soup", "complete"];
-var POS_LABEL = { main:"主菜", side:"副菜", soup:"汁物", complete:"完結" };
+var POS_LABEL = { main:"主菜", side:"副菜", soup:"汁物", complete:"完結", snack:"間食" };
 var STAPLES = ["ごはん", "パン", "麺", "なし"];
 function roleOf(d){
   if(!d) return "main";
@@ -2236,7 +2356,7 @@ function proteinOf(d){
   if(d.custom) return d.protein || "";
   return PROTEIN_OF[d.id] || "";
 }
-function emptySlot(){ return { staple:"ごはん", main:null, side:null, soup:null, complete:null }; }
+function emptySlot(){ return { staple:"ごはん", main:null, side:null, soup:null, complete:null, eaten:false, actualId:null, actualName:"" }; }
 /* 旧形式（文字列＝料理ID）・新形式（オブジェクト）どちらも新形式にそろえる。
    旧形式の料理は、その料理の役割の位置に自動で入れる。カスタム料理は役割指定が無ければ主菜。 */
 function normalizeSlotValue(v, customRoleMap){
@@ -2251,6 +2371,23 @@ function normalizeSlotValue(v, customRoleMap){
     if(STAPLES.indexOf(v.staple) >= 0) o2.staple = v.staple;
     POSITIONS.forEach(function(p){ if(typeof v[p] === "string" && v[p]) o2[p] = v[p]; });
     if(o2.complete){ o2.main = null; o2.side = null; o2.soup = null; }
+    if(v.eaten === true) o2.eaten = true;
+    if(v.by && typeof v.by === "object"){
+      var by2 = {};
+      Object.keys(v.by).slice(0, 4).forEach(function(mk){
+        var r = v.by[mk];
+        if(!r || typeof r !== "object") return;
+        if(r.s === "planned") by2[mk] = { s: "planned" };
+        else if(r.s === "none") by2[mk] = { s: "none" };
+        else if(r.s === "actual") by2[mk] = { s: "actual",
+          actualId: (typeof r.actualId === "string" && r.actualId) ? r.actualId : null,
+          actualName: (typeof r.actualName === "string") ? r.actualName.trim().slice(0, 80) : "" };
+      });
+      if(Object.keys(by2).length) o2.by = by2;
+    }
+    if(typeof v.actualId === "string" && v.actualId) o2.actualId = v.actualId;
+    if(typeof v.actualName === "string" && v.actualName.trim()) o2.actualName = v.actualName.trim().slice(0, 80);
+    if(!o2.eaten){ o2.actualId = null; o2.actualName = ""; }
     return o2;
   }
   return null;
@@ -2284,8 +2421,172 @@ function setSlotPos(key, pos, dishId){
 function clearSlotPos(key, pos){
   var o = getSlot(key);
   o[pos] = null;
-  if(slotDishIds(o).length || o.staple !== "ごはん") S.slots[key] = o;
+  if(slotDishIds(o).length || o.staple !== "ごはん" || o.eaten) S.slots[key] = o;
   else delete S.slots[key];
+}
+/* 「食べた」記録：押した枠だけを実績にする（過ぎた食事を自動で食べた扱いにはしない）。
+   料理が入っていない空の枠でも記録でき、過去の日の枠にも後から付けられる。状態は S.slots に入り共有される。
+   実食（actualId／actualName）は予定の品とは別に保持し、予定は消さない */
+function saveSlotEaten(key, o){
+  if(o.eaten || o.actualId || o.actualName || (o.by && Object.keys(o.by).length) || slotDishIds(o).length || o.staple !== "ごはん") S.slots[key] = o;
+  else delete S.slots[key];
+}
+/* ================= 間食（1日ごとの複数品リスト） =================
+   S.snacks = { "0":[{id, dishId|null, name, eaten, actualId, actualName}], ... }（曜日indexがキー・共有stateに保存） */
+function daySnacks(di){ return (S.snacks && S.snacks[String(di)]) || []; }
+function setDaySnacks(di, list){
+  if(!S.snacks) S.snacks = {};
+  if(list && list.length) S.snacks[String(di)] = list; else delete S.snacks[String(di)];
+}
+function snackDishOf(it){ return it && it.dishId ? (dishById[it.dishId] || null) : null; }
+function snackDisplayName(it){
+  var d = snackDishOf(it);
+  if(d) return d.name;
+  return (it && it.name) || "間食";
+}
+function addSnackItem(di, dish, freeName, ownerKey, ownerName){
+  var list = daySnacks(di).slice();
+  list.push({ id: "sn" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    dishId: dish ? dish.id : null, name: dish ? dish.name : String(freeName || "").trim().slice(0, 80),
+    eaten: false, ownerKey: ownerKey || "", ownerName: ownerName || "", actualId: null, actualName: "" });
+  setDaySnacks(di, list);
+}
+function snackAreaHtml(di, day){
+  var list = daySnacks(di);
+  var html = '<div class="snack-area"><div class="snack-head"><span class="snack-title">間食</span>'
+    + '<span class="snack-count">' + (list.length ? list.length + '品' : '') + '</span>'
+    + '<button type="button" class="snack-add" data-snackadd="' + di + '" aria-label="' + day + '曜日の間食を追加する">＋ 間食を追加</button></div>';
+  if(!list.length){
+    html += '<div class="snack-empty">まだありません</div>';
+  } else {
+    list.forEach(function(it){
+      var d = snackDishOf(it);
+      var meta = [];
+      if(d && d.kcal) meta.push(d.kcal + "kcal");
+      else if(!d) meta.push("kcal不明");
+      if(hasActual(it)) meta.push("実食あり");
+      if(it.ownerName) meta.push(it.ownerName);
+      html += '<div class="snack-item' + (it.eaten ? ' is-eaten' : '') + '">'
+        + (d
+            ? '<button type="button" class="snack-name" data-snackdetail="' + esc(d.id) + '" aria-label="' + esc(d.name) + ' の詳細を見る">' + esc(d.name) + '</button>'
+            : '<span class="snack-name">' + esc(snackDisplayName(it)) + '</span>')
+        + (meta.length ? '<span class="meta">' + esc(meta.join("・")) + '</span>' : '')
+        + '<button type="button" class="snack-eaten" data-snackeaten="' + di + '|' + esc(it.id) + '" aria-pressed="' + !!it.eaten + '" aria-label="' + day + '曜日 間食 ' + esc(snackDisplayName(it)) + ' の食べた記録を開く">' + (it.eaten ? '✓ 食べた' : '食べた') + '</button>'
+        + '<button type="button" class="snack-del" data-snackdel="' + di + '|' + esc(it.id) + '" aria-label="間食 ' + esc(snackDisplayName(it)) + ' を削除する">✕</button>'
+        + actualHtml(it)
+        + '</div>';
+    });
+  }
+  html += '</div>';
+  return html;
+}
+/* 間食の追加候補：役割 snack（間食専用カタログ）を最優先し、無ければ完結・副菜の軽めの品を出す。
+   検索時は名前・材料の一致に snack／完結／副菜の役割ブーストを加える */
+function snackCandidates(q){
+  q = String(q || "").trim();
+  var pool = allDishes();
+  if(!q){
+    var snacks = snackRoleDishes().slice(0, 8);
+    var light = pool.filter(function(d){ var r = roleOf(d); return (r === "complete" || r === "side") && d.kcal; })
+      .sort(function(a, b){ return (a.kcal || 9999) - (b.kcal || 9999); }).slice(0, 8);
+    var seen = {}, out = [];
+    snacks.concat(light).forEach(function(d){ if(!seen[d.id]){ seen[d.id] = true; out.push(d); } });
+    return out.slice(0, 10);
+  }
+  var scored = [];
+  pool.forEach(function(d){
+    var score = 0;
+    if(d.name.indexOf(q) >= 0) score += 100;
+    score += bigramDice(d.name, q) * 60;
+    if((d.ingredients || []).some(function(ing){ return ing.name.indexOf(q) >= 0 || q.indexOf(ing.name) >= 0; })) score += 30;
+    var r = roleOf(d);
+    if(r === "snack") score += 40; else if(r === "complete" || r === "side") score += 15;
+    if(score >= 14) scored.push({ d: d, score: score });
+  });
+  scored.sort(function(a, b){ return b.score - a.score; });
+  return scored.slice(0, 8).map(function(x){ return x.d; });
+}
+function actualNameOf(o){
+  if(!o) return "";
+  if(o.actualId && dishById[o.actualId]) return dishById[o.actualId].name;
+  return o.actualName || "";
+}
+function hasActual(o){ return !!(o && o.eaten && (o.actualId || o.actualName)); }
+function eatenBtnHtml(key, day, meal, o){
+  var on = !!(o && slotAnyEaten(o));
+  var note = on ? (o.by && Object.keys(o.by).length ? 'メンバー別に記録済み' : (hasActual(o) ? '実食で記録済み' : '食べた記録あり')) : '食べたら押してね';
+  return '<div class="eaten-row"><span class="eaten-note">' + note + '</span>'
+    + '<button type="button" class="eaten-btn" data-eaten="' + key + '" aria-pressed="' + on + '" aria-label="' + day + '曜日 ' + meal + ' の食べた記録を開く">'
+    + (on ? '✓ 食べた' : '食べた') + '</button></div>';
+}
+function actualHtml(o){
+  var lines = "";
+  if(o && o.by && Object.keys(o.by).length){
+    var mem = membersList();
+    Object.keys(o.by).forEach(function(mk){
+      var r = o.by[mk];
+      if(r && r.s === "actual"){
+        var nm = r.actualId && dishById[r.actualId] ? dishById[r.actualId].name : (r.actualName || "");
+        var who = ""; mem.forEach(function(m){ if(m.key === mk) who = m.name; });
+        lines += '<div class="actual-line">実食' + (who ? '（' + esc(who) + '）' : '') + '：<b>' + esc(nm) + '</b><span class="tagmini frz">予定と違う</span></div>';
+      }
+    });
+  }
+  if(lines) return lines;
+  if(!hasActual(o)) return "";
+  return '<div class="actual-line">実食：<b>' + esc(actualNameOf(o)) + '</b><span class="tagmini frz">予定と違う</span></div>';
+}
+/* 実食候補の類似度：名前の部分一致と文字バイグラム一致でざっくり測る */
+function bigramDice(a, b){
+  a = String(a || "").replace(/\s+/g, ""); b = String(b || "").replace(/\s+/g, "");
+  if(!a || !b) return 0;
+  if(a === b) return 1;
+  function grams(s){ var m = {}; for(var i = 0; i < s.length - 1; i++){ var g = s.slice(i, i + 2); m[g] = (m[g] || 0) + 1; } return m; }
+  if(a.length < 2 || b.length < 2) return 0;
+  var ga = grams(a), gb = grams(b), hit = 0, k;
+  for(k in ga){ if(gb[k]) hit += Math.min(ga[k], gb[k]); }
+  return (2 * hit) / ((a.length - 1) + (b.length - 1));
+}
+function actualCandidates(q, key){
+  q = String(q || "").trim();
+  if(!q) return [];
+  var parts = String(key || "").split("_");
+  var meal = parts[1] || "";
+  var o = key ? getSlot(key) : emptySlot();
+  var plannedRole = o.complete ? "complete" : "main";
+  var scored = [];
+  allDishes().forEach(function(d){
+    var score = 0;
+    if(d.name === q) score += 120;
+    else if(d.name.indexOf(q) >= 0 || q.indexOf(d.name) >= 0) score += 100;
+    score += bigramDice(d.name, q) * 60;
+    var ingHit = (d.ingredients || []).some(function(ing){ return ing.name.indexOf(q) >= 0 || q.indexOf(ing.name) >= 0; });
+    if(ingHit) score += 30;
+    if(roleOf(d) === plannedRole) score += 15;
+    if((d.meals || []).indexOf(meal) >= 0) score += 8;
+    if(score >= 14) scored.push({ d: d, score: score });
+  });
+  scored.sort(function(a, b){ return b.score - a.score; });
+  return scored.slice(0, 6).map(function(x){ return x.d; });
+}
+/* 食べた品（予定どおり＝枠の全品／実食＝実食の品）の材料と一致する在庫品目を集める（品目単位・重複なし）。
+   名前だけ記録（カタログ外）の場合は照合しない */
+function stockMatchesForEaten(o, plannedDishes){
+  if(!o || !o.eaten) return [];
+  var dishes = [];
+  if(o.actualId){ var ad = dishById[o.actualId]; if(ad) dishes = [ad]; }
+  else if(o.actualName){ return []; }
+  else if(plannedDishes){ dishes = plannedDishes; }
+  else { dishes = slotDishIds(o).map(function(id){ return dishById[id]; }).filter(Boolean); }
+  var seen = {}, out = [];
+  dishes.forEach(function(d){
+    (d.ingredients || []).forEach(function(ing){
+      if(ing.category === "調味料・その他") return;
+      var it = stockItemFor(ing.name);
+      if(it && !seen[it.id]){ seen[it.id] = true; out.push({ stock: it, ingName: ing.name }); }
+    });
+  });
+  return out;
 }
 /* kcal合計：全品にkcalがある場合のみ「合計」、一部だけなら「判明分」と明示する。主食分は含まない */
 function slotKcal(o){
@@ -2440,6 +2741,32 @@ function avgTarget(){
   ps.forEach(function(x){ k += x.targetKcal; pp += x.pfc.p; ff += x.pfc.f; cc += x.pfc.c; });
   return { kcal: Math.round(k / ps.length), pfc: { p: Math.round(pp / ps.length), f: Math.round(ff / ps.length), c: Math.round(cc / ps.length) }, count: ps.length };
 }
+/* メンバー（プロフィール登録者）の一覧。キーは owner（無ければ名前＋連番）で安定させる */
+function membersList(){
+  var seen = {};
+  return sharedProfiles().map(function(x, i){
+    var key = (x.raw.owner && !seen[x.raw.owner]) ? x.raw.owner : ("m" + i + "_" + x.name);
+    seen[key] = true;
+    return { key: key, name: x.name, targetKcal: x.targetKcal, pfc: x.pfc, rawOwner: x.raw.owner || "" };
+  });
+}
+function memberAte(o, mkey, membersCount){
+  /* その枠をそのメンバーが食べたかの記録を返す：{ate:bool, actualId, actualName} / 未記録なら null。
+     メンバー別記録（by）が無い場合は従来の単一記録を全員の記録として読む */
+  if(membersCount >= 2 && o.by && Object.keys(o.by).length){
+    var r = o.by[mkey];
+    if(!r) return null;
+    if(r.s === "none") return { ate: false };
+    if(r.s === "actual") return { ate: true, actualId: r.actualId || null, actualName: r.actualName || "" };
+    return { ate: true, actualId: null, actualName: "" };
+  }
+  if(!o.eaten) return (membersCount >= 2 && o.by) ? null : { ate: false };
+  return { ate: true, actualId: o.actualId || null, actualName: o.actualName || "" };
+}
+function slotAnyEaten(o){
+  if(o.by && Object.keys(o.by).length) return Object.keys(o.by).some(function(k){ var r = o.by[k]; return r && (r.s === "planned" || r.s === "actual"); });
+  return !!o.eaten;
+}
 /* 主食のkcal目安（PFC標準値から換算・1人分）。枠のkcal合計（主食抜き）とは別に、今日の合計でのみ加える */
 function stapleKcal(staple){
   var sf = STAPLE_PFC[staple];
@@ -2448,17 +2775,102 @@ function stapleKcal(staple){
 function todayNutritionTotals(){
   var todayDow = (new Date().getDay() + 6) % 7;
   var kcal = 0, knownSlots = 0, totalSlots = 0, p = 0, f = 0, c = 0, pfcKnown = false;
+  var members = membersList(), mcount = members.length;
+  /* 実績（食べた分）：押した枠だけを合計する。実食は実食の品で計算し、名前だけ記録は不明として加算しない。
+     プロフィール2人時はメンバー別にも集計する（共有枠の1人分は、食べた各メンバーに1人分ずつ加算） */
+  var eKcal = 0, eKnown = 0, eTotal = 0, eCount = 0, eP = 0, eF = 0, eC = 0, ePfcKnown = false, eActual = [];
+  var perMember = {};
+  members.forEach(function(m){ perMember[m.key] = { key: m.key, name: m.name, targetKcal: m.targetKcal, targetPfc: m.pfc, kcal: 0, known: 0, total: 0, count: 0, p: 0, f: 0, c: 0, pfcKnown: false, actual: [] }; });
+  function addActualToAgg(agg, meal, rec){
+    agg.total++; agg.count++;
+    if(rec.actualName || rec.actualId) agg.actual.push({ meal: meal, name: rec.actualId && dishById[rec.actualId] ? dishById[rec.actualId].name : (rec.actualName || "") });
+    var ad = rec.actualId ? dishById[rec.actualId] : null;
+    if(ad){
+      if(ad.kcal){ agg.known++; agg.kcal += ad.kcal; }
+      if(hasPfc(ad)){ agg.pfcKnown = true; agg.p += ad.protein; agg.f += ad.fat; agg.c += ad.carbs; }
+    }
+  }
+  function addPlannedToAgg(agg, k, t, complete, staple){
+    agg.total++;
+    if(k.known === k.total && k.sum > 0){ agg.known++; agg.kcal += k.sum; if(!complete) agg.kcal += stapleKcal(staple); }
+    if(t.known){ agg.pfcKnown = true; agg.p += t.p; agg.f += t.f; agg.c += t.c; }
+  }
   MEALS.forEach(function(meal){
     var o = getSlot(slotKey(todayDow, meal));
     var ids = slotDishIds(o);
-    if(!ids.length) return;
-    totalSlots++;
-    var k = slotKcal(o);
-    if(k.known === k.total && k.sum > 0){ knownSlots++; kcal += k.sum; if(!o.complete) kcal += stapleKcal(o.staple); }
+    var isEaten = !!o.eaten;
+    if(isEaten) eCount++;
+    var k = ids.length ? slotKcal(o) : { total: 0, known: 0, sum: 0 };
     var t = slotPfc(o);
-    if(t.known){ pfcKnown = true; p += t.p; f += t.f; c += t.c; }
+    if(ids.length){
+      totalSlots++;
+      if(k.known === k.total && k.sum > 0){ knownSlots++; kcal += k.sum; if(!o.complete) kcal += stapleKcal(o.staple); }
+      if(t.known){ pfcKnown = true; p += t.p; f += t.f; c += t.c; }
+    }
+    /* 単一記録（従来表示用） */
+    if(isEaten){
+      if(hasActual(o)){
+        var agg0 = { total: 0, count: 0, known: 0, kcal: 0, p: 0, f: 0, c: 0, pfcKnown: false, actual: [] };
+        addActualToAgg(agg0, meal, o);
+        eTotal += agg0.total; eKnown += agg0.known; eKcal += agg0.kcal; eP += agg0.p; eF += agg0.f; eC += agg0.c; ePfcKnown = ePfcKnown || agg0.pfcKnown;
+        eActual = eActual.concat(agg0.actual);
+      } else if(ids.length){
+        var agg1 = { total: 0, count: 0, known: 0, kcal: 0, p: 0, f: 0, c: 0, pfcKnown: false, actual: [] };
+        addPlannedToAgg(agg1, k, t, !!o.complete, o.staple);
+        eTotal += agg1.total; eKnown += agg1.known; eKcal += agg1.kcal; eP += agg1.p; eF += agg1.f; eC += agg1.c; ePfcKnown = ePfcKnown || agg1.pfcKnown;
+      }
+    }
+    /* メンバー別 */
+    if(mcount >= 2){
+      members.forEach(function(m){
+        var rec = memberAte(o, m.key, mcount);
+        if(!rec || !rec.ate) return;
+        var agg = perMember[m.key];
+        if(rec.actualId || rec.actualName) addActualToAgg(agg, meal, rec);
+        else if(ids.length) addPlannedToAgg(agg, k, t, !!o.complete, o.staple);
+        else { agg.count++; }
+      });
+    }
   });
-  return { kcal: kcal, knownSlots: knownSlots, totalSlots: totalSlots, p: p, f: f, c: c, pfcKnown: pfcKnown };
+  /* 間食（今日）：予定合計と実績の両方に加算。内訳は snack に分けて返す */
+  var snackAgg = { kcal: 0, known: 0, total: 0, p: 0, f: 0, c: 0, pfcKnown: false, eKcal: 0, eKnown: 0, eTotal: 0, eCount: 0, eP: 0, eF: 0, eC: 0, ePfcKnown: false };
+  daySnacks(todayDow).forEach(function(it){
+    var d = snackDishOf(it);
+    snackAgg.total++; totalSlots++;
+    /* 予定の1人分換算：2人時に対象メンバーだけの間食は平均として半分、2人で／未指定は1人分 */
+    var factor = (mcount >= 2 && it.ownerKey && it.ownerKey !== "both") ? 0.5 : 1;
+    if(d && d.kcal){ snackAgg.known++; snackAgg.kcal += d.kcal; kcal += d.kcal * factor; if(factor === 1) knownSlots++; }
+    if(d && hasPfc(d)){ snackAgg.pfcKnown = true; snackAgg.p += d.protein; snackAgg.f += d.fat; snackAgg.c += d.carbs; pfcKnown = true; p += d.protein * factor; f += d.fat * factor; c += d.carbs * factor; }
+    if(!it.eaten) return;
+    eCount++; snackAgg.eCount++;
+    /* 実績（単一表示用）：実食があれば実食の品、無ければ登録品 */
+    var srcDish = null, isActual = hasActual(it);
+    if(isActual){ srcDish = it.actualId ? dishById[it.actualId] : null; snackAgg.eTotal++; if(isActual) eActual.push({ meal: "間食", name: actualNameOf(it) }); }
+    else if(d){ srcDish = d; snackAgg.eTotal++; }
+    else { snackAgg.eTotal++; }
+    eTotal++;
+    if(srcDish){
+      if(srcDish.kcal){ snackAgg.eKnown++; snackAgg.eKcal += srcDish.kcal; eKnown++; eKcal += srcDish.kcal; }
+      if(hasPfc(srcDish)){ snackAgg.ePfcKnown = true; snackAgg.eP += srcDish.protein; snackAgg.eF += srcDish.fat; snackAgg.eC += srcDish.carbs; ePfcKnown = true; eP += srcDish.protein; eF += srcDish.fat; eC += srcDish.carbs; }
+    }
+    /* 実績（メンバー別）：対象メンバーに全量、2人で／未指定は両名に半分ずつ（両名へ全量は加算しない） */
+    if(mcount >= 2){
+      var targets = [];
+      if(it.ownerKey && it.ownerKey !== "both" && perMember[it.ownerKey]) targets = [{ agg: perMember[it.ownerKey], share: 1 }];
+      else targets = members.map(function(m){ return { agg: perMember[m.key], share: 0.5 }; });
+      targets.forEach(function(tg){
+        tg.agg.count++; tg.agg.total++;
+        if(isActual) tg.agg.actual.push({ meal: "間食", name: actualNameOf(it) });
+        if(srcDish){
+          if(srcDish.kcal){ tg.agg.known++; tg.agg.kcal += srcDish.kcal * tg.share; }
+          if(hasPfc(srcDish)){ tg.agg.pfcKnown = true; tg.agg.p += srcDish.protein * tg.share; tg.agg.f += srcDish.fat * tg.share; tg.agg.c += srcDish.carbs * tg.share; }
+        }
+      });
+    }
+  });
+  return { kcal: kcal, knownSlots: knownSlots, totalSlots: totalSlots, p: p, f: f, c: c, pfcKnown: pfcKnown, snack: snackAgg,
+    eaten: { kcal: eKcal, knownSlots: eKnown, totalSlots: eTotal, count: eCount, p: eP, f: eF, c: eC, pfcKnown: ePfcKnown, actual: eActual },
+    eatenByMember: members.map(function(m){ return perMember[m.key]; }) };
 }
 /* kcal調整つき候補選択：この1品に期待するkcal（枠の食事別予算×役割シェア）に近い候補を優先する。
    kcal不明の候補しかいない／目標未設定なら null（従来の選び方に任せる） */
@@ -2652,7 +3064,7 @@ function renderBoard(){
       var kcalHtml = "";
       if(k.total && k.known === k.total && k.sum > 0) kcalHtml = '<span class="ms-kcal">計' + k.sum + 'kcal</span>';
       else if(k.known > 0 && k.sum > 0) kcalHtml = '<span class="ms-kcal">判明分' + k.sum + 'kcal</span>';
-      html += '<div class="slot"><span class="meal">' + meal + '</span><div class="ms-body">';
+      html += '<div class="slot' + (slotAnyEaten(o) ? ' is-eaten' : '') + '"><span class="meal">' + meal + '</span><div class="ms-body">';
       if(o.complete){
         html += '<details class="ms-edit"><summary class="ms-head"><span class="ms-mode">完結</span>'
           + '<span class="ms-head-right">' + kcalHtml + '<span class="ms-edit-caret">変更 ▾</span></span></summary>'
@@ -2672,8 +3084,10 @@ function renderBoard(){
           + msRowHtml(key, "side", o, day, meal)
           + msRowHtml(key, "soup", o, day, meal);
       }
+      html += actualHtml(o) + eatenBtnHtml(key, day, meal, o);
       html += '</div></div>';
     });
+    html += snackAreaHtml(di, day);
     html += '</div>';
   });
   var boardEl = $("board");
@@ -2707,6 +3121,25 @@ function renderBoard(){
       clearSlotPos(key, "complete");
       changed(); toast("定食モードに戻したよ");
     });
+  });
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-eaten]"), function(b){
+    b.addEventListener("click", function(){ openEatenSheet(b.getAttribute("data-eaten")); });
+  });
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-snackadd]"), function(b){
+    b.addEventListener("click", function(){ openSnackSheet(parseInt(b.getAttribute("data-snackadd"), 10)); });
+  });
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-snackeaten]"), function(b){
+    b.addEventListener("click", function(){ var p = b.getAttribute("data-snackeaten").split("|"); openSnackEaten(parseInt(p[0], 10), p[1]); });
+  });
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-snackdel]"), function(b){
+    b.addEventListener("click", function(){
+      var p = b.getAttribute("data-snackdel").split("|"), di = parseInt(p[0], 10);
+      setDaySnacks(di, daySnacks(di).filter(function(it){ return it.id !== p[1]; }));
+      changed(); toast("間食を削除したよ");
+    });
+  });
+  Array.prototype.forEach.call(boardEl.querySelectorAll("[data-snackdetail]"), function(b){
+    b.addEventListener("click", function(){ openDetail(b.getAttribute("data-snackdetail"), {}); });
   });
 }
 
@@ -3012,13 +3445,10 @@ function stockRowHtml(it){
   var e = effectiveExpiry(it), dl = daysLeftEff(it);
   var cls = (dl !== null && dl < 0) ? " urgent" : (dl !== null && dl <= 2 ? " warn" : "");
   var dlCls = (dl !== null && dl < 0) ? " over" : (dl !== null && dl <= 2 ? " soon" : "");
-  var meta = [];
-  if(it.qty) meta.push(esc(it.qty));
-  if(it.bought) meta.push("買った日：" + esc(it.bought));
-  if(e.date) meta.push("賞味期限：" + esc(e.date) + (e.est ? "（目安）" : ""));
-  return '<div class="stockrow' + cls + '"><div class="info"><span class="nm">' + esc(it.name) + '</span>'
+  return '<div class="stockcard' + cls + '"><span class="nm">' + esc(it.name) + '</span>'
+    + (it.qty ? '<div class="meta">' + esc(it.qty) + (it.bought ? '・' + esc(it.bought.slice(5)) + '購入' : '') + '</div>' : (it.bought ? '<div class="meta">' + esc(it.bought.slice(5)) + '購入</div>' : ''))
+    + (e.date ? '<span class="exp">期限 ' + esc(e.date.slice(5)) + (e.est ? '（目安）' : '') + '</span>' : '')
     + (dl !== null ? '<span class="daysleft' + dlCls + '">' + esc(daysLabel(it)) + '</span>' : '')
-    + '<div class="meta">' + meta.join(" ／ ") + '</div></div>'
     + '<div class="acts"><button type="button" class="use" data-stockuse="' + esc(it.id) + '">使った</button>'
     + '<button type="button" data-stockedit="' + esc(it.id) + '">編集</button>'
     + '<button type="button" data-stockdel="' + esc(it.id) + '">削除</button></div></div>';
@@ -3032,16 +3462,19 @@ function dishesUsingStock(it, limit){
   out.sort(function(a, b){ return stockScore(b) - stockScore(a); });
   return out.slice(0, limit || 3);
 }
-/* 直近（今日・明日）で、この料理を入れられる空き枠を探す。晩→昼→朝の順に優先 */
+/* 直近（今日・明日）で、この料理を入れられる空き枠を探す。晩→昼→朝の順に優先。
+   当日は目安時刻（朝10時・昼15時・晩22時）を過ぎた食事は対象外。明日は全て対象 */
 function quickSlotsFor(d){
   var pos = roleOf(d);
-  var todayDow = (new Date().getDay() + 6) % 7;
+  var now = new Date();
+  var todayDow = (now.getDay() + 6) % 7;
   var mealOrder = ["晩", "昼", "朝"].filter(function(m){ return (d.meals || ["晩"]).indexOf(m) >= 0; });
   var out = [];
   [0, 1].forEach(function(off){
     var di = (todayDow + off) % 7;
     mealOrder.forEach(function(meal){
       if(out.length >= 2) return;
+      if(off === 0 && isMealTimePast(meal, now)) return;
       var o = getSlot(slotKey(di, meal));
       var free = pos === "complete" ? (!o.complete && !o.main) : (!o[pos] && !o.complete);
       if(free) out.push({ di: di, meal: meal, label: (off === 0 ? "今日" : "明日") + "の" + meal + "に入れる" });
@@ -3065,7 +3498,7 @@ function renderNearMeals(){
       var kcalHtml = "";
       if(k.total && k.known === k.total && k.sum > 0) kcalHtml = '<span class="ms-kcal">計' + k.sum + 'kcal</span>';
       else if(k.known > 0 && k.sum > 0) kcalHtml = '<span class="ms-kcal">判明分' + k.sum + 'kcal</span>';
-      html += '<div class="slot"><span class="meal">' + meal + '</span><div class="ms-body">';
+      html += '<div class="slot' + (slotAnyEaten(o) ? ' is-eaten' : '') + '"><span class="meal">' + meal + '</span><div class="ms-body">';
       if(o.complete){
         html += '<div class="near-staple"><span class="ms-mode">完結</span> ' + kcalHtml + '</div>'
           + slotPfcHtml(o)
@@ -3077,8 +3510,10 @@ function renderNearMeals(){
           + msRowHtml(key, "side", o, day, meal)
           + msRowHtml(key, "soup", o, day, meal);
       }
+      html += actualHtml(o) + eatenBtnHtml(key, day, meal, o);
       html += '</div></div>';
     });
+    html += snackAreaHtml(di, day);
     html += '</div>';
   });
   box.innerHTML = html;
@@ -3111,7 +3546,7 @@ function renderStock(){
       var chips = ds.length ? ds.map(function(d){
           var qs = quickSlotsFor(d);
           var btns = qs.length ? qs.map(function(q){ return '<button type="button" class="sug-quick" data-quickassign="' + esc(d.id) + '|' + q.di + '|' + q.meal + '">' + esc(q.label) + '</button>'; }).join("")
-            : '<span style="font-size:12px;color:var(--ink2)">今日・明日の対象枠は埋まっています</span>';
+            : '<span style="font-size:12px;color:var(--ink2)">今日・明日に空いてる対象枠がありません（当日の過ぎた食事は除く）</span>';
           return '<div class="sug-dishrow"><span class="sug-dishname">' + esc(d.name) + '</span>' + stockBadgeHtml(d) + btns
             + '<button type="button" class="sug-pick" data-assign="' + esc(d.id) + '">曜日を選ぶ</button></div>';
         }).join("")
@@ -3148,7 +3583,7 @@ function renderStock(){
         if(da === null && db === null) return 0;
         if(da === null) return 1; if(db === null) return -1; return da - db;
       });
-      html += '<div class="cat">' + g[1] + '（' + rows.length + '品）</div>' + rows.map(stockRowHtml).join("");
+      html += '<div class="cat">' + g[1] + '（' + rows.length + '品）</div><div class="stockgrid">' + rows.map(stockRowHtml).join("") + '</div>';
     });
     list.innerHTML = html;
   }
@@ -3177,6 +3612,8 @@ function renderStock(){
       var d = dishById[p[0]]; if(!d) return;
       var di = parseInt(p[1], 10), meal = p[2];
       var todayDow = (new Date().getDay() + 6) % 7;
+      /* 表示後に時刻が進んだ場合の再判定：当日の過ぎた食事には入れない */
+      if(di === todayDow && isMealTimePast(meal)){ toast("今日の" + meal + "は時間を過ぎたので入れなかったよ"); renderStock(); return; }
       var when = di === todayDow ? "今日" : (di === (todayDow + 1) % 7 ? "明日" : DAYS[di] + "曜日");
       setSlotPos(slotKey(di, meal), roleOf(d), d.id);
       changed(); toast("「" + d.name + "」を" + when + "の" + meal + "に入れたよ");
@@ -3220,10 +3657,12 @@ function saveStockForm(){
   resetStockForm(); changed();
 }
 /* ---- 在庫から決める：期限が近い食材を使う料理を最優先に、直近（今日・明日）の空き枠だけを埋める。
-   週一括で先に決め切るのではなく、その都度・直近分だけを決める粒度にする ---- */
+   週一括で先に決め切るのではなく、その都度・直近分だけを決める粒度にする。
+   当日は目安時刻（朝10時・昼15時・晩22時）を過ぎた食事は対象外。明日は全て対象 ---- */
 function fillBoardFromStock(){
   if(!(S.stock || []).length){ toast("在庫がまだないよ。冷蔵庫タブから取り込んでね"); return; }
-  var todayDow = (new Date().getDay() + 6) % 7;
+  var fillNow = new Date();
+  var todayDow = (fillNow.getDay() + 6) % 7;
   var used = {};
   DAYS.forEach(function(day, di){ MEALS.forEach(function(meal){ slotDishIds(getSlot(slotKey(di, meal))).forEach(function(id){ used[id] = true; }); }); });
   var filledPos = 0, usedIng = {};
@@ -3250,9 +3689,13 @@ function fillBoardFromStock(){
     }
     return shuffleArr(topDishes)[0];
   }
-  [todayDow, (todayDow + 1) % 7].forEach(function(di){
+  var filledToday = 0, filledTomorrow = 0, skippedPastMeals = [];
+  [0, 1].forEach(function(off){
+    var di = (todayDow + off) % 7;
     MEALS.forEach(function(meal){
+      if(off === 0 && isMealTimePast(meal, fillNow)){ skippedPastMeals.push(meal); return; }
       var key = slotKey(di, meal), o = getSlot(key), dirty = false;
+      var before = filledPos;
       if(!o.complete && !o.main){
         var ch = chooseStock(poolFor(meal, "main"), o, meal, "main");
         if(ch){ o.main = ch.id; used[ch.id] = true; filledPos++; dirty = true; }
@@ -3262,13 +3705,16 @@ function fillBoardFromStock(){
         if(!o.soup){ var cp = chooseStock(poolFor(meal, "soup"), o, meal, "soup"); if(cp){ o.soup = cp.id; used[cp.id] = true; filledPos++; dirty = true; } }
       }
       if(dirty) S.slots[key] = o;
+      if(off === 0) filledToday += (filledPos - before); else filledTomorrow += (filledPos - before);
     });
   });
   (S.stock || []).forEach(function(it){ if(dishesUsingStock(it, 1).length) usedIng[it.name] = true; });
   changed();
+  var scopeLabel = (filledToday && filledTomorrow) ? "今日・明日" : (filledTomorrow ? "明日" : (filledToday ? "今日" : "今日・明日"));
+  var pastNote = skippedPastMeals.length ? "今日の" + skippedPastMeals.join("・") + "は時間を過ぎたので入れていません。" : "";
   var noteEl = $("fillNote");
-  if(noteEl){ noteEl.textContent = filledPos ? "※ 在庫から決めました（今日・明日の空き枠だけ）：賞味期限が近い食材を使う料理を優先しています。先の日は在庫を見ながらその都度決めてね。在庫でまかなえる材料は買い物リストに出ません。" : ""; noteEl.style.display = filledPos ? "" : "none"; }
-  toast(filledPos ? (filledPos + "品を今日・明日に在庫優先で入れたよ") : "今日・明日に空いてる枠がないよ");
+  if(noteEl){ noteEl.textContent = filledPos ? ("※ 在庫から決めました（" + scopeLabel + "の空き枠だけ）：賞味期限が近い食材を使う料理を優先しています。" + pastNote + "先の日は在庫を見ながらその都度決めてね。在庫でまかなえる材料は買い物リストに出ません。") : ""; noteEl.style.display = filledPos ? "" : "none"; }
+  toast(filledPos ? (filledPos + "品を" + scopeLabel + "に在庫優先で入れたよ" + (pastNote ? "（" + pastNote + "）" : "")) : (skippedPastMeals.length === MEALS.length ? "明日に空いてる枠がないよ（今日は時間を過ぎたため対象外）" : "今日・明日に空いてる対象枠がないよ"));
 }
 
 /* ================= 描画：買い物リスト ================= */
@@ -3727,8 +4173,16 @@ function renderNutrition(){
   var avg = avgTarget();
   var t = todayNutritionTotals();
   if(!ps.length){
+    var e0 = t.eaten;
+    var e0Html = '<div class="nutri-eaten"><div class="nutri-main">食べた分（実績） '
+      + (e0.count ? (e0.totalSlots && e0.knownSlots === e0.totalSlots ? '<b>' + e0.kcal.toLocaleString("ja-JP") + ' kcal</b>' : (e0.knownSlots ? '<b>' + e0.kcal.toLocaleString("ja-JP") + ' kcal</b>（判明分）' : '<b>kcal不明</b>')) : '<b>まだ記録なし</b>')
+      + '</div>'
+      + (e0.pfcKnown ? '<p class="sub" style="margin:2px 0 0">食べた分のPFC（判明分） P ' + fmtG(e0.p) + 'g ／ F ' + fmtG(e0.f) + 'g ／ C ' + fmtG(e0.c) + 'g</p>' : '')
+      + (e0.actual.length ? '<p class="sub" style="margin:2px 0 0">実食：' + e0.actual.map(function(a){ return a.meal + '「' + esc(a.name) + '」'; }).join("、") + '</p>' : '')
+      + '</div>';
     box.innerHTML = '<p class="sub" style="margin:0 0 8px">プロフィールを登録すると、1日の目標カロリーと今日の献立を見比べられます。</p>'
-      + '<div class="nutri-main">今日の献立（1人分） <b>' + (t.totalSlots ? (t.knownSlots ? t.kcal.toLocaleString("ja-JP") + ' kcal' : 'kcal不明') : 'まだ未定') + '</b></div>'
+      + '<div class="nutri-main">今日の献立（1人分・予定） <b>' + (t.totalSlots ? (t.knownSlots ? t.kcal.toLocaleString("ja-JP") + ' kcal' : 'kcal不明') : 'まだ未定') + '</b></div>'
+      + e0Html
       + '<div class="actions"><button type="button" class="btn green small" id="nutriGotoProfile">プロフィールを設定する</button></div>';
     var b = $("nutriGotoProfile");
     if(b) b.addEventListener("click", function(){ switchView("share"); var el = $("pfName"); if(el) el.scrollIntoView({ behavior: "smooth", block: "center" }); });
@@ -3736,7 +4190,7 @@ function renderNutrition(){
   }
   var remain = avg.kcal - t.kcal;
   var pct = avg.kcal > 0 ? Math.min(100, Math.round(t.kcal / avg.kcal * 100)) : 0;
-  var html = '<div class="nutri-main">今日 ' + (t.totalSlots ? (t.knownSlots ? '<b>' + t.kcal.toLocaleString("ja-JP") + ' kcal</b>' : '<b>kcal不明</b>') : '<b>まだ未定</b>')
+  var html = '<div class="nutri-main">今日の予定 ' + (t.totalSlots ? (t.knownSlots ? '<b>' + t.kcal.toLocaleString("ja-JP") + ' kcal</b>' : '<b>kcal不明</b>') : '<b>まだ未定</b>')
     + ' ／ 平均目標 ' + avg.kcal.toLocaleString("ja-JP") + ' kcal（1人分）'
     + (t.totalSlots ? (remain >= 0 ? '・あと <b>' + remain.toLocaleString("ja-JP") + ' kcal</b>' : '・<b>' + (-remain).toLocaleString("ja-JP") + ' kcal</b> オーバー') : '')
     + '</div>'
@@ -3745,6 +4199,40 @@ function renderNutrition(){
     html += '<p class="sub" style="margin:2px 0 6px">今日のPFC（1人分・判明分） P ' + fmtG(t.p) + 'g ／ F ' + fmtG(t.f) + 'g ／ C ' + fmtG(t.c) + 'g　―　平均目標 P ' + avg.pfc.p + 'g ／ F ' + avg.pfc.f + 'g ／ C ' + avg.pfc.c + 'g</p>';
   }
   if(t.totalSlots && t.knownSlots < t.totalSlots) html += '<p class="sub" style="margin:0 0 4px">※ kcalが分かる枠だけ合計しています（主食分は目安で加算）。</p>';
+  /* 間食の内訳（予定・実績とも合計に加算済み。間食は超過の主因になりやすいので分けて示す） */
+  if(t.snack && t.snack.total){
+    html += '<p class="sub" style="margin:0 0 4px">うち間食（予定）：' + (t.snack.known ? t.snack.kcal.toLocaleString("ja-JP") + ' kcal' + (t.snack.known < t.snack.total ? '（判明分）' : '') : 'kcal不明') + '（' + t.snack.total + '品）'
+      + (t.snack.eCount ? '　／　食べた分のうち間食：' + (t.snack.eKnown ? t.snack.eKcal.toLocaleString("ja-JP") + ' kcal' + (t.snack.eKnown < t.snack.eTotal ? '（判明分）' : '') : 'kcal不明') : '') + '</p>';
+  }
+  /* 実績（食べた分）：押した枠だけ。予定の表示は上に残したまま、目標と対比できる形で別に示す。
+     プロフィール2人時はメンバー別（各自の目標と対比）に集計表示する */
+  var e = t.eaten;
+  if(ps.length >= 2 && t.eatenByMember && t.eatenByMember.length >= 2){
+    html += '<div class="nutri-eaten"><div class="nutri-main">食べた分（実績・メンバー別）</div>';
+    t.eatenByMember.forEach(function(m){
+      var mr = m.targetKcal - m.kcal;
+      html += '<div class="nutri-member"><span><span class="nm">' + esc(m.name) + '</span><br><span class="dt">'
+        + (m.count ? (m.total && m.known === m.total ? m.kcal.toLocaleString("ja-JP") + ' kcal' : (m.known ? m.kcal.toLocaleString("ja-JP") + ' kcal（判明分）' : 'kcal不明')) : 'まだ記録なし')
+        + (m.pfcKnown ? '　P ' + fmtG(m.p) + 'g ／ F ' + fmtG(m.f) + 'g ／ C ' + fmtG(m.c) + 'g' : '')
+        + (m.actual.length ? '<br>実食：' + m.actual.map(function(a){ return a.meal + '「' + esc(a.name) + '」'; }).join("、") : '')
+        + '</span></span><span class="tk">目標 ' + m.targetKcal.toLocaleString("ja-JP") + ' kcal' + (m.count && m.known ? (mr >= 0 ? '<br>あと ' + mr.toLocaleString("ja-JP") : '<br>' + (-mr).toLocaleString("ja-JP") + ' 超過') : '') + '</span></div>';
+    });
+    html += '<p class="sub" style="margin:4px 0 0">共有の枠は、食べたメンバーそれぞれに1人分ずつ数えています。間食は選んだメンバーに加算し、「2人で」の間食は半分ずつ分けています。</p></div>';
+  } else {
+  var eRemain = avg.kcal - e.kcal;
+  var ePct = avg.kcal > 0 ? Math.min(100, Math.round(e.kcal / avg.kcal * 100)) : 0;
+  html += '<div class="nutri-eaten"><div class="nutri-main">食べた分（実績） '
+    + (e.count ? (e.totalSlots && e.knownSlots === e.totalSlots ? '<b>' + e.kcal.toLocaleString("ja-JP") + ' kcal</b>' : (e.knownSlots ? '<b>' + e.kcal.toLocaleString("ja-JP") + ' kcal</b>（判明分）' : '<b>kcal不明</b>')) : '<b>まだ記録なし</b>')
+    + ' ／ 平均目標 ' + avg.kcal.toLocaleString("ja-JP") + ' kcal'
+    + (e.count && e.knownSlots ? (eRemain >= 0 ? '・目標まであと <b>' + eRemain.toLocaleString("ja-JP") + ' kcal</b>' : '・<b>' + (-eRemain).toLocaleString("ja-JP") + ' kcal</b> オーバー') : '')
+    + '</div>'
+    + '<div class="nutri-bar" aria-hidden="true"><i class="' + (eRemain < 0 && e.knownSlots ? 'over' : '') + '" style="width:' + ePct + '%"></i></div>';
+  if(e.pfcKnown) html += '<p class="sub" style="margin:2px 0 0">食べた分のPFC（1人分・判明分） P ' + fmtG(e.p) + 'g ／ F ' + fmtG(e.f) + 'g ／ C ' + fmtG(e.c) + 'g　―　平均目標 P ' + avg.pfc.p + 'g ／ F ' + avg.pfc.f + 'g ／ C ' + avg.pfc.c + 'g</p>';
+  if(e.count && e.totalSlots && e.knownSlots < e.totalSlots) html += '<p class="sub" style="margin:2px 0 0">※ 名前だけで記録した枠など、kcalが分からない食べた枠は判明分に含めていません。</p>';
+  if(!e.count) html += '<p class="sub" style="margin:2px 0 0">枠の「食べた」ボタンから記録すると、ここに実績が出ます。</p>';
+  if(e.actual.length) html += '<p class="sub" style="margin:2px 0 0">実食：' + e.actual.map(function(a){ return a.meal + '「' + esc(a.name) + '」'; }).join("、") + '（予定と違うもの）</p>';
+  html += '</div>';
+  }
   ps.forEach(function(x){
     var dt = "";
     if(x.public && x.raw.sex){
@@ -4070,6 +4558,360 @@ function openDetail(dishId, opts){
 
 function closeDetail(){ $("detailModal").classList.remove("open"); detailDishId=null; detailSlot=null; detailPos="main"; detailFromPicker=false; }
 
+/* ================= 間食の追加シート =================
+   カタログ検索（役割 snack を最優先）＋名前だけの自由入力。2人登録時は「だれの間食か」を選べる（既定は記録した人） */
+var snackDi = null, snackOwnerSel = null;
+function closeSnackSheet(){ var m = $("snackModal"); if(m) m.classList.remove("open"); snackDi = null; }
+function snackOwnerOptions(){
+  var mem = membersList();
+  if(mem.length < 2) return "";
+  var opts = mem.map(function(m){ return { key: m.key, name: m.name }; }).concat([{ key: "both", name: "2人で" }]);
+  return '<div class="field"><label>だれの間食？</label><div class="chips" id="snackOwnerChips">'
+    + opts.map(function(o){ return '<button type="button" class="chip" data-snackowner="' + esc(o.key) + '" data-snackownername="' + esc(o.name) + '" aria-pressed="' + (snackOwnerSel === o.key) + '">' + esc(o.name) + '</button>'; }).join("")
+    + '</div></div>';
+}
+function snackOwnerName(){
+  if(snackOwnerSel === "both") return "2人で";
+  var mem = membersList(), found = "";
+  mem.forEach(function(m){ if(m.key === snackOwnerSel) found = m.name; });
+  return found;
+}
+function openSnackSheet(di){
+  snackDi = di;
+  var mem = membersList();
+  snackOwnerSel = null;
+  if(mem.length >= 2){
+    var ownKey = null;
+    mem.forEach(function(m){ if(m.rawOwner === clientId) ownKey = m.key; });
+    /* membersList は owner を key にしているので、自分のプロフィールのキーを探す */
+    if(!ownKey){ var ownProf = (S.profiles || []).filter(function(x){ return x.owner === clientId; })[0]; if(ownProf) ownKey = ownProf.owner || null; }
+    snackOwnerSel = ownKey || mem[0].key;
+  }
+  renderSnackSheet();
+  $("snackModal").classList.add("open");
+}
+function renderSnackSheet(){
+  if(snackDi === null) return;
+  $("snackTitle").textContent = DAYS[snackDi] + "曜日 の間食を追加";
+  $("snackBody").innerHTML = '<div class="field"><label for="snackSearch">料理名・材料で検索（お菓子・スイーツなど）</label>'
+    + '<input type="search" id="snackSearch" placeholder="例：プリン、ヨーグルト、サラダ" /></div>'
+    + snackOwnerOptions()
+    + '<div class="eaten-cands" id="snackCands"></div>'
+    + '<div class="eaten-actions"><button type="button" class="btn ghost" id="snackFreeBtn">候補にないので、入力した名前だけで追加する</button></div>'
+    + '<p class="sub" style="margin:0">名前だけの品は kcal／PFC 不明として、栄養の判明分には加算しません。</p>';
+  var inp = $("snackSearch");
+  inp.addEventListener("input", renderSnackCands);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-snackowner]"), function(b){
+    b.addEventListener("click", function(){
+      snackOwnerSel = b.getAttribute("data-snackowner");
+      Array.prototype.forEach.call(document.querySelectorAll("[data-snackowner]"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    });
+  });
+  $("snackFreeBtn").addEventListener("click", function(){
+    var v = (($("snackSearch") || {}).value || "").trim();
+    if(!v){ toast("間食の名前を入れてね"); return; }
+    addSnackItem(snackDi, null, v, membersList().length >= 2 ? snackOwnerSel : "", membersList().length >= 2 ? snackOwnerName() : "");
+    changed(); closeSnackSheet(); toast("間食「" + v + "」を追加したよ（kcalは不明）");
+  });
+  renderSnackCands();
+  inp.focus();
+}
+function renderSnackCands(){
+  var box = $("snackCands"); if(!box || snackDi === null) return;
+  var q = (($("snackSearch") || {}).value || "").trim();
+  var cands = snackCandidates(q);
+  if(!cands.length){ box.innerHTML = '<p class="sub" style="margin:4px 0 0">候補が見つからなかった…下のボタンで名前だけで追加できます。</p>'; return; }
+  box.innerHTML = (q ? '' : '<p class="sub" style="margin:0">間食向けの候補（間食カタログ優先・軽めの完結／小鉢）</p>') + cands.map(function(d){
+    var meta = [POS_LABEL[roleOf(d)] || "間食"];
+    if(d.kcal) meta.push(d.kcal + "kcal");
+    if(hasPfc(d)) meta.push("P " + fmtG(d.protein) + "g・F " + fmtG(d.fat) + "g・C " + fmtG(d.carbs) + "g");
+    return '<button type="button" class="eaten-cand" data-snackcand="' + esc(d.id) + '"><span class="nm">' + esc(d.name) + '</span><span class="meta">' + esc(meta.join("・")) + '</span></button>';
+  }).join("");
+  Array.prototype.forEach.call(box.querySelectorAll("[data-snackcand]"), function(b){
+    b.addEventListener("click", function(){
+      var d = dishById[b.getAttribute("data-snackcand")]; if(!d || snackDi === null) return;
+      addSnackItem(snackDi, d, null, membersList().length >= 2 ? snackOwnerSel : "", membersList().length >= 2 ? snackOwnerName() : "");
+      changed(); closeSnackSheet(); toast("間食「" + d.name + "」を追加したよ");
+    });
+  });
+}
+
+/* ================= 食べた記録シート =================
+   ①予定どおり／②違うもの（実食）を選ぶ。記録直後、材料と一致する在庫があれば消費確認ステップを出す */
+var eatenKey = null, eatenShowDiff = false, eatenSnack = null, eatenMemberDiff = null;
+function memberModeActive(){ return !!eatenKey && !eatenSnack && membersList().length >= 2; }
+function setMemberRec(o, mkey, rec){
+  if(!o.by) o.by = {};
+  if(rec) o.by[mkey] = rec; else delete o.by[mkey];
+  if(!Object.keys(o.by).length) delete o.by;
+  o.actualId = null; o.actualName = "";
+  o.eaten = slotAnyEaten(o);
+}
+function closeEatenSheet(){ var m = $("eatenModal"); if(m) m.classList.remove("open"); eatenKey = null; eatenSnack = null; eatenShowDiff = false; eatenMemberDiff = null; }
+function openEatenSheet(key){ eatenKey = key; eatenSnack = null; eatenShowDiff = false; eatenMemberDiff = null; renderEatenSheet(); $("eatenModal").classList.add("open"); }
+function openSnackEaten(di, id){ eatenKey = null; eatenSnack = { di: di, id: id }; eatenShowDiff = false; renderEatenSheet(); $("eatenModal").classList.add("open"); }
+function snackItemByRef(ref){ if(!ref) return null; return daySnacks(ref.di).filter(function(it){ return it.id === ref.id; })[0] || null; }
+function getEatenObj(){
+  if(eatenSnack){ var it = snackItemByRef(eatenSnack); return it ? { staple:"なし", main:null, side:null, soup:null, complete:null, eaten: !!it.eaten, actualId: it.actualId || null, actualName: it.actualName || "" } : null; }
+  return eatenKey ? getSlot(eatenKey) : null;
+}
+function commitEatenObj(o){
+  if(eatenSnack){
+    var it = snackItemByRef(eatenSnack); if(!it) return;
+    it.eaten = !!o.eaten; it.actualId = o.eaten ? (o.actualId || null) : null; it.actualName = o.eaten ? (o.actualName || "") : "";
+    setDaySnacks(eatenSnack.di, daySnacks(eatenSnack.di));
+    return;
+  }
+  if(eatenKey) saveSlotEaten(eatenKey, o);
+}
+function eatenPlannedDishes(o){
+  if(eatenSnack){ var it = snackItemByRef(eatenSnack); var d = it ? snackDishOf(it) : null; return d ? [d] : []; }
+  return slotDishIds(o).map(function(id){ return dishById[id]; }).filter(Boolean);
+}
+function plannedNamesHtml(o){
+  var names = slotDishIds(o).map(function(id){ var d = dishById[id]; return d ? d.name : ""; }).filter(Boolean);
+  if(!names.length) return '予定：<b>まだ未定</b>';
+  return '予定：<b>' + names.map(esc).join(" ＋ ") + '</b>' + (o.complete ? '' : '（主食：' + esc(o.staple) + '）');
+}
+function renderEatenSheet(){
+  if(!eatenKey && !eatenSnack) return;
+  var day, meal;
+  if(eatenSnack){ day = DAYS[eatenSnack.di] || ""; meal = "間食"; }
+  else { var parts = eatenKey.split("_"); day = DAYS[+parts[0]] || ""; meal = parts[1] || ""; }
+  $("eatenTitle").textContent = day + "曜日・" + meal + " の食べた記録";
+  var o = getEatenObj(); if(!o) return;
+  if(memberModeActive()){ renderEatenSheetMembers(o, day, meal); return; }
+  if(eatenSnack){
+    var sit = snackItemByRef(eatenSnack);
+    var plannedHtml = '予定：<b>' + esc(sit ? snackDisplayName(sit) : "間食") + '</b>' + (sit && !snackDishOf(sit) ? '（名前だけの記録・kcal不明）' : '');
+    var html = '<p class="eaten-planned">' + plannedHtml + '</p>';
+  } else {
+    var html = '<p class="eaten-planned">' + plannedNamesHtml(o) + '</p>';
+  }
+  if(o.eaten){
+    html += '<p class="eaten-planned">' + (hasActual(o)
+      ? 'いまの記録：<b>✓ 食べた（実食：' + esc(actualNameOf(o)) + '）</b>'
+      : 'いまの記録：<b>✓ 食べた（予定どおり）</b>') + '</p>';
+  }
+  html += '<div class="eaten-actions">';
+  if(!o.eaten || hasActual(o)) html += '<button type="button" class="btn primary" id="eatenPlannedBtn">予定どおり食べた</button>';
+  html += '<button type="button" class="btn ' + (!o.eaten ? 'ghost' : 'primary') + '" id="eatenDiffBtn">' + (o.eaten && hasActual(o) ? '違うものを選び直す' : '違うものを食べた') + '</button>';
+  if(o.eaten) html += '<button type="button" class="btn ghost" id="eatenCancelBtn">食べたを取り消す</button>';
+  html += '</div>';
+  html += '<div id="eatenDiffBox"' + (eatenShowDiff ? '' : ' hidden') + '>'
+    + '<div class="field"><label for="eatenActualInput">食べたものの名前・キーワード</label>'
+    + '<input type="text" id="eatenActualInput" placeholder="例：とんこつラーメン、コンビニのサラダ" value="' + esc(hasActual(o) ? actualNameOf(o) : "") + '" /></div>'
+    + '<p class="sub" style="margin:0">似たレシピが候補に出ます。選ぶと実食として記録し、実績の栄養はその品で計算します。</p>'
+    + '<div class="eaten-cands" id="eatenCands"></div>'
+    + '<div class="eaten-actions"><button type="button" class="btn ghost" id="eatenNameOnlyBtn">候補にないので、この名前だけで記録する</button></div>'
+    + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。在庫との照合も行いません。</p>'
+    + '</div>';
+  $("eatenBody").innerHTML = html;
+  var pb = $("eatenPlannedBtn");
+  if(pb) pb.addEventListener("click", function(){
+    var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = ""; commitEatenObj(oo);
+    afterEatenRecorded();
+  });
+  var db = $("eatenDiffBtn");
+  if(db) db.addEventListener("click", function(){
+    eatenShowDiff = true;
+    var box = $("eatenDiffBox"); if(box) box.hidden = false;
+    var inp = $("eatenActualInput"); if(inp){ inp.focus(); renderEatenCands(); }
+  });
+  var cb = $("eatenCancelBtn");
+  if(cb) cb.addEventListener("click", function(){
+    var oo = getEatenObj(); if(!oo) return; oo.eaten = false; oo.actualId = null; oo.actualName = ""; commitEatenObj(oo);
+    changed(); closeEatenSheet(); toast("「食べた」を取り消したよ");
+  });
+  var inp2 = $("eatenActualInput");
+  if(inp2) inp2.addEventListener("input", renderEatenCands);
+  var nb = $("eatenNameOnlyBtn");
+  if(nb) nb.addEventListener("click", function(){
+    var v = (($("eatenActualInput") || {}).value || "").trim();
+    if(!v){ toast("食べたものの名前を入れてね"); return; }
+    var oo = getEatenObj(); if(!oo) return; oo.eaten = true; oo.actualId = null; oo.actualName = v; commitEatenObj(oo);
+    changed(); closeEatenSheet(); toast("「" + v + "」を実食として記録したよ（kcalは不明）");
+  });
+  if(eatenShowDiff) renderEatenCands();
+}
+function memberRecLabel(o, mkey){
+  var r = o.by && o.by[mkey];
+  if(!r) return "未記録";
+  if(r.s === "none") return "食べてない";
+  if(r.s === "actual") return "実食：" + (r.actualId && dishById[r.actualId] ? dishById[r.actualId].name : (r.actualName || ""));
+  return "予定どおり";
+}
+function renderEatenSheetMembers(o, day, meal){
+  var mem = membersList();
+  var html = '<p class="eaten-planned">' + plannedNamesHtml(o) + '</p>'
+    + '<div class="eaten-actions"><button type="button" class="btn primary" id="eatenBulkBtn">2人とも予定どおり</button></div>';
+  mem.forEach(function(m){
+    html += '<div class="detail-sec">' + esc(m.name) + '：' + esc(memberRecLabel(o, m.key)) + '</div>'
+      + '<div class="chips" style="margin-bottom:6px">'
+      + '<button type="button" class="chip" data-mplanned="' + esc(m.key) + '">予定どおり</button>'
+      + '<button type="button" class="chip" data-mdiff="' + esc(m.key) + '">違うもの</button>'
+      + '<button type="button" class="chip" data-mnone="' + esc(m.key) + '">食べてない</button>'
+      + '</div>';
+  });
+  var diffMember = null;
+  mem.forEach(function(m){ if(m.key === eatenMemberDiff) diffMember = m; });
+  html += '<div id="eatenDiffBox"' + (diffMember ? '' : ' hidden') + '>'
+    + '<div class="field"><label for="eatenActualInput">' + (diffMember ? esc(diffMember.name) + 'が' : '') + '食べたものの名前・キーワード</label>'
+    + '<input type="text" id="eatenActualInput" placeholder="例：とんこつラーメン、コンビニのサラダ" value="" /></div>'
+    + '<p class="sub" style="margin:0">似たレシピが候補に出ます。選ぶとそのメンバーの実食として記録します。</p>'
+    + '<div class="eaten-cands" id="eatenCands"></div>'
+    + '<div class="eaten-actions"><button type="button" class="btn ghost" id="eatenNameOnlyBtn">候補にないので、この名前だけで記録する</button></div>'
+    + '<p class="sub" style="margin:0">名前だけの記録は kcal／PFC 不明として、実績の判明分には加算しません。在庫との照合も行いません。</p>'
+    + '</div>'
+    + '<div class="eaten-actions"><button type="button" class="btn primary" id="eatenFinishBtn">記録を終える</button>'
+    + '<button type="button" class="btn ghost" id="eatenClearBtn">メンバー別の記録を全部消す</button></div>'
+    + '<p class="sub" style="margin:0">「記録を終える」と、だれか1人でも食べていれば在庫の確認（世帯で1回だけ）が出ます。</p>';
+  $("eatenBody").innerHTML = html;
+  $("eatenBulkBtn").addEventListener("click", function(){
+    var oo = getEatenObj(); if(!oo) return;
+    mem.forEach(function(m){ setMemberRec(oo, m.key, { s: "planned" }); });
+    commitEatenObj(oo);
+    afterEatenRecorded();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-mplanned]"), function(b){
+    b.addEventListener("click", function(){
+      var oo = getEatenObj(); if(!oo) return;
+      setMemberRec(oo, b.getAttribute("data-mplanned"), { s: "planned" });
+      commitEatenObj(oo); changed(); renderEatenSheet();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-mnone]"), function(b){
+    b.addEventListener("click", function(){
+      var oo = getEatenObj(); if(!oo) return;
+      setMemberRec(oo, b.getAttribute("data-mnone"), { s: "none" });
+      commitEatenObj(oo); changed(); renderEatenSheet();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-mdiff]"), function(b){
+    b.addEventListener("click", function(){
+      eatenMemberDiff = b.getAttribute("data-mdiff");
+      renderEatenSheet();
+      var inp = $("eatenActualInput"); if(inp) inp.focus();
+    });
+  });
+  var inp2 = $("eatenActualInput");
+  if(inp2) inp2.addEventListener("input", renderEatenCands);
+  var nb = $("eatenNameOnlyBtn");
+  if(nb) nb.addEventListener("click", function(){
+    var v = (($("eatenActualInput") || {}).value || "").trim();
+    if(!v || !eatenMemberDiff){ toast("食べたものの名前を入れてね"); return; }
+    var oo = getEatenObj(); if(!oo) return;
+    setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: null, actualName: v });
+    commitEatenObj(oo); changed(); eatenMemberDiff = null; renderEatenSheet();
+    toast("「" + v + "」を実食として記録したよ（kcalは不明）");
+  });
+  $("eatenFinishBtn").addEventListener("click", function(){
+    var oo = getEatenObj(); if(!oo) return;
+    if(slotAnyEaten(oo)) afterEatenRecorded();
+    else { changed(); closeEatenSheet(); toast("食べてないで記録したよ"); }
+  });
+  $("eatenClearBtn").addEventListener("click", function(){
+    var oo = getEatenObj(); if(!oo) return;
+    delete oo.by; oo.eaten = false; oo.actualId = null; oo.actualName = "";
+    commitEatenObj(oo); changed(); renderEatenSheet(); toast("メンバー別の記録を消したよ");
+  });
+  if(diffMember) renderEatenCands();
+}
+function eatenStockDishes(o){
+  /* 在庫照合用の「食べた品」一覧。メンバー別記録では、食べたメンバーの実食／予定品を集める（重複なし） */
+  if(!(o.by && Object.keys(o.by).length)) return null;
+  var out = [], seen = {};
+  var planned = slotDishIds(o).map(function(id){ return dishById[id]; }).filter(Boolean);
+  Object.keys(o.by).forEach(function(mk){
+    var r = o.by[mk];
+    if(!r || r.s === "none") return;
+    if(r.s === "actual"){
+      var ad = r.actualId ? dishById[r.actualId] : null;
+      if(ad && !seen[ad.id]){ seen[ad.id] = true; out.push(ad); }
+    } else {
+      planned.forEach(function(d){ if(!seen[d.id]){ seen[d.id] = true; out.push(d); } });
+    }
+  });
+  return out;
+}
+function renderEatenCands(){
+  var box = $("eatenCands"); if(!box || (!eatenKey && !eatenSnack)) return;
+  var q = (($("eatenActualInput") || {}).value || "").trim();
+  if(!q){ box.innerHTML = '<p class="sub" style="margin:4px 0 0">名前を入れると候補が出ます。</p>'; return; }
+  var cands = actualCandidates(q, eatenKey);
+  if(!cands.length){ box.innerHTML = '<p class="sub" style="margin:4px 0 0">似たレシピが見つからなかった…下のボタンで名前だけで記録できます。</p>'; return; }
+  box.innerHTML = cands.map(function(d){
+    var meta = [POS_LABEL[roleOf(d)]];
+    if(d.kcal) meta.push(d.kcal + "kcal");
+    if(hasPfc(d)) meta.push("P " + fmtG(d.protein) + "g・F " + fmtG(d.fat) + "g・C " + fmtG(d.carbs) + "g");
+    return '<button type="button" class="eaten-cand" data-eatencand="' + esc(d.id) + '"><span class="nm">' + esc(d.name) + '</span><span class="meta">' + esc(meta.join("・")) + '</span></button>';
+  }).join("");
+  Array.prototype.forEach.call(box.querySelectorAll("[data-eatencand]"), function(b){
+    b.addEventListener("click", function(){
+      var d = dishById[b.getAttribute("data-eatencand")]; if(!d || (!eatenKey && !eatenSnack)) return;
+      var oo = getEatenObj(); if(!oo) return;
+      if(eatenMemberDiff && memberModeActive()){
+        setMemberRec(oo, eatenMemberDiff, { s: "actual", actualId: d.id, actualName: d.name });
+        commitEatenObj(oo); changed(); eatenMemberDiff = null; renderEatenSheet();
+        toast(oo ? "実食として記録したよ" : "");
+        return;
+      }
+      oo.eaten = true; oo.actualId = d.id; oo.actualName = d.name; commitEatenObj(oo);
+      afterEatenRecorded();
+    });
+  });
+}
+/* 記録直後：材料と一致する在庫があれば消費確認へ。無ければ記録だけで終わる */
+function afterEatenRecorded(){
+  var o = getEatenObj(); if(!o){ closeEatenSheet(); return; }
+  var matches = stockMatchesForEaten(o, eatenStockDishes(o) || eatenPlannedDishes(o));
+  changed();
+  if(matches.length) renderEatenStockStep(matches);
+  else { closeEatenSheet(); toast("食べたよ！実績に記録したよ"); }
+}
+function renderEatenStockStep(matches){
+  var html = '<p style="font-weight:800;font-size:16px;margin:10px 0 4px">在庫つかった？</p>'
+    + '<p class="sub">食べた料理の材料と一致した在庫です。量は「1袋」「1パック」のまま数えず、品目ごとに選んでね。はじめは全部「まだ残ってる」なので、使い切ったものだけ変えればOK。在庫から消えるのは「使い切った」の品目だけです。</p>'
+    + matches.map(function(m){
+        var it = m.stock;
+        var meta = [];
+        if(it.qty) meta.push(it.qty);
+        meta.push("材料：" + m.ingName);
+        var dl = daysLeftEff(it); if(dl !== null) meta.push(daysLabel(it));
+        return '<div class="stockuse" data-stockuserow="' + esc(it.id) + '"><span class="nm">' + (it.place === "freezer" ? "❄️ " : "🧊 ") + esc(it.name) + '</span>'
+          + '<br><span class="meta">' + esc(meta.join(" ／ ")) + '</span>'
+          + '<div class="use-choices" role="group" aria-label="' + esc(it.name) + 'の在庫の扱い">'
+          + '<button type="button" data-usechoice="usedup" aria-pressed="false">使い切った</button>'
+          + '<button type="button" data-usechoice="left" aria-pressed="true">まだ残ってる</button>'
+          + '<button type="button" data-usechoice="notused" aria-pressed="false">使ってない</button>'
+          + '</div></div>';
+      }).join("")
+    + '<div class="eaten-actions"><button type="button" class="btn primary" id="eatenStockConfirm">この内容で確定する</button>'
+    + '<button type="button" class="btn ghost" id="eatenStockSkip">そのまま閉じる（在庫は変えない）</button></div>';
+  $("eatenBody").innerHTML = html;
+  var bodyEl = $("eatenBody"); if(bodyEl) bodyEl.scrollTop = 0;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stockuserow] .use-choices button"), function(b){
+    b.addEventListener("click", function(){
+      var group = b.parentNode;
+      Array.prototype.forEach.call(group.querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    });
+  });
+  $("eatenStockConfirm").addEventListener("click", function(){
+    var ids = [];
+    Array.prototype.forEach.call(document.querySelectorAll("[data-stockuserow]"), function(row){
+      var sel = row.querySelector('button[data-usechoice="usedup"][aria-pressed="true"]');
+      if(sel) ids.push(row.getAttribute("data-stockuserow"));
+    });
+    if(ids.length){
+      S.stock = (S.stock || []).filter(function(it){ return ids.indexOf(it.id) < 0; });
+      changed();
+    }
+    closeEatenSheet();
+    toast(ids.length ? ("食べたよ！在庫 " + ids.length + "品を使い切ったことにしたよ") : "食べたよ！実績に記録したよ（在庫はそのまま）");
+  });
+  $("eatenStockSkip").addEventListener("click", function(){ closeEatenSheet(); toast("食べたよ！実績に記録したよ（在庫はそのまま）"); });
+}
+
 /* ================= 全体描画とイベント ================= */
 function renderAll(){ renderStore(); renderTags(); renderBoard(); renderFlyer(); renderList(); renderStock(); renderNearMeals(); renderNutrition(); renderProfile(); }
 /* 画面切替の共通処理：タブの選択状態と表示セクションを必ず一致させる。
@@ -4108,9 +4950,14 @@ $("quickAdd").addEventListener("click", function(){
 /* 今日・明日の枠操作は #nearMeals へのイベント委譲で受ける（renderBoard 側の登録と二重にならない） */
 $("nearMeals").addEventListener("click", function(ev){
   var el = ev.target;
-  var b = el && el.closest ? el.closest("[data-detail],[data-pick],[data-clearpos]") : null;
+  var b = el && el.closest ? el.closest("[data-eaten],[data-detail],[data-pick],[data-clearpos],[data-snackadd],[data-snackeaten],[data-snackdel],[data-snackdetail]") : null;
   if(!b) return;
-  if(b.hasAttribute("data-detail")) openDetail(b.getAttribute("data-dish"), { slot: b.getAttribute("data-detail"), pos: b.getAttribute("data-pos"), fromPicker: false });
+  if(b.hasAttribute("data-snackadd")){ openSnackSheet(parseInt(b.getAttribute("data-snackadd"), 10)); return; }
+  if(b.hasAttribute("data-snackeaten")){ var sp = b.getAttribute("data-snackeaten").split("|"); openSnackEaten(parseInt(sp[0], 10), sp[1]); return; }
+  if(b.hasAttribute("data-snackdel")){ var sd = b.getAttribute("data-snackdel").split("|"), sdi = parseInt(sd[0], 10); setDaySnacks(sdi, daySnacks(sdi).filter(function(it){ return it.id !== sd[1]; })); changed(); toast("間食を削除したよ"); return; }
+  if(b.hasAttribute("data-snackdetail")){ openDetail(b.getAttribute("data-snackdetail"), {}); return; }
+  if(b.hasAttribute("data-eaten")){ openEatenSheet(b.getAttribute("data-eaten")); }
+  else if(b.hasAttribute("data-detail")) openDetail(b.getAttribute("data-dish"), { slot: b.getAttribute("data-detail"), pos: b.getAttribute("data-pos"), fromPicker: false });
   else if(b.hasAttribute("data-pick")) openPicker(b.getAttribute("data-pick"), b.getAttribute("data-pos"));
   else if(b.hasAttribute("data-clearpos")){ clearSlotPos(b.getAttribute("data-clearpos"), b.getAttribute("data-pos")); changed(); toast("外したよ"); }
 });
@@ -4137,11 +4984,15 @@ $("todayJump").addEventListener("click", function(){
   if(t) t.scrollIntoView({ behavior:"smooth", block:"start" });
 });
 window.addEventListener("resize", updateStickyTop);
-$("clearBtn").addEventListener("click", function(){ S.slots={}; S.bought=[]; changed(); toast("ボードをクリアしたよ"); });
+$("clearBtn").addEventListener("click", function(){ S.slots={}; S.snacks={}; S.bought=[]; changed(); toast("ボードをクリアしたよ"); });
 $("copyBtn").addEventListener("click", function(){ copyText(listText(), "買い物リストをコピーしたよ"); });
 $("resetBoughtBtn").addEventListener("click", function(){ S.bought=[]; changed(); toast("チェックを全部外したよ"); });
 $("pickerClose").addEventListener("click", closePicker);
 $("pickerBack").addEventListener("click", closePicker);
+$("snackClose").addEventListener("click", closeSnackSheet);
+$("snackBack").addEventListener("click", closeSnackSheet);
+$("eatenClose").addEventListener("click", closeEatenSheet);
+$("eatenBack").addEventListener("click", closeEatenSheet);
 $("detailClose").addEventListener("click", closeDetail);
 $("detailBack").addEventListener("click", closeDetail);
 $("pickerSearch").addEventListener("input", function(){ pickerShown=40; renderPicker(); });
